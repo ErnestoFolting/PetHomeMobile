@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "test",
-    "slug": "test",
+    "name": "PetHome",
+    "slug": "",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,10 +13,7 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true,
-      "config": {
-        "usesNonExemptEncryption": false
-      }
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {

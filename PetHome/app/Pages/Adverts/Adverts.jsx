@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import AdvertService from "../../HTTP/API/AdvertService";
-import { FlatList, View, Image, Text } from "react-native";
+import { FlatList, View, Image, Text, Button } from "react-native";
 import useFetching from "../../Hooks/useFetching";
+import useAuth from "../../Hooks/useAuth";
+import Colors from "../../Constants/Colors";
 
 const Adverts = () => {
+  const auth = useAuth();
   const [adverts, setAdverts] = useState([]);
   const [queryParams, setQueryParams] = useState({
     advertsLimit: 6,
@@ -15,8 +18,6 @@ const Adverts = () => {
 
   const [fetchAdverts, loader, error] = useFetching(async function () {
     const response = await AdvertService.getAllAdverts(queryParams);
-    const totalAdverts = response.headers["x-pagination-total-count"];
-    console.log(totalAdverts);
     setAdverts(response.data);
   });
 
@@ -53,6 +54,7 @@ const Adverts = () => {
                 <Text>Description: {item.description}</Text>
                 <Text>Location: {item.location}</Text>
                 <Text>Cost: {item.cost}</Text>
+                <Button title="check" onPress={() => auth.setAuth(!auth.isAuth)} color={Colors.main}  ></Button>
                 {/* Add more details as needed */}
               </View>
             )}

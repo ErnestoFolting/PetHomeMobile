@@ -2,7 +2,7 @@ import { makeAutoObservable } from "mobx";
 import AuthService from "../HTTP/API/AuthService";
 
 export default class Store {
-    isAuth = true;
+    isAuth = false;
     isLoading = false;
     userId = "";
     constructor() {

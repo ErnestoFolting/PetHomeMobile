@@ -6,10 +6,7 @@ const accessToken =
 
 const $api = axios.create({
   withCredentials: true,
-  baseURL: url,
-  headers: {
-    Authorization: `Bearer ${accessToken}`
-  }
+  baseURL: url
 });
 
 $api.interceptors.response.use(

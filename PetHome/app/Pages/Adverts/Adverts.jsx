@@ -6,8 +6,8 @@ import useAuth from "../../Hooks/useAuth";
 import Colors from "../../Constants/Colors";
 
 const Adverts = () => {
-  const auth = useAuth();
   const [adverts, setAdverts] = useState([]);
+  const [check, setCheck] = useState(false);
   const [queryParams, setQueryParams] = useState({
     advertsLimit: 6,
     currentPage: 1,
@@ -30,7 +30,7 @@ const Adverts = () => {
       }
     }
     fetchData();
-  }, [queryParams]);
+  }, [queryParams, check]);
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -54,8 +54,7 @@ const Adverts = () => {
                 <Text>Description: {item.description}</Text>
                 <Text>Location: {item.location}</Text>
                 <Text>Cost: {item.cost}</Text>
-                <Button title="check" onPress={() => auth.setAuth(!auth.isAuth)} color={Colors.main}  ></Button>
-                {/* Add more details as needed */}
+                <Button title="check" onPress={fetchAdverts} color={Colors.main}  ></Button>
               </View>
             )}
           />

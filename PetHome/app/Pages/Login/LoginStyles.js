@@ -6,7 +6,7 @@ const LoginStyles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        padding: 20,
+        padding: 20
     },
     label: {
         marginBottom: 5,
@@ -17,7 +17,7 @@ const LoginStyles = StyleSheet.create({
         width: "75%",
         height: 40,
         borderWidth: 2,
-        borderColor: Colors.main,
+        borderColor: Colors.light,
         borderRadius: 5,
         marginBottom: 20,
         paddingHorizontal: 10,
@@ -40,6 +40,30 @@ const LoginStyles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5
+    },
+    authorization: {
+        fontSize: 20,
+        margin: 20,
+        fontWeight: 'bold',
+    },
+    noacc: {
+        fontWeight: 'normal'
+    },
+    registerContainer: {
+        margin: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10,
+    },
+    registerLink: {
+        marginLeft: 5,
+        color: 'blue',
+    },
+    button:
+    {
+        backgroundColor: Colors.light,
+        marginBottom: 100
     }
 });
 

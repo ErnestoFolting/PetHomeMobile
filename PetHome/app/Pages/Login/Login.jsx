@@ -3,14 +3,18 @@ import { View, Text, TextInput, Button, TouchableWithoutFeedback, Keyboard, Imag
 import LoginStyles from "./LoginStyles";
 import logo from '../../../assets/logo.png'
 import useAuth from "../../Hooks/useAuth";
+import { useNavigation } from "@react-navigation/native";
 
 const Login = () => {
     const [creds, setCreds] = useState({ username: "", password: "" });
 
     const auth = useAuth();
 
+    const navigation = useNavigation();
+
     const handleRegister = () => {
         console.log('to reg');
+        navigation.navigate('Registration')
     }
 
     const handleLogin = () => {
@@ -24,9 +28,9 @@ const Login = () => {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 
                 <View style={LoginStyles.container}>
-                    <Image source={logo} style={LoginStyles.logo} />
+
                     <View style={LoginStyles.form}>
-                        <Text style={LoginStyles.authorization}>Authorization</Text>
+                        <Image source={logo} style={LoginStyles.logo} />
                         <Text style={LoginStyles.label}>Username</Text>
                         <TextInput
                             style={LoginStyles.input}

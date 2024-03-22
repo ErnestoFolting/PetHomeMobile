@@ -1,17 +1,20 @@
 import { View, Button, TouchableOpacity } from "react-native"
-import React, { Children } from "react"
+import React from "react"
 import useAuth from "../Hooks/useAuth";
 import { FontAwesome5, Ionicons, AntDesign } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import { observer } from "mobx-react-lite"
 import My from "../Pages/My/My";
 import Adverts from "../Pages/Adverts/Adverts";
 import Colors from "../Constants/Colors";
 import Me from "../Pages/Me/Me";
 import Login from "../Pages/Login/Login";
+import Registration from "../Pages/Registration/Registration";
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 //temp
 const Сheck = observer(() => {
@@ -50,7 +53,12 @@ export default observer(function Navigator() {
                 </Tab.Navigator>
             </NavigationContainer>
         ) : (
-            <Login></Login>
+            <NavigationContainer>
+                <Stack.Navigator>
+                    <Stack.Screen name="Login" component={Login} />
+                    <Stack.Screen name="Registration" component={Registration} />
+                </Stack.Navigator>
+            </NavigationContainer>
         )
     );
 });

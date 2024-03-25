@@ -61,10 +61,15 @@ const LoginStyles = StyleSheet.create({
         marginLeft: 5,
         color: 'blue',
     },
-    button:
-    {
+    button: {
         backgroundColor: Colors.light,
-        marginBottom: 100
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center'
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold',
     }
 });
 

@@ -13,10 +13,10 @@ const My = () => {
     const Tab = createMaterialTopTabNavigator()
     return (
         <Tab.Navigator>
-            <Tab.Screen name="Adverts" component={Сheck} options={{
+            <Tab.Screen name="Оголошення" component={Сheck} options={{
                 tabBarIcon: () => <FontAwesome5 name="list-ul" size={20} color={Colors.main} />
             }} />
-            <Tab.Screen name="Requests" component={Сheck} options={{
+            <Tab.Screen name="Заявки" component={Сheck} options={{
                 tabBarIcon: () => <Feather name="user-check" size={20} color={Colors.main} />
             }} />
         </Tab.Navigator>

@@ -14,7 +14,7 @@ const Login = () => {
 
     const handleRegister = () => {
         console.log('to reg');
-        navigation.navigate('Registration')
+        navigation.navigate('Реєстрація')
     }
 
     const handleLogin = () => {
@@ -31,28 +31,34 @@ const Login = () => {
 
                     <View style={LoginStyles.form}>
                         <Image source={logo} style={LoginStyles.logo} />
-                        <Text style={LoginStyles.label}>Username</Text>
+
+                        <Text style={LoginStyles.label}>Логін</Text>
                         <TextInput
                             style={LoginStyles.input}
-                            placeholder="Enter your username"
+                            placeholder="Уведіть свій логін"
                             value={creds.username}
                             onChangeText={text => setCreds({ ...creds, username: text })}
                         />
-                        <Text style={LoginStyles.label}>Password</Text>
+
+                        <Text style={LoginStyles.label}>Пароль</Text>
                         <TextInput
                             style={LoginStyles.input}
-                            placeholder="Enter your password"
+                            placeholder="Уведіть свій пароль"
                             secureTextEntry={true}
                             value={creds.password}
                             onChangeText={text => setCreds({ ...creds, password: text })}
                         />
-                        <Button title="Login" onPress={handleLogin} />
+                        <TouchableOpacity onPress={handleLogin} style={LoginStyles.button}>
+                            <Text style={LoginStyles.buttonText}>Увійти</Text>
+                        </TouchableOpacity>
+
                         <View style={LoginStyles.registerContainer}>
-                            <Text style={LoginStyles.noacc}>Do not have an account?</Text>
+                            <Text style={LoginStyles.noacc}>Не маєш акаунту?</Text>
                             <TouchableOpacity onPress={handleRegister}>
-                                <Text style={LoginStyles.registerLink}>Register</Text>
+                                <Text style={LoginStyles.registerLink}>Реєстрація</Text>
                             </TouchableOpacity>
                         </View>
+
                     </View>
 
                 </View>

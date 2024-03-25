@@ -22,6 +22,11 @@ const Сheck = observer(() => {
     return (<View><Button title="check" onPress={() => { console.log("check") }} color={Colors.main} ></Button></View>)
 })
 
+const onSubmitRegistration = (formData) => {
+    // Logic to handle form submission
+    console.log('Form data submitted:', formData);
+};
+
 export default observer(function Navigator() {
     const auth = useAuth();
     console.log("Auth " + auth.isAuth);
@@ -29,19 +34,19 @@ export default observer(function Navigator() {
         auth.isAuth ? (
             <NavigationContainer >
                 <Tab.Navigator>
-                    <Tab.Screen name="Adverts" component={Adverts}
+                    <Tab.Screen name="Оголошення" component={Adverts}
                         options={{
                             tabBarIcon: () => <FontAwesome5 name="dog" color={Colors.main} size={24} />
                         }} />
-                    <Tab.Screen name="Create" component={Сheck}
+                    <Tab.Screen name="Створити" component={Сheck}
                         options={{
                             tabBarIcon: () => <Ionicons name="create-outline" size={24} color={Colors.main} />
                         }} />
-                    <Tab.Screen name="My" component={My}
+                    <Tab.Screen name="Мої" component={My}
                         options={{
                             tabBarIcon: () => <AntDesign name="folder1" size={24} color={Colors.main} />
                         }} />
-                    <Tab.Screen name="Me" component={Me}
+                    <Tab.Screen name="Я" component={Me}
                         options={{
                             tabBarIcon: () => <Ionicons name="person-outline" size={24} color={Colors.main} />,
                             headerRight: () => (
@@ -55,8 +60,8 @@ export default observer(function Navigator() {
         ) : (
             <NavigationContainer>
                 <Stack.Navigator>
-                    <Stack.Screen name="Login" component={Login} />
-                    <Stack.Screen name="Registration" component={Registration} />
+                    <Stack.Screen name="Логін" component={Login} />
+                    <Stack.Screen name="Реєстрація" component={Registration} initialParams={{ onSubmit: onSubmitRegistration }} />
                 </Stack.Navigator>
             </NavigationContainer>
         )

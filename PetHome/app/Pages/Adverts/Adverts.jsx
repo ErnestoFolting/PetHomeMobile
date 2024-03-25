@@ -60,7 +60,7 @@ const Adverts = () => {
           />
         )
         : (
-          <Text>Loading...</Text>
+          <Text>Завантаження...</Text>
         )}
     </View>
   );

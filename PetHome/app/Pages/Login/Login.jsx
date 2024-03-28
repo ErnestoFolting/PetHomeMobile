@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, TouchableWithoutFeedback, Keyboard, Image, KeyboardAvoidingView, Platform, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, TouchableWithoutFeedback, Keyboard, Image, KeyboardAvoidingView, Platform, TouchableOpacity } from "react-native";
 import LoginStyles from "./LoginStyles";
 import logo from '../../../assets/logo.png'
 import useAuth from "../../Hooks/useAuth";
@@ -13,7 +13,6 @@ const Login = () => {
     const navigation = useNavigation();
 
     const handleRegister = () => {
-        console.log('to reg');
         navigation.navigate('Реєстрація')
     }
 

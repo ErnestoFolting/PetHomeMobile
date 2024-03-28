@@ -3,13 +3,14 @@ import AuthService from "../HTTP/API/AuthService";
 
 export default class Store {
     isAuth = false;
-    isLoading = false;
+    isLoading = true;
     userId = "";
     constructor() {
         makeAutoObservable(this)
         this.login = this.login.bind(this)
         this.registration = this.registration.bind(this)
         this.logout = this.logout.bind(this)
+        this.checkAuth = this.checkAuth.bind(this)
     }
     setLoading(boolean) {
         this.isLoading = boolean;
@@ -45,6 +46,15 @@ export default class Store {
             this.setUserId("")
         } catch (e) {
             console.error(e)
+        }
+    }
+    async checkAuth() {
+        try {
+            const data = await AuthService.checkAuth()
+            this.setAuth(true);
+            this.setUserId(data?.userId)
+        } catch (e) {
+            console.log(e)
         }
     }
 }

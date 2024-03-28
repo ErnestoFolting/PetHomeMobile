@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Alert, Image } from 'react-native';
 import { RegistrationStyles } from './RegistrationStyles';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
+import AuthService from '../../HTTP/API/AuthService';
+import { useNavigation } from "@react-navigation/native";
 
-const Registration = ({ route }) => {
-    const [formData, setFormData] = useState({
+const Registration = () => {
+    const navigation = useNavigation();
+
+    const [registrationData, setRegistrationData] = useState({
         surname: '',
         name: '',
         sex: 'male',
@@ -12,18 +18,61 @@ const Registration = ({ route }) => {
         username: '',
         password: '',
         confirmPassword: '',
-        location: '',
-        file: null
+        location: 'Fastiv',
+        locationLat: '50,5',
+        locationLng: '52,5'
     });
 
-    const handleSubmit = () => {
-        // Submit the form
-        route.params.onSubmit(formData);
+    const [imageUri, SetImageUri] = useState('')
+
+    const handleSubmit = async () => {
+        //route.params.onSubmit(formData);
+
+        const formData = new FormData();
+
+        Object.keys(registrationData).forEach(function (key, index) {
+            formData.append(key, Object.values(registrationData)[index])
+        })
+
+        const photoData = await FileSystem.readAsStringAsync(imageUri, {
+            encoding: FileSystem.EncodingType.Base64,
+        });
+
+        formData.append('userPhoto', {
+            uri: imageUri,
+            name: 'photo.jpg', // Provide a default name for the photo file
+            type: `image/jpeg`, // Set the correct MIME type for the photo
+            data: photoData,
+        });
+
+        try {
+            await AuthService.registration(formData)
+        } catch (e) {
+            console.log(e?.response?.data)
+            throw e
+        }
+        navigation.navigate('Логін')
     };
 
     const getUserLocation = () => {
         console.log('get location');
     }
+
+    const selectImage = async () => {
+        let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (permissionResult.granted === false) {
+            Alert.alert('Permission to access camera roll is required!');
+            return;
+        }
+
+        let pickerResult = await ImagePicker.launchImageLibraryAsync();
+
+        if (!pickerResult.cancelled) {
+            const uri = pickerResult.assets[0].uri;
+            SetImageUri(uri)
+        }
+    };
 
     return (
         <KeyboardAvoidingView
@@ -35,62 +84,70 @@ const Registration = ({ route }) => {
                 <View style={RegistrationStyles.form}>
                     <TextInput
                         placeholder='Прізвище*'
-                        value={formData.surname}
-                        onChangeText={text => setFormData({ ...formData, surname: text })}
+                        value={registrationData.surname}
+                        onChangeText={text => setRegistrationData({ ...registrationData, surname: text })}
                         style={RegistrationStyles.input}
                     />
 
 
                     <TextInput
                         placeholder="Ім'я*"
-                        value={formData.name}
-                        onChangeText={text => setFormData({ ...formData, name: text })}
+                        value={registrationData.name}
+                        onChangeText={text => setRegistrationData({ ...registrationData, name: text })}
                         style={RegistrationStyles.input}
                     />
 
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
-                        <TouchableOpacity onPress={() => setFormData({ ...formData, sex: 'male' })}>
-                            <Text style={[RegistrationStyles.radioText, { marginRight: 20 }, formData.sex === 'male' && RegistrationStyles.radioChecked]}>Чоловік</Text>
+                        <TouchableOpacity onPress={() => setRegistrationData({ ...registrationData, sex: 'male' })}>
+                            <Text style={[RegistrationStyles.radioText, { marginRight: 20 }, registrationData.sex === 'male' && RegistrationStyles.radioChecked]}>Чоловік</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setFormData({ ...formData, sex: 'female' })}>
-                            <Text style={[RegistrationStyles.radioText, formData.sex === 'female' && RegistrationStyles.radioChecked]}>Жінка</Text>
+                        <TouchableOpacity onPress={() => setRegistrationData({ ...registrationData, sex: 'female' })}>
+                            <Text style={[RegistrationStyles.radioText, registrationData.sex === 'female' && RegistrationStyles.radioChecked]}>Жінка</Text>
                         </TouchableOpacity>
                     </View>
 
+                    <TouchableOpacity onPress={selectImage} style={RegistrationStyles.imageInput}>
+                        <Text style={RegistrationStyles.imageInputLabel}>Ваше фото*</Text>
+                        {imageUri ? (
+                            <Image source={{ uri: imageUri }} style={{ width: 100, height: 100 }} />
+                        ) : (
+                            <Text style={{ color: 'gray' }}>Tap to select image</Text>
+                        )}
+                    </TouchableOpacity>
 
                     <TextInput
                         placeholder="Email*"
-                        value={formData.email}
-                        onChangeText={text => setFormData({ ...formData, email: text })}
+                        value={registrationData.email}
+                        onChangeText={text => setRegistrationData({ ...registrationData, email: text })}
                         style={RegistrationStyles.input}
                     />
 
                     <TextInput
                         placeholder="Номер телефону(+380)*"
-                        value={formData.phoneNumber}
-                        onChangeText={text => setFormData({ ...formData, phoneNumber: text })}
+                        value={registrationData.phoneNumber}
+                        onChangeText={text => setRegistrationData({ ...registrationData, phoneNumber: text })}
                         style={RegistrationStyles.input}
                     />
 
                     <TextInput
                         placeholder="Логін*"
-                        value={formData.username}
-                        onChangeText={text => setFormData({ ...formData, username: text })}
+                        value={registrationData.username}
+                        onChangeText={text => setRegistrationData({ ...registrationData, username: text })}
                         style={RegistrationStyles.input}
                     />
 
                     <TextInput
                         placeholder="Пароль*"
-                        value={formData.password}
-                        onChangeText={text => setFormData({ ...formData, password: text })}
+                        value={registrationData.password}
+                        onChangeText={text => setRegistrationData({ ...registrationData, password: text })}
                         style={RegistrationStyles.input}
                         secureTextEntry
                     />
 
                     <TextInput
                         placeholder="Підтвердження*"
-                        value={formData.confirmPassword}
-                        onChangeText={text => setFormData({ ...formData, confirmPassword: text })}
+                        value={registrationData.confirmPassword}
+                        onChangeText={text => setRegistrationData({ ...registrationData, confirmPassword: text })}
                         style={RegistrationStyles.input}
                         secureTextEntry
                     />

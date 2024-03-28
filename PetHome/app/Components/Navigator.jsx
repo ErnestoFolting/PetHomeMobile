@@ -1,5 +1,5 @@
-import { View, Button, TouchableOpacity } from "react-native"
-import React from "react"
+import { View, Button, TouchableOpacity, Text } from "react-native"
+import React, { useEffect } from "react"
 import useAuth from "../Hooks/useAuth";
 import { FontAwesome5, Ionicons, AntDesign } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -16,20 +16,28 @@ import Registration from "../Pages/Registration/Registration";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-//temp
 const Сheck = observer(() => {
-    const auth = useAuth()
     return (<View><Button title="check" onPress={() => { console.log("check") }} color={Colors.main} ></Button></View>)
 })
 
-const onSubmitRegistration = (formData) => {
-    // Logic to handle form submission
-    console.log('Form data submitted:', formData);
-};
-
 export default observer(function Navigator() {
     const auth = useAuth();
+
+    useEffect(() => {
+        async function checkAuth() {
+            await auth.checkAuth()
+            auth.setLoading(false)
+        }
+        checkAuth()
+    }, []);
+
     console.log("Auth " + auth.isAuth);
+    console.log("User id " + auth.userId);
+
+    if (auth.isLoading) {
+        return <View><Text>Завантаження</Text></View>
+    }
+
     return (
         auth.isAuth ? (
             <NavigationContainer >
@@ -61,7 +69,7 @@ export default observer(function Navigator() {
             <NavigationContainer>
                 <Stack.Navigator>
                     <Stack.Screen name="Логін" component={Login} />
-                    <Stack.Screen name="Реєстрація" component={Registration} initialParams={{ onSubmit: onSubmitRegistration }} />
+                    <Stack.Screen name="Реєстрація" component={Registration} />
                 </Stack.Navigator>
             </NavigationContainer>
         )

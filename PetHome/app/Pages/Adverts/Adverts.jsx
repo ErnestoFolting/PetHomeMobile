@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import AdvertService from "../../HTTP/API/AdvertService";
 import { FlatList, View, Image, Text, Button } from "react-native";
 import useFetching from "../../Hooks/useFetching";
-import useAuth from "../../Hooks/useAuth";
 import Colors from "../../Constants/Colors";
 
 const Adverts = () => {

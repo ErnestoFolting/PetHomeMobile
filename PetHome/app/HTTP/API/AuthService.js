@@ -14,4 +14,12 @@ export default class AuthService {
         const response = await $api.post("/api/auth/logout")
         return response.data
     }
+
+    static async checkAuth() {
+        const response = await $api("/api/auth/refresh-token", {
+            method: "post",
+            withCredentials: true
+        })
+        return response.data
+    }
 }

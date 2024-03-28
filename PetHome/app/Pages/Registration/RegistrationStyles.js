@@ -47,4 +47,13 @@ export const RegistrationStyles = {
         fontWeight: 'bold',
         color: Colors.light,
     },
+    imageInput: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
 };

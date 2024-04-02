@@ -1,12 +1,12 @@
 import axios from "axios";
-const url = process.env.EXPO_PUBLIC_API_URL; // https://localhost:7124, empty if docker compose
+import API_URL from "../Constants/uri"; // https://localhost:7124, empty if docker compose
 
 const accessToken =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImEzMjgxNWJhLTkyYWQtNDg2Ni1iNzIzLTA2MmRhZjYyZDEwYyIsImp0aSI6ImFkYzg5ZGRkLTUwNTItNDU4Yy1hNmY5LTAzMGI5OTkxNTIyNSIsImV4cCI6MTcxMjA3MDM0NiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzEyNCIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjcxMjQifQ.4s9micvf1nINq5Fmq2R3UcOC-MXYAwQQ_mdk4aaEmek";
 
 const $api = axios.create({
   withCredentials: true,
-  baseURL: url
+  baseURL: API_URL
 });
 
 $api.interceptors.response.use(
@@ -22,7 +22,7 @@ $api.interceptors.response.use(
     ) {
       originalRequest._isRetry = true;
       try {
-        const response = await axios(url + "/api/auth/refresh-token", {
+        const response = await axios(API_URL + "/api/auth/refresh-token", {
           method: "post",
           withCredentials: true
         });

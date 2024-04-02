@@ -3,6 +3,7 @@ import AdvertService from "../../HTTP/API/AdvertService";
 import { FlatList, View, Image, Text, Button } from "react-native";
 import useFetching from "../../Hooks/useFetching";
 import Colors from "../../Constants/Colors";
+import API_URL from "../../Constants/uri";
 
 const Adverts = () => {
   const [adverts, setAdverts] = useState([]);
@@ -44,7 +45,7 @@ const Adverts = () => {
                 <Image
                   source={{
                     uri:
-                      process.env.EXPO_PUBLIC_API_URL +
+                      API_URL +
                       item.photoFilePath
                   }}
                   style={{ width: 200, height: 200 }}

@@ -1,7 +1,7 @@
 import { View, Button, TouchableOpacity, Text } from "react-native"
 import React, { useEffect } from "react"
 import useAuth from "../Hooks/useAuth";
-import { FontAwesome5, Ionicons, AntDesign } from "@expo/vector-icons";
+import { FontAwesome5, Ionicons, AntDesign, Entypo } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -57,9 +57,14 @@ export default observer(function Navigator() {
                     <Tab.Screen name="Я" component={Me}
                         options={{
                             tabBarIcon: () => <Ionicons name="person-outline" size={24} color={Colors.main} />,
-                            headerRight: () => (
+                            headerLeft: () => (
                                 <TouchableOpacity onPress={auth.logout}>
-                                    <Ionicons name="exit-outline" size={24} color={Colors.main} style={{ marginRight: 20 }} />
+                                    <Ionicons name="exit-outline" size={24} color={Colors.main} style={{ marginLeft: 20 }} />
+                                </TouchableOpacity>
+                            ),
+                            headerRight: () => (
+                                <TouchableOpacity onPress={() => console.log('edit')}>
+                                    <Entypo name="edit" size={20} color={Colors.main} style={{ marginRight: 20 }} />
                                 </TouchableOpacity>
                             ),
                         }} />

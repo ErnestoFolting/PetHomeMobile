@@ -40,12 +40,6 @@ const MeStyles = StyleSheet.create({
         marginRight: 5,
     },
     value: {},
-    calendar: {
-        marginTop: 20,
-    },
-    buttons: {
-        backgroundColor: Colors.light
-    },
     leftSide: {
         flex: 1,
         justifyContent: 'center'

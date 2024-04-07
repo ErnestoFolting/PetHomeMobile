@@ -31,9 +31,6 @@ export default observer(function Navigator() {
         checkAuth()
     }, []);
 
-    console.log("Auth " + auth.isAuth);
-    console.log("User id " + auth.userId);
-
     if (auth.isLoading) {
         return <View><Text>Завантаження</Text></View>
     }

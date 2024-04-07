@@ -1,80 +1,60 @@
-import { View, Text, ScrollView } from "react-native"
+import { View, Text, ScrollView, Button } from "react-native"
 import React, { useEffect, useState } from "react"
 import UserDataService from "../../HTTP/API/UserDataService"
-import { Image, Button } from 'react-native'
+import { Image } from 'react-native'
 import useFetching from "../../Hooks/useFetching"
 import MeStyles from "./MeStyles"
-import { Calendar, LocaleConfig } from 'react-native-calendars';
 import API_URL from "../../Constants/uri"
-import Colors from "../../Constants/Colors"
-
-LocaleConfig.locales['uk'] = {
-    monthNames: [
-        'Січень',
-        'Лютий',
-        'Березень',
-        'Квітень',
-        'Травень',
-        'Червень',
-        'Липень',
-        'Серпень',
-        'Вересень',
-        'Жовтень',
-        'Листопад',
-        'Грудень'
-    ],
-    monthNamesShort: [
-        'Січ.',
-        'Лют.',
-        'Бер.',
-        'Квіт.',
-        'Трав.',
-        'Черв.',
-        'Лип.',
-        'Серп.',
-        'Вер.',
-        'Жовт.',
-        'Лист.',
-        'Груд.'
-    ],
-    dayNames: ['Неділя', 'Понеділок', 'Вівторок', 'Середа', 'Четвер', 'П\'ятниця', 'Субота'],
-    dayNamesShort: ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-    today: 'Сьогодні'
-}
-
-LocaleConfig.defaultLocale = 'uk';
+import MyCalendar from "../../Components/Calendar/MyCalendar"
+import TimeExceptionService from "../../HTTP/API/TimeExceptionService"
+import Loader from "../../Components/Loader/Loader"
 
 export default function Me() {
     const [profile, setProfile] = useState({})
-    const [dates, setDates] = useState({})
+    const [needUpdate, setNeedUpdate] = useState(false)
+    const [datesToUpdate, setDatesToUpdate] = useState({ datesToAdd: [], datesToDelete: [] })
+
     const [fetchUserData, loading, error] = useFetching(async () => {
         const userResponse = await UserDataService.getUserProfile()
         setProfile(userResponse)
+    })
+
+    const [updateDates, loading2, error2] = useFetching(async () => {
+        if (datesToUpdate.datesToAdd.length) {
+            await TimeExceptionService.addUserTimeExceptions(datesToUpdate.datesToAdd)
+        }
+        if (datesToUpdate.datesToDelete.length) {
+            await TimeExceptionService.deleteUserTimeExceptions(datesToUpdate.datesToDelete)
+        }
 
     })
-    useEffect(() => {
 
+    useEffect(() => {
         async function fetchData() {
             try {
                 await fetchUserData()
-                const markedDates = {};
-
-                profile.timeExceptions.forEach((exception) => {
-                    markedDates[exception.date.split('T')[0]] = { marked: true };
-                });
-                setDates(markedDates)
             } catch (e) {
                 console.log(e);
             }
         }
-
         fetchData()
-    }, [])
-    console.log(profile);
+    }, [needUpdate])
 
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                await updateDates()
+                setNeedUpdate(!needUpdate)
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        if (datesToUpdate.datesToAdd.length || datesToUpdate.datesToDelete.length) {
+            fetchData()
+        }
+    }, [datesToUpdate])
 
-
-    if (loading) return <View><Text>Завантаження...</Text></View>
+    if (loading || loading2) return <Loader />
 
     return (
         <ScrollView style={MeStyles.container}>
@@ -112,19 +92,9 @@ export default function Me() {
 
             </View>
             <View style={MeStyles.calendarContainer}>
-                <View style={MeStyles.calendarText}><Text style={MeStyles.label}>Графік зайнятості</Text></View>
-                <Calendar
-                    markedDates={dates}
-                    style={MeStyles.calendar}
-                    monthFormat={'MMM yyyy'}
-                    dayNamesShort={['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']}
-                    monthNames={['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень']}
-                    onDayPress={(day) => console.log('selected day', day)}
-                />
-                <View style={MeStyles.buttons}><Button title='Змінити дати' color={Colors.white}></Button></View>
+                <View style={MeStyles.calendarText}><Text style={MeStyles.label}>Графік  зайнятості</Text></View>
+                <MyCalendar timeExceptions={profile.timeExceptions} setDatesToUpdate={setDatesToUpdate}></MyCalendar>
             </View>
-
         </ScrollView>
     );
 }
-

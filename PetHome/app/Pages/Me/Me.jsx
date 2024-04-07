@@ -6,27 +6,14 @@ import useFetching from "../../Hooks/useFetching"
 import MeStyles from "./MeStyles"
 import API_URL from "../../Constants/uri"
 import MyCalendar from "../../Components/Calendar/MyCalendar"
-import TimeExceptionService from "../../HTTP/API/TimeExceptionService"
 import Loader from "../../Components/Loader/Loader"
 
 export default function Me() {
     const [profile, setProfile] = useState({})
-    const [needUpdate, setNeedUpdate] = useState(false)
-    const [datesToUpdate, setDatesToUpdate] = useState({ datesToAdd: [], datesToDelete: [] })
-
     const [fetchUserData, loading, error] = useFetching(async () => {
         const userResponse = await UserDataService.getUserProfile()
         setProfile(userResponse)
-    })
-
-    const [updateDates, loading2, error2] = useFetching(async () => {
-        if (datesToUpdate.datesToAdd.length) {
-            await TimeExceptionService.addUserTimeExceptions(datesToUpdate.datesToAdd)
-        }
-        if (datesToUpdate.datesToDelete.length) {
-            await TimeExceptionService.deleteUserTimeExceptions(datesToUpdate.datesToDelete)
-        }
-
+        console.log(userResponse);
     })
 
     useEffect(() => {
@@ -38,23 +25,10 @@ export default function Me() {
             }
         }
         fetchData()
-    }, [needUpdate])
+    }, [])
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                await updateDates()
-                setNeedUpdate(!needUpdate)
-            } catch (e) {
-                console.log(e);
-            }
-        }
-        if (datesToUpdate.datesToAdd.length || datesToUpdate.datesToDelete.length) {
-            fetchData()
-        }
-    }, [datesToUpdate])
 
-    if (loading || loading2) return <Loader />
+    if (loading) return <Loader />
 
     return (
         <ScrollView style={MeStyles.container}>
@@ -93,7 +67,7 @@ export default function Me() {
             </View>
             <View style={MeStyles.calendarContainer}>
                 <View style={MeStyles.calendarText}><Text style={MeStyles.label}>Графік  зайнятості</Text></View>
-                <MyCalendar timeExceptions={profile.timeExceptions} setDatesToUpdate={setDatesToUpdate}></MyCalendar>
+                <MyCalendar></MyCalendar>
             </View>
         </ScrollView>
     );

@@ -5,17 +5,63 @@ import localeObject from './localeObject';
 import MyCalendarStyles from './MyCalendarStyles';
 import Colors from '../../Constants/Colors';
 import { processDates } from './CalendarHelper';
+import useFetching from '../../Hooks/useFetching';
+import TimeExceptionService from '../../HTTP/API/TimeExceptionService';
+import Loader from '../Loader/Loader';
 
 LocaleConfig.locales['uk'] = localeObject
 
 LocaleConfig.defaultLocale = 'uk';
 
-export default function MyCalendar({ timeExceptions, setDatesToUpdate }) {
+export default function MyCalendar() {
 
     const [datesChanging, setDatesChanging] = useState(false)
-
+    const [needUpdate, setNeedUpdate] = useState(false)
+    const [timeExceptions, setTimeExceptions] = useState([])
+    const [datesToUpdate, setDatesToUpdate] = useState({ datesToAdd: [], datesToDelete: [] })
     const [dates, setDates] = useState({})
     const [prevDates, setPrevDates] = useState({})
+
+    const [updateDates, loading, error] = useFetching(async () => {
+        if (datesToUpdate.datesToAdd.length) {
+            await TimeExceptionService.addUserTimeExceptions(datesToUpdate.datesToAdd)
+        }
+        if (datesToUpdate.datesToDelete.length) {
+            await TimeExceptionService.deleteUserTimeExceptions(datesToUpdate.datesToDelete)
+        }
+
+    })
+
+    const [fetchDates, loading2, error2] = useFetching(async () => {
+        const response = await TimeExceptionService.getUserTimeExceptions()
+        setTimeExceptions(response)
+    })
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                await updateDates()
+                setNeedUpdate(!needUpdate)
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        if (datesToUpdate.datesToAdd.length || datesToUpdate.datesToDelete.length) {
+            fetchData()
+        }
+    }, [datesToUpdate])
+
+    useEffect(() => {
+
+        async function fetch() {
+            try {
+                await fetchDates()
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        fetch()
+    }, [])
 
     const selectHandler = (date) => {
         if (datesChanging) {
@@ -53,6 +99,8 @@ export default function MyCalendar({ timeExceptions, setDatesToUpdate }) {
 
     }, [timeExceptions])
 
+
+    if (loading || loading2) return <Loader />
     return (
         <View>
             <Calendar

@@ -11,4 +11,8 @@ export default class TimeExceptionService {
         })
         return response.data
     }
+    static async getUserTimeExceptions() {
+        const response = await $api.get('/api/UserData/mytimeexceptions/')
+        return response.data
+    }
 }

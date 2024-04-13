@@ -74,6 +74,11 @@ const MeStyles = StyleSheet.create({
         padding: 10,
         borderRadius: 5,
         marginBottom: 5
+    },
+    modalBackground: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
     }
 });
 

@@ -3,10 +3,10 @@ import * as yup from 'yup';
 const phoneRegExp = /^(\+38\d{10}|\d{10})$/
 
 export const validationSchema = yup.object().shape({
-    surname: yup.string().required().min(5),
-    name: yup.string().required().min(5, 'Закоротке'),
-    email: yup.string().email().required(),
-    phoneNumber: yup.string().matches(phoneRegExp, 'Phone number is not valid').min(10).max(13),
+    surname: yup.string().required().min(2, 'Закоротке прізвище'),
+    name: yup.string().required().min(2, "Закоротке ім'я"),
+    email: yup.string().email('Незадовільний формат email').required('Пустий email'),
+    phoneNumber: yup.string().matches(phoneRegExp, 'Незадовільний формат номеру телефону').min(10, 'Закороткий номер телефону').max(13, 'Задовгий номер телефону'),
 });
 
 const validateProfileRedo = async (object) => {

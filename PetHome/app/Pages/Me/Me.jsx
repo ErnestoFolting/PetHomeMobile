@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert } from "react-native"
+import { View, Text, ScrollView, TouchableOpacity, TextInput } from "react-native"
 import React, { useEffect, useState } from "react"
 import UserDataService from "../../HTTP/API/UserDataService"
 import { Image } from 'react-native'
@@ -10,8 +10,9 @@ import Loader from "../../Components/Loader/Loader"
 import useAuth from "../../Hooks/useAuth"
 import { observer } from "mobx-react-lite"
 import shallowEqual from "./helper"
-import validateProfileRedo from "./RegistrationValidation"
-import { validateField } from "./RegistrationValidation"
+import validateProfileRedo from "./ProfileRedoValidation"
+import { validateField } from "./ProfileRedoValidation"
+import MyModal from "../../Components/MyModal/MyModal"
 
 export default observer(function Me() {
     const auth = useAuth()
@@ -21,7 +22,7 @@ export default observer(function Me() {
     const [showData, setShowData] = useState(auth.isEditing ? editedProfile : profile)
     const [inputStyles, setStyles] = useState(auth.isEditing ? MeStyles.valueRedo : MeStyles.value);
     const [validationErrors, setValidationErrors] = useState({});
-    const [showErrorButton, setShowErrorButton] = useState(false)
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     const [fetchUserData, loading, error] = useFetching(async () => {
         const userResponse = await UserDataService.getUserProfile()
@@ -57,15 +58,14 @@ export default observer(function Me() {
     useEffect(() => { //redo
         setStyles(auth.isEditing ? MeStyles.valueRedo : MeStyles.value);
         setShowData(auth.isEditing ? editedProfile : profile)
+
         if ((!auth.isEditing) && !shallowEqual(editedProfile, profile) && Object.keys(profile).length != 0) {
             validateProfileRedo(editedProfile).then(async (result) => {
                 if (result.isValid) {
                     updateUserData()
-                    setShowErrorButton(false)
                 } else {
                     console.log("Object is not valid. Errors:", result.errors);
                     auth.setIsEditing(true)
-                    setShowErrorButton(true)
                 }
             });
         }
@@ -82,14 +82,18 @@ export default observer(function Me() {
     };
 
     const showErrors = () => {
-        console.log(validationErrors);
+        console.log('here');
+        setIsModalVisible(true);
     }
 
     if (loading || loading2) return <Loader />
 
+
     return (
         <ScrollView style={MeStyles.container}>
-
+            <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={Object.entries(validationErrors).map(([field, errorMessage], index) => (
+                <Text key={index}>{errorMessage}</Text>
+            ))}></MyModal>
             <View style={MeStyles.header}>
 
                 <Image source={{
@@ -118,7 +122,7 @@ export default observer(function Me() {
                     />
                 </View>
             </View>
-            {showErrorButton && <TouchableOpacity style={MeStyles.showErrorsButton} onPress={showErrors}><Text style={{ textAlign: 'center' }} >Показати помилки</Text></TouchableOpacity>}
+            {Object.values(validationErrors).some((value) => value !== undefined) && <TouchableOpacity style={MeStyles.showErrorsButton} onPress={showErrors}><Text style={{ textAlign: 'center' }} >Показати помилки</Text></TouchableOpacity>}
             <View style={MeStyles.infoContainer}>
 
                 <View style={MeStyles.leftSide}>

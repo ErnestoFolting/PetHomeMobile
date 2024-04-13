@@ -17,7 +17,7 @@ export default class UserDataService {
         const response = await $api.put('/api/userdata', redoData, {
             headers: { "Content-Type": "multipart/form-data" }
         })
-        return response.data
+        return response
     }
     static async redoUserAdvert(redoData, id) {
         const response = await $api.put('/api/userdata/myadverts/' + id, redoData, {

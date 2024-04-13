@@ -19,11 +19,10 @@ const MeStyles = StyleSheet.create({
         marginBottom: 10,
     },
     name: {
-        fontSize: 20,
-        fontWeight: 'bold',
+        flex: 1,
+        flexDirection: 'row'
     },
     infoContainer: {
-
         flexDirection: 'row',
         justifyContent: 'center',
         borderWidth: 1,
@@ -39,7 +38,15 @@ const MeStyles = StyleSheet.create({
         fontWeight: 'bold',
         marginRight: 5,
     },
-    value: {},
+    value: {
+        marginLeft: 3,
+    },
+    valueRedo: {
+        borderBottomWidth: 2,
+        borderRadius: 3,
+        borderColor: Colors.light,
+        marginLeft: 3,
+    },
     leftSide: {
         flex: 1,
         justifyContent: 'center'

@@ -1,7 +1,7 @@
 import { View, Button, TouchableOpacity, Text } from "react-native"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import useAuth from "../Hooks/useAuth";
-import { FontAwesome5, Ionicons, AntDesign, Entypo } from "@expo/vector-icons";
+import { FontAwesome5, Ionicons, AntDesign, Entypo, Feather } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -12,6 +12,7 @@ import Colors from "../Constants/Colors";
 import Me from "../Pages/Me/Me";
 import Login from "../Pages/Login/Login";
 import Registration from "../Pages/Registration/Registration";
+import Loader from "./Loader/Loader";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -21,6 +22,7 @@ const Сheck = observer(() => {
 })
 
 export default observer(function Navigator() {
+    const [isEditing, setIsEditing] = useState(false)
     const auth = useAuth();
 
     useEffect(() => {
@@ -31,8 +33,15 @@ export default observer(function Navigator() {
         checkAuth()
     }, []);
 
+    useEffect(() => {
+        if (auth) {
+            setIsEditing(auth.isEditing)
+        }
+
+    }, [auth.isEditing]);
+
     if (auth.isLoading) {
-        return <View><Text>Завантаження</Text></View>
+        return <Loader />
     }
 
     return (
@@ -59,11 +68,17 @@ export default observer(function Navigator() {
                                     <Ionicons name="exit-outline" size={24} color={Colors.main} style={{ marginLeft: 20 }} />
                                 </TouchableOpacity>
                             ),
-                            headerRight: () => (
-                                <TouchableOpacity onPress={() => console.log('edit')}>
-                                    <Entypo name="edit" size={20} color={Colors.main} style={{ marginRight: 20 }} />
-                                </TouchableOpacity>
-                            ),
+                            headerRight: () => isEditing
+                                ? (
+                                    <TouchableOpacity onPress={() => auth.setIsEditing(!auth.isEditing)}>
+                                        <Feather name="check" size={24} color={Colors.main} style={{ marginRight: 20 }} />
+                                    </TouchableOpacity>
+                                )
+                                : (
+                                    <TouchableOpacity onPress={() => auth.setIsEditing(!auth.isEditing)}>
+                                        <Entypo name="edit" size={20} color={Colors.main} style={{ marginRight: 20 }} />
+                                    </TouchableOpacity>
+                                ),
                         }} />
                 </Tab.Navigator>
             </NavigationContainer>

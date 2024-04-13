@@ -7,7 +7,8 @@ const MyCalendarStyles = StyleSheet.create({
     },
     buttonSave: {
         backgroundColor: Colors.green
-    }, calendar: {
+    },
+    calendar: {
         marginTop: 20,
     }
 });

@@ -5,15 +5,20 @@ export default class Store {
     isAuth = false;
     isLoading = true;
     userId = "";
+    isEditing = false;
     constructor() {
         makeAutoObservable(this)
         this.login = this.login.bind(this)
         this.registration = this.registration.bind(this)
         this.logout = this.logout.bind(this)
         this.checkAuth = this.checkAuth.bind(this)
+        this.setIsEditing = this.setIsEditing.bind(this)
     }
     setLoading(boolean) {
         this.isLoading = boolean;
+    }
+    setIsEditing(boolean) {
+        this.isEditing = boolean;
     }
     setAuth(boolean) {
         this.isAuth = boolean;

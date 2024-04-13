@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Button, TextInput, Alert } from "react-native"
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert } from "react-native"
 import React, { useEffect, useState } from "react"
 import UserDataService from "../../HTTP/API/UserDataService"
 import { Image } from 'react-native'
@@ -10,6 +10,8 @@ import Loader from "../../Components/Loader/Loader"
 import useAuth from "../../Hooks/useAuth"
 import { observer } from "mobx-react-lite"
 import shallowEqual from "./helper"
+import validateProfileRedo from "./RegistrationValidation"
+import { validateField } from "./RegistrationValidation"
 
 export default observer(function Me() {
     const auth = useAuth()
@@ -18,6 +20,8 @@ export default observer(function Me() {
     const [editedProfile, setEditedProfile] = useState({})
     const [showData, setShowData] = useState(auth.isEditing ? editedProfile : profile)
     const [inputStyles, setStyles] = useState(auth.isEditing ? MeStyles.valueRedo : MeStyles.value);
+    const [validationErrors, setValidationErrors] = useState({});
+    const [showErrorButton, setShowErrorButton] = useState(false)
 
     const [fetchUserData, loading, error] = useFetching(async () => {
         const userResponse = await UserDataService.getUserProfile()
@@ -29,7 +33,6 @@ export default observer(function Me() {
     const [updateUserData, loading2, error2] = useFetching(async () => {
         editedProfile.locationLat = String(editedProfile?.locationLat)?.replace('.', ',')
         editedProfile.locationLng = String(editedProfile?.locationLat)?.replace('.', ',')
-        console.log(editedProfile);
         try {
             await UserDataService.redoUserProfile(editedProfile)
             setShowData(editedProfile)
@@ -40,7 +43,7 @@ export default observer(function Me() {
         }
     })
 
-    useEffect(() => {
+    useEffect(() => { //profile fetch
         async function fetchData() {
             try {
                 await fetchUserData()
@@ -51,18 +54,36 @@ export default observer(function Me() {
         fetchData()
     }, [])
 
-    useEffect(() => {
+    useEffect(() => { //redo
         setStyles(auth.isEditing ? MeStyles.valueRedo : MeStyles.value);
         setShowData(auth.isEditing ? editedProfile : profile)
         if ((!auth.isEditing) && !shallowEqual(editedProfile, profile) && Object.keys(profile).length != 0) {
-            updateUserData()
+            validateProfileRedo(editedProfile).then(async (result) => {
+                if (result.isValid) {
+                    updateUserData()
+                    setShowErrorButton(false)
+                } else {
+                    console.log("Object is not valid. Errors:", result.errors);
+                    auth.setIsEditing(true)
+                    setShowErrorButton(true)
+                }
+            });
         }
     }, [auth.isEditing]);
 
     const handleChange = (field, value) => {
         setEditedProfile({ ...editedProfile, [field]: value });
         setShowData({ ...showData, [field]: value });
+        setValidationErrors({ ...validationErrors, [field]: undefined });
     };
+
+    const handleBlur = (field, value) => {
+        validateField(field, value, setValidationErrors, validationErrors);
+    };
+
+    const showErrors = () => {
+        console.log(validationErrors);
+    }
 
     if (loading || loading2) return <Loader />
 
@@ -70,25 +91,34 @@ export default observer(function Me() {
         <ScrollView style={MeStyles.container}>
 
             <View style={MeStyles.header}>
+
                 <Image source={{
                     uri:
                         API_URL +
                         showData.photoFilePath
                 }} style={MeStyles.photo} />
+
                 <View style={MeStyles.name}>
                     <TextInput
-                        style={[inputStyles, { fontWeight: 'bold', fontSize: 20 }]}
+                        style={[inputStyles, { fontWeight: 'bold', fontSize: 20 }, validationErrors.name && MeStyles.error]}
                         value={showData.name}
                         onChangeText={(text) => handleChange('name', text)}
+                        onBlur={(e) => handleBlur('name', e.nativeEvent.text)}
+                        autoComplete="name"
+                        editable={auth.isEditing}
                     />
+
                     <TextInput
-                        style={[inputStyles, { fontWeight: 'bold', fontSize: 20 }]}
+                        style={[inputStyles, { fontWeight: 'bold', fontSize: 20 }, validationErrors.surname && MeStyles.error]}
                         value={showData.surname}
                         onChangeText={(text) => handleChange('surname', text)}
+                        onBlur={(e) => handleBlur('surname', e.nativeEvent.text)}
+                        autoComplete="family-name"
+                        editable={auth.isEditing}
                     />
                 </View>
             </View>
-
+            {showErrorButton && <TouchableOpacity style={MeStyles.showErrorsButton} onPress={showErrors}><Text style={{ textAlign: 'center' }} >Показати помилки</Text></TouchableOpacity>}
             <View style={MeStyles.infoContainer}>
 
                 <View style={MeStyles.leftSide}>
@@ -96,9 +126,12 @@ export default observer(function Me() {
                     <View style={MeStyles.infoRow}>
                         <Text style={MeStyles.label}>✉️</Text>
                         <TextInput
-                            style={inputStyles}
+                            style={[inputStyles, validationErrors.email && MeStyles.error]}
                             value={showData.email}
                             onChangeText={(text) => handleChange('email', text)}
+                            onBlur={(e) => handleBlur('email', e.nativeEvent.text)}
+                            autoComplete="email"
+                            editable={auth.isEditing}
                         />
                     </View>
 
@@ -108,6 +141,7 @@ export default observer(function Me() {
                             style={inputStyles}
                             value={showData.location}
                             onChangeText={(text) => handleChange('location', text)}
+                            editable={auth.isEditing}
                         />
                     </View>
                 </View>
@@ -116,9 +150,12 @@ export default observer(function Me() {
                     <View style={MeStyles.infoRow}>
                         <Text style={MeStyles.label}>📞</Text>
                         <TextInput
-                            style={inputStyles}
+                            style={[inputStyles, validationErrors.phoneNumber && MeStyles.error]}
                             value={showData.phoneNumber}
                             onChangeText={(text) => handleChange('phoneNumber', text)}
+                            onBlur={(e) => handleBlur('phoneNumber', e.nativeEvent.text)}
+                            autoComplete="tel"
+                            editable={auth.isEditing}
                         />
                     </View>
                     <View style={MeStyles.infoRow}>

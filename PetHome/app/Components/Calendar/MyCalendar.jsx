@@ -69,7 +69,7 @@ export default function MyCalendar() {
             if (updatedData[date]) {
                 delete updatedData[date];
             } else {
-                updatedData[date] = { selected: true, selectedColor: 'red' };
+                updatedData[date] = { selected: true, selectedColor: Colors.red };
             }
             setDates(updatedData)
         }
@@ -92,7 +92,7 @@ export default function MyCalendar() {
         if (timeExceptions) {
             const markedDates = {};
             timeExceptions.forEach((exception) => {
-                markedDates[exception.date.split('T')[0]] = { selected: true, selectedColor: 'red' };
+                markedDates[exception.date.split('T')[0]] = { selected: true, selectedColor: Colors.red };
             });
             setDates(markedDates)
         }

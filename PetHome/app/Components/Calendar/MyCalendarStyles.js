@@ -3,13 +3,16 @@ import Colors from '../../Constants/Colors';
 
 const MyCalendarStyles = StyleSheet.create({
     buttons: {
-        backgroundColor: Colors.light
+        backgroundColor: Colors.light,
+        borderRadius: 5
     },
     buttonSave: {
-        backgroundColor: Colors.green
+        backgroundColor: Colors.green,
+        borderRadius: 5
     },
     calendar: {
         marginTop: 20,
+
     }
 });
 

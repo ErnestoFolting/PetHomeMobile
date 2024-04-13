@@ -62,6 +62,18 @@ const MeStyles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 20,
+    },
+    error: {
+        borderColor: 'red',
+    },
+    errorText: {
+
+    },
+    showErrorsButton: {
+        backgroundColor: Colors.red,
+        padding: 10,
+        borderRadius: 5,
+        marginBottom: 5
     }
 });
 

@@ -6,23 +6,29 @@ import Colors from '../../Constants/Colors'
 export default function MyModal({ isModalVisible, setIsModalVisible, content }) {
     return (
         <Modal
-            animationType="slide"
             transparent={true}
             visible={isModalVisible}
             onRequestClose={() => setIsModalVisible(!isModalVisible)}
         >
-            <View style={ModalStyles.modalBackground}>
+            <TouchableOpacity
+                style={ModalStyles.modalBackground}
+                onPress={() => setIsModalVisible(!isModalVisible)}
+            >
                 <View style={ModalStyles.blurView} />
                 <View style={ModalStyles.modalContainer}>
-                    <View style={ModalStyles.content}>
-                        {content}
-                    </View>
+                    <TouchableOpacity
+                        activeOpacity={1} // To disable the opacity change on press
+                    >
+                        <View style={ModalStyles.content}>
+                            {content}
+                        </View>
 
-                    <TouchableOpacity style={ModalStyles.closeButton} onPress={() => setIsModalVisible(!isModalVisible)}>
-                        <Text style={{ color: Colors.white }}>Закрити</Text>
+                        <TouchableOpacity style={ModalStyles.closeButton} onPress={() => setIsModalVisible(!isModalVisible)}>
+                            <Text style={{ color: Colors.white }}>Закрити</Text>
+                        </TouchableOpacity>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </TouchableOpacity>
         </Modal>
     )
 }

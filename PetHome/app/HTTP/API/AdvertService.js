@@ -1,7 +1,7 @@
 import $api from "../http";
 
 export default class AdvertService {
-  static async getAllAdverts (queryParams) {
+  static async getAllAdverts(queryParams) {
     const response = await $api.get("/api/adverts", {
       params: {
         PageNumber: queryParams?.currentPage,
@@ -12,5 +12,10 @@ export default class AdvertService {
       }
     })
     return response
+  }
+
+  static async getCertainAdvert(id) {
+    const response = await $api.get('/api/adverts/' + id)
+    return response.data
   }
 }

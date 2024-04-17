@@ -82,12 +82,10 @@ export default observer(function Me() {
     };
 
     const showErrors = () => {
-        console.log('here');
         setIsModalVisible(true);
     }
 
     if (loading || loading2) return <Loader />
-
 
     return (
         <ScrollView style={MeStyles.container}>

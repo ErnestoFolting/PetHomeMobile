@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import AdvertService from "../../HTTP/API/AdvertService";
-import { FlatList, View, Image, Text, Button } from "react-native";
+import { FlatList, View, Image, Text, Button, Dimensions } from "react-native";
 import useFetching from "../../Hooks/useFetching";
-import Colors from "../../Constants/Colors";
-import API_URL from "../../Constants/uri";
+import Loader from "../../Components/Loader/Loader";
+import AdvertItem from "../../Components/Adverts/AdvertItem/AdvertItem";
+import Filters from "../../Components/Adverts/Filters/Filters";
 
-const Adverts = () => {
+const Adverts = ({ navigation }) => {
   const [adverts, setAdverts] = useState([]);
-  const [check, setCheck] = useState(false);
   const [queryParams, setQueryParams] = useState({
-    advertsLimit: 6,
+    advertsLimit: 10,
     currentPage: 1,
     isDatesFit: false,
     costFrom: 1,
@@ -30,37 +30,35 @@ const Adverts = () => {
       }
     }
     fetchData();
-  }, [queryParams, check]);
+  }, [queryParams]);
+
+  const screenWidth = Dimensions.get('window').width;
+  const itemWidth = 190;
+  const itemMargin = 5;
+  const numColumns = Math.floor(screenWidth / (itemWidth + itemMargin * 2));
+  if (loader) return <Loader />
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
 
       {adverts.length > 0
         ? (
-          <FlatList
-            data={adverts}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <View style={{ marginBottom: 20 }}>
-                <Image
-                  source={{
-                    uri:
-                      API_URL +
-                      item.photoFilePath
-                  }}
-                  style={{ width: 200, height: 200 }}
-                />
-                <Text>Name: {item.name}</Text>
-                <Text>Description: {item.description}</Text>
-                <Text>Location: {item.location}</Text>
-                <Text>Cost: {item.cost}</Text>
-                <Button title="check" onPress={fetchAdverts} color={Colors.main}  ></Button>
-              </View>
-            )}
-          />
+          <View>
+            <Filters></Filters>
+            <FlatList
+              horizontal={false}
+              numColumns={numColumns}
+              data={adverts}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <AdvertItem item={item} navigation={navigation}></AdvertItem>
+              )}
+            />
+          </View>
+
         )
         : (
-          <Text>Завантаження...</Text>
+          <Text>Поки немає оголошень</Text>
         )}
     </View>
   );

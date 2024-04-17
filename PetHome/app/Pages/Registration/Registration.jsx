@@ -16,8 +16,8 @@ const Registration = () => {
         email: '',
         phoneNumber: '',
         username: '',
-        password: '',
-        confirmPassword: '',
+        password: 'Password123!',
+        confirmPassword: 'Password123!',
         location: 'Fastiv',
         locationLat: '50,5',
         locationLng: '52,5'
@@ -26,7 +26,6 @@ const Registration = () => {
     const [imageUri, SetImageUri] = useState('')
 
     const handleSubmit = async () => {
-        //route.params.onSubmit(formData);
 
         const formData = new FormData();
 
@@ -40,8 +39,8 @@ const Registration = () => {
 
         formData.append('userPhoto', {
             uri: imageUri,
-            name: 'photo.jpg', // Provide a default name for the photo file
-            type: `image/jpeg`, // Set the correct MIME type for the photo
+            name: `photo_${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`,
+            type: `image/jpeg`,
             data: photoData,
         });
 
@@ -70,6 +69,7 @@ const Registration = () => {
 
         if (!pickerResult.cancelled) {
             const uri = pickerResult.assets[0].uri;
+            console.log(uri);
             SetImageUri(uri)
         }
     };

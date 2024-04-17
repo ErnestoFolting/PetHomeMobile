@@ -12,7 +12,6 @@ const MyCalendarStyles = StyleSheet.create({
     },
     calendar: {
         marginTop: 20,
-
     }
 });
 

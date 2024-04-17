@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import useAuth from "../Hooks/useAuth";
 import { FontAwesome5, Ionicons, AntDesign, Entypo, Feather } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { observer } from "mobx-react-lite"
 import My from "../Pages/My/My";
@@ -13,9 +13,21 @@ import Me from "../Pages/Me/Me";
 import Login from "../Pages/Login/Login";
 import Registration from "../Pages/Registration/Registration";
 import Loader from "./Loader/Loader";
+import AdvertDetail from "../Pages/AdvertDetail/AdvertDetail";
+import UserProfile from "../Pages/UserProfile/UserProfile";
+import CreateAdvert from "../Pages/CreateAdvert/CreateAdvert";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+
+
+const MyTheme = {
+    ...DefaultTheme,
+    colors: {
+        ...DefaultTheme.colors,
+        background: 'white',
+    },
+};
 
 const Сheck = observer(() => {
     return (<View><Button title="check" onPress={() => { console.log("check") }} color={Colors.main} ></Button></View>)
@@ -44,15 +56,31 @@ export default observer(function Navigator() {
         return <Loader />
     }
 
+    const AdvertsStack = () => {
+        return (
+            <Stack.Navigator>
+                <Stack.Screen name="Перелік оголошень" component={Adverts} options={{
+                    headerShown: false
+                }} />
+                <Stack.Screen name="Деталі" component={AdvertDetail} options={{
+                    headerShown: false
+                }} />
+                <Stack.Screen name="Профіль" component={UserProfile} options={{
+                    headerShown: false
+                }} />
+            </Stack.Navigator>
+        );
+    };
+
     return (
         auth.isAuth ? (
-            <NavigationContainer >
+            <NavigationContainer theme={MyTheme} >
                 <Tab.Navigator>
-                    <Tab.Screen name="Оголошення" component={Adverts}
+                    <Tab.Screen name="Оголошення" component={AdvertsStack}
                         options={{
                             tabBarIcon: () => <FontAwesome5 name="dog" color={Colors.main} size={24} />
                         }} />
-                    <Tab.Screen name="Створити" component={Сheck}
+                    <Tab.Screen name="Створити" component={CreateAdvert}
                         options={{
                             tabBarIcon: () => <Ionicons name="create-outline" size={24} color={Colors.main} />
                         }} />

@@ -1,17 +1,12 @@
 import { View, Button } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Calendar, LocaleConfig } from 'react-native-calendars';
-import localeObject from './localeObject';
 import MyCalendarStyles from './MyCalendarStyles';
 import Colors from '../../Constants/Colors';
 import { processDates } from './CalendarHelper';
 import useFetching from '../../Hooks/useFetching';
 import TimeExceptionService from '../../HTTP/API/TimeExceptionService';
 import Loader from '../Loader/Loader';
-
-LocaleConfig.locales['uk'] = localeObject
-
-LocaleConfig.defaultLocale = 'uk';
+import UkrCalendar from './UkrCalendar';
 
 export default function MyCalendar() {
 
@@ -103,12 +98,9 @@ export default function MyCalendar() {
     if (loading || loading2) return <Loader />
     return (
         <View>
-            <Calendar
+            <UkrCalendar
                 markedDates={dates}
                 style={MyCalendarStyles.calendar}
-                monthFormat={'MMM yyyy'}
-                dayNamesShort={['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']}
-                monthNames={['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень']}
                 onDayPress={(day) => selectHandler(day.dateString)}
             />
             {datesChanging

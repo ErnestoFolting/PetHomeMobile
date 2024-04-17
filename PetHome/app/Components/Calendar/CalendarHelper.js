@@ -17,3 +17,16 @@ export const processDates = (prevDates, dates) => {
     }
     return { deleteDates, addDates };
 }
+
+export const getDatesBetween = (startDate, endDate) => {
+    const start = new Date(startDate.slice(0, 10));
+    const end = new Date(endDate.slice(0, 10));
+    const dates = [];
+
+    let currentDate = new Date(start);
+    while (currentDate <= end) {
+        dates.push(currentDate.toISOString().slice(0, 10));
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return dates;
+}

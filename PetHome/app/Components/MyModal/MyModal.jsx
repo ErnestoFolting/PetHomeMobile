@@ -3,7 +3,7 @@ import React from 'react'
 import ModalStyles from './ModalStyles'
 import Colors from '../../Constants/Colors'
 
-export default function MyModal({ isModalVisible, setIsModalVisible, content }) {
+export default function MyModal({ isModalVisible, setIsModalVisible, content, check }) {
     return (
         <Modal
             transparent={true}

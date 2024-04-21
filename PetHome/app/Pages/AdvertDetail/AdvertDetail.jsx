@@ -15,6 +15,7 @@ export default function AdvertDetail({ route, navigation }) {
     const { adId } = route.params;
     const [advert, setAdvert] = useState({})
     const [photoLoading, setPhotoLoading] = useState(true)
+    const [advertRequestErrors, setAdvertRequestErrors] = useState([])
     const [dates, setDates] = useState({})
     const [isModalVisible, setIsModalVisible] = useState(false)
 
@@ -47,9 +48,13 @@ export default function AdvertDetail({ route, navigation }) {
 
     if (loading) return <Loader />
 
+    const check = () => {
+        console.log(advertRequestErrors);
+    }
     return (
         <ScrollView contentContainerStyle={AdvertDeatilStyles.container}>
-            <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<Text>{error}</Text>}></MyModal>
+
+            <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<Text>{error}{advertRequestErrors}</Text>}></MyModal>
             {photoLoading && <Loader />}
             <Image
                 source={{ uri: API_URL + advert?.photoFilePath }}
@@ -73,7 +78,7 @@ export default function AdvertDetail({ route, navigation }) {
 
             </View>
 
-            <AdvertRequestBlock advertStatus={advert?.status} advertId={adId} />
+            <AdvertRequestBlock advertStatus={advert?.status} advertId={adId} setIsModalVisible={setIsModalVisible} setAdvertRequestErrors={setAdvertRequestErrors} />
 
             <TouchableOpacity style={AdvertDeatilStyles.ownerBlock} onPress={() => navigation.navigate('Профіль', { userID: advert?.owner.id })}>
                 <Text style={AdvertDeatilStyles.ownerTitle}>Власник</Text>
@@ -90,6 +95,6 @@ export default function AdvertDetail({ route, navigation }) {
                 </View>
 
             </TouchableOpacity>
-        </ScrollView >
+        </ScrollView>
     )
 }

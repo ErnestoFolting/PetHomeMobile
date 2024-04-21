@@ -4,13 +4,13 @@ import React from 'react'
 import AdvertItemStyles from './AdvertItemStyles'
 import Colors from '../../../Constants/Colors'
 
-export default function AdvertItem({ item, navigation }) {
+export default function AdvertItem({ item, navigation, disableShadow }) {
 
     const description = item.description.length > 50 ? item.description.slice(0, 50) + '...' : item.description.slice(0, 50)
 
     return (
         <TouchableOpacity onPress={() => navigation.navigate('Деталі', { adId: item.id })}>
-            <View style={AdvertItemStyles.container}>
+            <View style={[AdvertItemStyles.container, !disableShadow && AdvertItemStyles.shadow]}>
                 <View style={AdvertItemStyles.topBlock}><Image
                     source={{
                         uri:

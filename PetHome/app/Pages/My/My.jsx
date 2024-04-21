@@ -2,21 +2,18 @@ import React from "react"
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Colors from "../../Constants/Colors";
 import { FontAwesome5, Feather } from "@expo/vector-icons";
-import { View, Text } from "react-native";
-
-const Сheck = () => {
-    return (<View><Text>check</Text></View>)
-}
+import MyRequests from "./Requests/MyRequests";
+import MyAdverts from "./Adverts/MyAdverts";
 
 const My = () => {
 
     const Tab = createMaterialTopTabNavigator()
     return (
         <Tab.Navigator>
-            <Tab.Screen name="Оголошення" component={Сheck} options={{
+            <Tab.Screen name="Оголошення" component={MyAdverts} options={{
                 tabBarIcon: () => <FontAwesome5 name="list-ul" size={20} color={Colors.main} />
             }} />
-            <Tab.Screen name="Заявки" component={Сheck} options={{
+            <Tab.Screen name="Заявки" component={MyRequests} options={{
                 tabBarIcon: () => <Feather name="user-check" size={20} color={Colors.main} />
             }} />
         </Tab.Navigator>

@@ -6,7 +6,7 @@ import UserDataService from '../../../HTTP/API/UserDataService'
 import RequestService from '../../../HTTP/API/RequestService'
 import Loader from '../../Loader/Loader'
 
-export default function AdvertRequestBlock({ advertStatus, setIsModalVisible, advertId }) {
+export default function AdvertRequestBlock({ advertStatus, setIsModalVisible, advertId, setAdvertRequestErrors }) {
     const [userRequests, setUserRequests] = useState([])
     const [checkIfRequestSent, loading, error] = useFetching(async () => {
         setUserRequests(await UserDataService.getUserRequests())
@@ -20,20 +20,27 @@ export default function AdvertRequestBlock({ advertStatus, setIsModalVisible, ad
             try {
                 await checkIfRequestSent()
             } catch (e) {
+                setAdvertRequestErrors(error);
                 setIsModalVisible(true)
             }
         }
         fetchData()
     }, [loading2])
 
+    useEffect(() => {
+        if (error || error2) {
+            error2 && setAdvertRequestErrors(error2);
+            error && setAdvertRequestErrors(error);
+            setIsModalVisible(true)
+        }
+    }, [loading2, loading])
+
     const thisAdvertRequestStatus = userRequests?.find(el => el?.advertId === advertId)?.status;
 
     const applyRequestHandler = async () => {
         try {
             await applyRequest()
-        } catch (e) {
-            setIsModalVisible(true)
-        }
+        } catch (e) { console.log(e); }
     }
 
     if (loading || loading2) return <Loader />

@@ -5,8 +5,11 @@ import AdvertRequestBlockStyles from './AdvertRequestBlockStyles'
 import UserDataService from '../../../HTTP/API/UserDataService'
 import RequestService from '../../../HTTP/API/RequestService'
 import Loader from '../../Loader/Loader'
+import useAuth from '../../../Hooks/useAuth'
 
 export default function AdvertRequestBlock({ advertStatus, setIsModalVisible, advertId, setAdvertRequestErrors }) {
+    const auth = useAuth();
+
     const [userRequests, setUserRequests] = useState([])
     const [checkIfRequestSent, loading, error] = useFetching(async () => {
         setUserRequests(await UserDataService.getUserRequests())

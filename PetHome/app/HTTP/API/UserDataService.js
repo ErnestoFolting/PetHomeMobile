@@ -9,6 +9,10 @@ export default class UserDataService {
         const response = await $api.get('/api/userdata/myprofile')
         return response.data
     }
+    static async getUserCertainAdvert(id) {
+        const response = await $api.get('/api/userdata/myadverts/' + id)
+        return response.data
+    }
     static async deleteUserProfile() {
         const response = await $api.delete('/api/userdata')
         return response.data

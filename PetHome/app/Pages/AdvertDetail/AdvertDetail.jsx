@@ -10,8 +10,13 @@ import { getDatesBetween } from '../../Components/Calendar/CalendarHelper';
 import Colors from '../../Constants/Colors';
 import MyModal from '../../Components/MyModal/MyModal';
 import AdvertRequestBlock from '../../Components/Adverts/AdvertRequestBlock/AdvertRequestBlock';
+import useAuth from '../../Hooks/useAuth';
+import ProfileItem from '../../Components/Profile/ProfileItem';
+import PerformersSelectionBlock from '../../Components/Adverts/PerformersSelectionBlock/PerformersSelectionBlock';
 
 export default function AdvertDetail({ route, navigation }) {
+    const auth = useAuth()
+
     const { adId } = route.params;
     const [advert, setAdvert] = useState({})
     const [photoLoading, setPhotoLoading] = useState(true)
@@ -48,9 +53,6 @@ export default function AdvertDetail({ route, navigation }) {
 
     if (loading) return <Loader />
 
-    const check = () => {
-        console.log(advertRequestErrors);
-    }
     return (
         <ScrollView contentContainerStyle={AdvertDeatilStyles.container}>
 
@@ -78,23 +80,14 @@ export default function AdvertDetail({ route, navigation }) {
 
             </View>
 
-            <AdvertRequestBlock advertStatus={advert?.status} advertId={adId} setIsModalVisible={setIsModalVisible} setAdvertRequestErrors={setAdvertRequestErrors} />
+            {auth.userId !== advert?.ownerId && <AdvertRequestBlock advertStatus={advert?.status} advertId={adId} setIsModalVisible={setIsModalVisible} setAdvertRequestErrors={setAdvertRequestErrors} />}
 
-            <TouchableOpacity style={AdvertDeatilStyles.ownerBlock} onPress={() => navigation.navigate('Профіль', { userID: advert?.owner.id })}>
-                <Text style={AdvertDeatilStyles.ownerTitle}>Власник</Text>
-                <View style={AdvertDeatilStyles.ownerContent}>
-                    <View style={AdvertDeatilStyles.ownerInfo}>
-                        <Text style={AdvertDeatilStyles.ownerName}>{advert?.owner?.name}</Text>
-                        <Text style={AdvertDeatilStyles.ownerPhoneNumber}>{advert?.owner?.phoneNumber}</Text>
-                    </View>
+            {auth.userId == advert?.ownerId ?
+                <PerformersSelectionBlock navigation={navigation} advertId={adId} />
+                :
+                <ProfileItem navigation={navigation} title="Власник" profileData={advert?.owner} id={advert?.owner?.id} isBig />
+            }
 
-                    <Image
-                        source={{ uri: API_URL + advert?.owner?.photoFilePath }}
-                        alt="owner image"
-                        style={AdvertDeatilStyles.ownerImage} />
-                </View>
-
-            </TouchableOpacity>
         </ScrollView>
     )
 }

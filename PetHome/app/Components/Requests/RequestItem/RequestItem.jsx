@@ -7,18 +7,20 @@ import RequestService from '../../../HTTP/API/RequestService'
 import MyModal from '../../MyModal/MyModal'
 import Loader from '../../Loader/Loader'
 
-export default function RequestItem({ requestData, navigation }) {
+export default function RequestItem({ requestData, navigation, needUpdate, setNeedUpdate }) {
 
     const [modalVisible, setModalVisible] = useState(false)
     const [sendConfirmRequest, loader, error] = useFetching(async () => {
         await RequestService.confirmRequest(requestData?.id)
     })
     const [sendRejectRequest, loader2, error2] = useFetching(async () => {
+        console.log('here');
         await RequestService.rejectRequest(requestData?.id)
     })
     async function accept() {
         try {
             await sendConfirmRequest()
+            setNeedUpdate(!needUpdate)
         } catch (e) {
             setModalVisible(true)
         }
@@ -27,6 +29,7 @@ export default function RequestItem({ requestData, navigation }) {
     async function reject() {
         try {
             await sendRejectRequest()
+            setNeedUpdate(!needUpdate)
         } catch (e) {
             setModalVisible(true)
         }

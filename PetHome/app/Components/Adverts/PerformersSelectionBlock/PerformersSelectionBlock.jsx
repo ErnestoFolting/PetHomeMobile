@@ -7,13 +7,24 @@ import MyModal from '../../MyModal/MyModal'
 import Loader from '../../Loader/Loader'
 import RequestItem from '../../Requests/RequestItem/RequestItem'
 import ProfileItem from '../../Profile/ProfileItem'
+import AdvertService from '../../../HTTP/API/AdvertService'
+import RequestService from '../../../HTTP/API/RequestService'
 
 export default function PerformersSelectionBlock({ advertId, navigation }) {
 
     const [advert, setAdvert] = useState()
     const [isModalVisible, setIsModalVisible] = useState(false)
+    const [needUpdate, setNeedUpdate] = useState(false)
     const [fetchAdvert, loading, error] = useFetching(async () => {
         const userResponse = await UserDataService.getUserCertainAdvert(advertId)
+        setAdvert(userResponse)
+    })
+    const [markFinished, loading2, error2] = useFetching(async () => {
+        const userResponse = await AdvertService.markAsFinished(advertId)
+        setAdvert(userResponse)
+    })
+    const [deleteAdvert, loading3, error3] = useFetching(async () => {
+        const userResponse = await AdvertService.deleteAdvert(advertId)
         setAdvert(userResponse)
     })
 
@@ -26,28 +37,43 @@ export default function PerformersSelectionBlock({ advertId, navigation }) {
             }
         }
         fetchData()
-    }, [])
+    }, [needUpdate])
 
-    const markAsFinished = () => {
-        console.log('mark finished')
+    const markAsFinished = async () => {
+        try {
+            await markFinished()
+            setNeedUpdate(!needUpdate)
+        } catch (e) {
+            setIsModalVisible(true)
+            setNeedUpdate(!needUpdate)
+        }
     }
 
-    const deleteFinishedAdvert = () => {
-        console.log('delere finished')
+    const deleteFinishedAdvert = async () => {
+        try {
+            await deleteAdvert()
+            navigation.navigate('Оголошення')
+        } catch (e) {
+            setIsModalVisible(true)
+        }
     }
+
+    const requestsToShow = advert?.requests?.filter(el => el.status === 'applied')
 
     function renderSwitch(status) {
         switch (status) {
             case 'search':
-                return advert?.requests?.length === 0
-                    ? <Text style={{ textAlign: 'center' }}>Поки ще ніхто не відгукнувся.</Text>
+                return requestsToShow?.length === 0
+                    ? <Text style={PerformersSelectionBlockStyles.text}>Поки ще ніхто не відгукнувся.</Text>
                     : <View>
                         <Text style={{ marginVertical: 10 }}>Будь ласка, оберіть виконавця.</Text>
-                        {advert?.requests?.map((el) =>
+                        {requestsToShow.map((el) =>
                             <RequestItem
                                 key={el?.id}
                                 requestData={el}
                                 navigation={navigation}
+                                needUpdate={needUpdate}
+                                setNeedUpdate={setNeedUpdate}
                             />
                         )}
                     </View>
@@ -61,11 +87,11 @@ export default function PerformersSelectionBlock({ advertId, navigation }) {
                 </View>
             case 'finished':
                 return <View className='finishedStatus'>
-                    <Text>Виконання завершено.</Text>
-                    <TouchableOpacity onPress={deleteFinishedAdvert}>Видалити оголошення</TouchableOpacity>
+                    <Text style={PerformersSelectionBlockStyles.text}>Виконання завершено.</Text>
+                    <TouchableOpacity onPress={deleteFinishedAdvert} style={PerformersSelectionBlockStyles.deleteButton}><Text style={{ color: 'white' }}>Видалити оголошення</Text></TouchableOpacity>
                 </View>
             default:
-                return <Text>Очікуємо</Text>
+                return <Text style={PerformersSelectionBlockStyles.text}>Видалено</Text>
         }
     }
 

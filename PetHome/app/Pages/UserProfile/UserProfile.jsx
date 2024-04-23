@@ -32,7 +32,6 @@ export default function UserProfile({ route }) {
             profile.timeExceptions.forEach((exception) => {
                 markedDates[exception.date.split('T')[0]] = { selected: true, selectedColor: Colors.red };
             });
-            console.log(markedDates);
             setDates(markedDates)
         }
 

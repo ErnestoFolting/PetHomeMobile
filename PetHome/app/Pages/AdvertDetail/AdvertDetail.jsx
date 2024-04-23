@@ -16,7 +16,6 @@ import PerformersSelectionBlock from '../../Components/Adverts/PerformersSelecti
 
 export default function AdvertDetail({ route, navigation }) {
     const auth = useAuth()
-
     const { adId } = route.params;
     const [advert, setAdvert] = useState({})
     const [photoLoading, setPhotoLoading] = useState(true)

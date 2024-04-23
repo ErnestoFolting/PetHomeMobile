@@ -28,7 +28,18 @@ const PerformersSelectionBlockStyles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3,
         elevation: 5,
-    }
+    }, deleteButton: {
+        backgroundColor: Colors.red,
+        alignItems: 'center',
+        paddingVertical: 10,
+        padding: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3,
+        elevation: 5,
+    },
+    text: { textAlign: 'center', marginVertical: 10 }
 });
 
 export default PerformersSelectionBlockStyles;

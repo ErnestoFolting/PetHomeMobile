@@ -29,10 +29,6 @@ const MyTheme = {
     },
 };
 
-const Сheck = observer(() => {
-    return (<View><Button title="check" onPress={() => { console.log("check") }} color={Colors.main} ></Button></View>)
-})
-
 export default observer(function Navigator() {
     const [isEditing, setIsEditing] = useState(false)
     const auth = useAuth();
@@ -79,7 +75,8 @@ export default observer(function Navigator() {
                     <Tab.Screen name="Оголошення" component={AdvertsStack}
                         options={{
                             tabBarIcon: () => <FontAwesome5 name="dog" color={Colors.main} size={24} />
-                        }} />
+                        }}
+                    />
                     <Tab.Screen name="Створити" component={CreateAdvert}
                         options={{
                             tabBarIcon: () => <Ionicons name="create-outline" size={24} color={Colors.main} />
@@ -87,7 +84,8 @@ export default observer(function Navigator() {
                     <Tab.Screen name="Мої" component={My}
                         options={{
                             tabBarIcon: () => <AntDesign name="folder1" size={24} color={Colors.main} />
-                        }} />
+                        }}
+                    />
                     <Tab.Screen name="Я" component={Me}
                         options={{
                             tabBarIcon: () => <Ionicons name="person-outline" size={24} color={Colors.main} />,

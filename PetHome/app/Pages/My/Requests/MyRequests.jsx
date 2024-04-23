@@ -32,18 +32,16 @@ export default function MyRequests({ navigation }) {
     }
 
     useEffect(() => {
-
         fetchData()
     }, [needUpdate])
 
     const modalWindow = isModalVisible && <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<View><Text>{error}</Text></View>} />
-    if (loading) return <Loader />
     return (
         <ScrollView>
             {modalWindow}
-            {userRequests.map(el =>
+            {userRequests.length === 0 ? <Text style={{ alignSelf: 'center', marginTop: 20 }}>Поки немає заявок</Text> : userRequests.map(el =>
                 <View key={el.id} style={MyRequestsStyles.element}>
-                    <AdvertItem item={el.advert} disableShadow={true} navigation={navigation} />
+                    <AdvertItem item={el.advert} disableShadow={true} navigation={navigation} isMy />
                     <MyRequestBlock status={el.status} advertStatus={el.advert.status} requestId={el.id} setNeedUpdate={setNeedUpdate} needUpdate={needUpdate}></MyRequestBlock>
                 </View>
             )}

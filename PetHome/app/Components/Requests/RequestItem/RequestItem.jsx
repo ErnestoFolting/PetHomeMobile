@@ -14,7 +14,6 @@ export default function RequestItem({ requestData, navigation, needUpdate, setNe
         await RequestService.confirmRequest(requestData?.id)
     })
     const [sendRejectRequest, loader2, error2] = useFetching(async () => {
-        console.log('here');
         await RequestService.rejectRequest(requestData?.id)
     })
     async function accept() {

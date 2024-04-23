@@ -16,7 +16,7 @@ import PerformersSelectionBlock from '../../Components/Adverts/PerformersSelecti
 
 export default function AdvertDetail({ route, navigation }) {
     const auth = useAuth()
-    const { adId } = route.params;
+    const { adId, update, setUpdate } = route.params;
     const [advert, setAdvert] = useState({})
     const [photoLoading, setPhotoLoading] = useState(true)
     const [advertRequestErrors, setAdvertRequestErrors] = useState([])
@@ -82,7 +82,7 @@ export default function AdvertDetail({ route, navigation }) {
             {auth.userId !== advert?.ownerId && <AdvertRequestBlock advertStatus={advert?.status} advertId={adId} setIsModalVisible={setIsModalVisible} setAdvertRequestErrors={setAdvertRequestErrors} />}
 
             {auth.userId == advert?.ownerId ?
-                <PerformersSelectionBlock navigation={navigation} advertId={adId} />
+                <PerformersSelectionBlock navigation={navigation} advertId={adId} update={update} setUpdate={setUpdate} />
                 :
                 <ProfileItem navigation={navigation} title="Власник" profileData={advert?.owner} id={advert?.owner?.id} isBig />
             }

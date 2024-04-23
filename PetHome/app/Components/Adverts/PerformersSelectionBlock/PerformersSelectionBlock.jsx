@@ -10,7 +10,7 @@ import ProfileItem from '../../Profile/ProfileItem'
 import AdvertService from '../../../HTTP/API/AdvertService'
 import RequestService from '../../../HTTP/API/RequestService'
 
-export default function PerformersSelectionBlock({ advertId, navigation }) {
+export default function PerformersSelectionBlock({ advertId, navigation, update, setUpdate }) {
 
     const [advert, setAdvert] = useState()
     const [isModalVisible, setIsModalVisible] = useState(false)
@@ -52,7 +52,8 @@ export default function PerformersSelectionBlock({ advertId, navigation }) {
     const deleteFinishedAdvert = async () => {
         try {
             await deleteAdvert()
-            navigation.navigate('Оголошення')
+            navigation.goBack()
+            setUpdate(!update)
         } catch (e) {
             setIsModalVisible(true)
         }

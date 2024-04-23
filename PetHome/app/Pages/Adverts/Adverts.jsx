@@ -5,8 +5,11 @@ import useFetching from "../../Hooks/useFetching";
 import Loader from "../../Components/Loader/Loader";
 import AdvertItem from "../../Components/Adverts/AdvertItem/AdvertItem";
 import Filters from "../../Components/Adverts/Filters/Filters";
+import MyModal from "../../Components/MyModal/MyModal";
 
 const Adverts = ({ navigation }) => {
+  const [update, setUpdate] = useState(false)
+  const [isModalVisible, setIsModalVisible] = useState(false)
   const [adverts, setAdverts] = useState([]);
   const [queryParams, setQueryParams] = useState({
     advertsLimit: 10,
@@ -21,16 +24,17 @@ const Adverts = ({ navigation }) => {
     setAdverts(response.data);
   });
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        await fetchAdverts();
-      } catch (e) {
-        console.error(e?.message);
-      }
+  async function fetchData() {
+    try {
+      await fetchAdverts()
+    } catch (e) {
+      setIsModalVisible(true)
     }
+  }
+
+  useEffect(() => {
     fetchData();
-  }, [queryParams]);
+  }, [queryParams, update]);
 
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = 190;
@@ -38,9 +42,11 @@ const Adverts = ({ navigation }) => {
   const numColumns = Math.floor(screenWidth / (itemWidth + itemMargin * 2));
   if (loader) return <Loader />
 
+  const modal = isModalVisible && <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<Text>{error}</Text>}></MyModal>
+
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-
+      {modal}
       {adverts.length > 0
         ? (
           <View>
@@ -51,7 +57,7 @@ const Adverts = ({ navigation }) => {
               data={adverts}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
-                <AdvertItem item={item} navigation={navigation}></AdvertItem>
+                <AdvertItem item={item} navigation={navigation} update={update} setUpdate={setUpdate}></AdvertItem>
               )}
             />
           </View>

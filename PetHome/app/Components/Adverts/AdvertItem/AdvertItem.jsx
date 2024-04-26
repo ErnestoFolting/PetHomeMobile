@@ -3,19 +3,11 @@ import API_URL from '../../../Constants/uri'
 import React from 'react'
 import AdvertItemStyles from './AdvertItemStyles'
 import Colors from '../../../Constants/Colors'
-import { useEffect } from 'react'
 
-export default function AdvertItem({ item, navigation, disableShadow, isMy, update, setUpdate }) {
+export default function AdvertItem({ item, navigation, disableShadow, isMy }) {
 
     const description = item.description.length > 50 ? item.description.slice(0, 50) + '...' : item.description.slice(0, 50)
     const path = isMy ? 'Деталі мого оголошення' : 'Деталі'
-
-    useEffect(() => {
-        navigation.setOptions({
-            update: update,
-            setUpdate: setUpdate
-        });
-    }, [navigation])
 
     return (
         <TouchableOpacity onPress={() => navigation.navigate(path, { adId: item.id })}>

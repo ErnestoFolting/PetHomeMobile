@@ -8,8 +8,10 @@ import Loader from '../../Loader/Loader'
 import RequestItem from '../../Requests/RequestItem/RequestItem'
 import ProfileItem from '../../Profile/ProfileItem'
 import AdvertService from '../../../HTTP/API/AdvertService'
+import useStore from '../../../Hooks/useAuth'
 
-export default function PerformersSelectionBlock({ advertId, navigation, update, setUpdate }) {
+export default function PerformersSelectionBlock({ advertId, navigation }) {
+    const store = useStore()
 
     const [advert, setAdvert] = useState()
     const [isModalVisible, setIsModalVisible] = useState(false)
@@ -42,11 +44,10 @@ export default function PerformersSelectionBlock({ advertId, navigation, update,
     const markAsFinished = async () => {
         try {
             await markFinished()
-            setNeedUpdate(!needUpdate)
-            setUpdate(!update)
+            update()
         } catch (e) {
+            console.log(e);
             setIsModalVisible(true)
-            setNeedUpdate(!needUpdate)
         }
     }
 
@@ -54,10 +55,16 @@ export default function PerformersSelectionBlock({ advertId, navigation, update,
         try {
             await deleteAdvert()
             navigation.goBack()
-            setUpdate(!update)
+            store.setAdvertsNeedUpdate(!store.advertsNeedUpdate)
         } catch (e) {
+            console.log(e);
             setIsModalVisible(true)
         }
+    }
+
+    const update = () => {
+        setNeedUpdate(!needUpdate)
+        store.setAdvertsNeedUpdate(!store.advertsNeedUpdate)
     }
 
     const requestsToShow = advert?.requests?.filter(el => el.status === 'applied')

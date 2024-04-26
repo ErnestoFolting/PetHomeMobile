@@ -39,12 +39,14 @@ export default function MyRequests({ navigation }) {
     return (
         <ScrollView>
             {modalWindow}
-            {userRequests.length === 0 ? <Text style={{ alignSelf: 'center', marginTop: 20 }}>Поки немає заявок</Text> : userRequests.map(el =>
-                <View key={el.id} style={MyRequestsStyles.element}>
-                    <AdvertItem item={el.advert} disableShadow={true} navigation={navigation} isMy />
-                    <MyRequestBlock status={el.status} advertStatus={el.advert.status} requestId={el.id} setNeedUpdate={setNeedUpdate} needUpdate={needUpdate}></MyRequestBlock>
-                </View>
-            )}
+            {userRequests.length === 0
+                ? <Text style={{ alignSelf: 'center', marginTop: 20 }}>Поки немає заявок</Text>
+                : userRequests.map(el =>
+                    <View key={el.id} style={MyRequestsStyles.element}>
+                        <AdvertItem item={el.advert} disableShadow={true} navigation={navigation} isMy />
+                        <MyRequestBlock status={el.status} advertStatus={el.advert.status} requestId={el.id} setNeedUpdate={setNeedUpdate} needUpdate={needUpdate}></MyRequestBlock>
+                    </View>
+                )}
         </ScrollView>
     )
 }

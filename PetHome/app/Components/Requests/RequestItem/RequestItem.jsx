@@ -6,8 +6,11 @@ import useFetching from '../../../Hooks/useFetching'
 import RequestService from '../../../HTTP/API/RequestService'
 import MyModal from '../../MyModal/MyModal'
 import Loader from '../../Loader/Loader'
+import useStore from '../../../Hooks/useAuth'
 
 export default function RequestItem({ requestData, navigation, needUpdate, setNeedUpdate }) {
+
+    const store = useStore()
 
     const [modalVisible, setModalVisible] = useState(false)
     const [sendConfirmRequest, loader, error] = useFetching(async () => {
@@ -16,10 +19,11 @@ export default function RequestItem({ requestData, navigation, needUpdate, setNe
     const [sendRejectRequest, loader2, error2] = useFetching(async () => {
         await RequestService.rejectRequest(requestData?.id)
     })
+
     async function accept() {
         try {
             await sendConfirmRequest()
-            setNeedUpdate(!needUpdate)
+            updateAdverts()
         } catch (e) {
             setModalVisible(true)
         }
@@ -28,10 +32,15 @@ export default function RequestItem({ requestData, navigation, needUpdate, setNe
     async function reject() {
         try {
             await sendRejectRequest()
-            setNeedUpdate(!needUpdate)
+            updateAdverts()
         } catch (e) {
             setModalVisible(true)
         }
+    }
+
+    const updateAdverts = () => {
+        setNeedUpdate(!needUpdate)
+        store.setAdvertsNeedUpdate(!store.advertsNeedUpdate)
     }
 
     if (loader || loader2) return <Loader />

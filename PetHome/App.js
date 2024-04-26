@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from "react";
-import { AuthProvider } from "./app/Context/AuthContext";
+import React from "react";
+import { StoreProvider } from "./app/Context/StoreContext";
 import Navigator from "./app/Components/Navigator";
 
 const App = () => {
-  return (<AuthProvider>
+  return (<StoreProvider>
     <Navigator></Navigator>
-  </AuthProvider>
+  </StoreProvider>
   )
 }
 

@@ -6,6 +6,7 @@ import { FontAwesome5, Feather } from "@expo/vector-icons";
 import MyRequests from "./Requests/MyRequests";
 import Adverts from "../Adverts/Adverts";
 import AdvertDetail from "../AdvertDetail/AdvertDetail";
+import UserProfile from "../UserProfile/UserProfile";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -29,6 +30,9 @@ const MyAdvertsStack = () => {
                 options={{
                     headerShown: false
                 }} />
+            <Stack.Screen name="Профіль" component={UserProfile} options={{
+                headerShown: false
+            }} />
         </Stack.Navigator>
     );
 };
@@ -40,6 +44,9 @@ const MyRequestsStack = () => {
                 headerShown: false
             }} />
             <Stack.Screen name="Деталі мого оголошення" component={AdvertDetail} options={{
+                headerShown: false
+            }} />
+            <Stack.Screen name="Профіль" component={UserProfile} options={{
                 headerShown: false
             }} />
         </Stack.Navigator>

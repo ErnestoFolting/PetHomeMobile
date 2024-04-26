@@ -8,10 +8,12 @@ import Filters from "../../Components/Adverts/Filters/Filters";
 import MyModal from "../../Components/MyModal/MyModal";
 import UserAdvertItem from "../../Components/Adverts/UserAdvertItem/UserAdvertItem";
 import UserDataService from "../../HTTP/API/UserDataService";
+import { observer } from "mobx-react-lite";
+import useStore from "../../Hooks/useAuth";
 
 const Adverts = ({ navigation, route }) => {
+  const store = useStore()
   const { isUserAdverts } = route.params
-  const [update, setUpdate] = useState(false)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [adverts, setAdverts] = useState([]);
   const [queryParams, setQueryParams] = useState({
@@ -43,7 +45,7 @@ const Adverts = ({ navigation, route }) => {
 
   useEffect(() => {
     fetchData();
-  }, [queryParams, update]);
+  }, [queryParams, store.advertsNeedUpdate]);
 
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = 190;
@@ -66,18 +68,18 @@ const Adverts = ({ navigation, route }) => {
               data={adverts}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (isUserAdverts
-                ? <UserAdvertItem item={item} navigation={navigation} update={update} setUpdate={setUpdate} />
-                : <AdvertItem item={item} navigation={navigation} update={update} setUpdate={setUpdate} />
+                ? <UserAdvertItem item={item} navigation={navigation} />
+                : <AdvertItem item={item} navigation={navigation} />
               )}
             />
           </View>
 
         )
         : (
-          <Text>Поки немає оголошень</Text>
+          <Text >Поки немає оголошень</Text>
         )}
     </View>
   );
 };
 
-export default Adverts;
+export default observer(Adverts);

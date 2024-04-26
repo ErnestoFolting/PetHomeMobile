@@ -1,6 +1,6 @@
 import { View, Button, TouchableOpacity, Text } from "react-native"
 import React, { useEffect, useState } from "react"
-import useAuth from "../Hooks/useAuth";
+import useStore from "../Hooks/useAuth";
 import { FontAwesome5, Ionicons, AntDesign, Entypo, Feather } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
@@ -31,24 +31,24 @@ const MyTheme = {
 
 export default observer(function Navigator() {
     const [isEditing, setIsEditing] = useState(false)
-    const auth = useAuth();
+    const store = useStore();
 
     useEffect(() => {
         async function checkAuth() {
-            await auth.checkAuth()
-            auth.setLoading(false)
+            await store.checkAuth()
+            store.setLoading(false)
         }
         checkAuth()
     }, []);
 
     useEffect(() => {
-        if (auth) {
-            setIsEditing(auth.isEditing)
+        if (store) {
+            setIsEditing(store.isEditing)
         }
 
-    }, [auth.isEditing]);
+    }, [store.isEditing]);
 
-    if (auth.isLoading) {
+    if (store.isLoading) {
         return <Loader />
     }
 
@@ -72,7 +72,7 @@ export default observer(function Navigator() {
     };
 
     return (
-        auth.isAuth ? (
+        store.isAuth ? (
             <NavigationContainer theme={MyTheme} >
                 <Tab.Navigator>
                     <Tab.Screen name="Оголошення" component={AdvertsStack}
@@ -93,18 +93,18 @@ export default observer(function Navigator() {
                         options={{
                             tabBarIcon: () => <Ionicons name="person-outline" size={24} color={Colors.main} />,
                             headerLeft: () => (
-                                <TouchableOpacity onPress={auth.logout}>
+                                <TouchableOpacity onPress={store.logout}>
                                     <Ionicons name="exit-outline" size={24} color={Colors.main} style={{ marginLeft: 20 }} />
                                 </TouchableOpacity>
                             ),
                             headerRight: () => isEditing
                                 ? (
-                                    <TouchableOpacity onPress={() => auth.setIsEditing(!auth.isEditing)}>
+                                    <TouchableOpacity onPress={() => store.setIsEditing(!store.isEditing)}>
                                         <Feather name="check" size={24} color={Colors.main} style={{ marginRight: 20 }} />
                                     </TouchableOpacity>
                                 )
                                 : (
-                                    <TouchableOpacity onPress={() => auth.setIsEditing(!auth.isEditing)}>
+                                    <TouchableOpacity onPress={() => store.setIsEditing(!store.isEditing)}>
                                         <Entypo name="edit" size={20} color={Colors.main} style={{ marginRight: 20 }} />
                                     </TouchableOpacity>
                                 ),

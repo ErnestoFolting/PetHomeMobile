@@ -7,7 +7,7 @@ import MeStyles from "./MeStyles"
 import API_URL from "../../Constants/uri"
 import MyCalendar from "../../Components/Calendar/MyCalendar"
 import Loader from "../../Components/Loader/Loader"
-import useAuth from "../../Hooks/useAuth"
+import useStore from "../../Hooks/useAuth"
 import { observer } from "mobx-react-lite"
 import shallowEqual from "./helper"
 import validateProfileRedo from "./ProfileRedoValidation"
@@ -15,12 +15,12 @@ import { validateField } from "./ProfileRedoValidation"
 import MyModal from "../../Components/MyModal/MyModal"
 
 export default observer(function Me() {
-    const auth = useAuth()
+    const store = useStore()
 
     const [profile, setProfile] = useState({})
     const [editedProfile, setEditedProfile] = useState({})
-    const [showData, setShowData] = useState(auth.isEditing ? editedProfile : profile)
-    const [inputStyles, setStyles] = useState(auth.isEditing ? MeStyles.valueRedo : MeStyles.value);
+    const [showData, setShowData] = useState(store.isEditing ? editedProfile : profile)
+    const [inputStyles, setStyles] = useState(store.isEditing ? MeStyles.valueRedo : MeStyles.value);
     const [validationErrors, setValidationErrors] = useState({});
     const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -56,20 +56,20 @@ export default observer(function Me() {
     }, [])
 
     useEffect(() => { //redo
-        setStyles(auth.isEditing ? MeStyles.valueRedo : MeStyles.value);
-        setShowData(auth.isEditing ? editedProfile : profile)
+        setStyles(store.isEditing ? MeStyles.valueRedo : MeStyles.value);
+        setShowData(store.isEditing ? editedProfile : profile)
 
-        if ((!auth.isEditing) && !shallowEqual(editedProfile, profile) && Object.keys(profile).length != 0) {
+        if ((!store.isEditing) && !shallowEqual(editedProfile, profile) && Object.keys(profile).length != 0) {
             validateProfileRedo(editedProfile).then(async (result) => {
                 if (result.isValid) {
                     updateUserData()
                 } else {
                     console.log("Object is not valid. Errors:", result.errors);
-                    auth.setIsEditing(true)
+                    store.setIsEditing(true)
                 }
             });
         }
-    }, [auth.isEditing]);
+    }, [store.isEditing]);
 
     const handleChange = (field, value) => {
         setEditedProfile({ ...editedProfile, [field]: value });
@@ -107,7 +107,7 @@ export default observer(function Me() {
                         onChangeText={(text) => handleChange('name', text)}
                         onBlur={(e) => handleBlur('name', e.nativeEvent.text)}
                         autoComplete="name"
-                        editable={auth.isEditing}
+                        editable={store.isEditing}
                     />
 
                     <TextInput
@@ -116,7 +116,7 @@ export default observer(function Me() {
                         onChangeText={(text) => handleChange('surname', text)}
                         onBlur={(e) => handleBlur('surname', e.nativeEvent.text)}
                         autoComplete="family-name"
-                        editable={auth.isEditing}
+                        editable={store.isEditing}
                     />
                 </View>
             </View>
@@ -133,7 +133,7 @@ export default observer(function Me() {
                             onChangeText={(text) => handleChange('email', text)}
                             onBlur={(e) => handleBlur('email', e.nativeEvent.text)}
                             autoComplete="email"
-                            editable={auth.isEditing}
+                            editable={store.isEditing}
                         />
                     </View>
 
@@ -143,7 +143,7 @@ export default observer(function Me() {
                             style={inputStyles}
                             value={showData.location}
                             onChangeText={(text) => handleChange('location', text)}
-                            editable={auth.isEditing}
+                            editable={store.isEditing}
                         />
                     </View>
                 </View>
@@ -157,7 +157,7 @@ export default observer(function Me() {
                             onChangeText={(text) => handleChange('phoneNumber', text)}
                             onBlur={(e) => handleBlur('phoneNumber', e.nativeEvent.text)}
                             autoComplete="tel"
-                            editable={auth.isEditing}
+                            editable={store.isEditing}
                         />
                     </View>
                     <View style={MeStyles.infoRow}>

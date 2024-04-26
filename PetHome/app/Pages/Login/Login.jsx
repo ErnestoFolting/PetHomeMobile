@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableWithoutFeedback, Keyboard, Image, KeyboardAvoidingView, Platform, TouchableOpacity } from "react-native";
 import LoginStyles from "./LoginStyles";
 import logo from '../../../assets/logo.png'
-import useAuth from "../../Hooks/useAuth";
+import useStore from "../../Hooks/useAuth";
 import { useNavigation } from "@react-navigation/native";
 
 const Login = () => {
     const [creds, setCreds] = useState({ username: "", password: "" });
 
-    const auth = useAuth();
+    const store = useStore();
 
     const navigation = useNavigation();
 
@@ -17,7 +17,7 @@ const Login = () => {
     }
 
     const handleLogin = () => {
-        auth.login(creds)
+        store.login(creds)
     };
 
     return (

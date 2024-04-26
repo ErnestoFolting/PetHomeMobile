@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 import Colors from '../../Constants/Colors';
-const AdvertDeatilStyles = StyleSheet.create({
+const AdvertDetailStyles = StyleSheet.create({
     container: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -56,4 +56,4 @@ const AdvertDeatilStyles = StyleSheet.create({
     }
 });
 
-export default AdvertDeatilStyles;
+export default AdvertDetailStyles;

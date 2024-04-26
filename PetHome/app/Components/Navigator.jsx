@@ -57,7 +57,10 @@ export default observer(function Navigator() {
             <Stack.Navigator>
                 <Stack.Screen name="Перелік оголошень" component={Adverts} options={{
                     headerShown: false
-                }} />
+                }}
+                    initialParams={{
+                        isUserAdverts: false
+                    }} />
                 <Stack.Screen name="Деталі" component={AdvertDetail} options={{
                     headerShown: false
                 }} />

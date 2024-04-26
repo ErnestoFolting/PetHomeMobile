@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import AdvertService from "../../HTTP/API/AdvertService";
-import { FlatList, View, Image, Text, Button, Dimensions } from "react-native";
+import { FlatList, View, Text, Dimensions } from "react-native";
 import useFetching from "../../Hooks/useFetching";
 import Loader from "../../Components/Loader/Loader";
 import AdvertItem from "../../Components/Adverts/AdvertItem/AdvertItem";
 import Filters from "../../Components/Adverts/Filters/Filters";
 import MyModal from "../../Components/MyModal/MyModal";
+import UserAdvertItem from "../../Components/Adverts/UserAdvertItem/UserAdvertItem";
+import UserDataService from "../../HTTP/API/UserDataService";
 
-const Adverts = ({ navigation }) => {
+const Adverts = ({ navigation, route }) => {
+  const { isUserAdverts } = route.params
   const [update, setUpdate] = useState(false)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [adverts, setAdverts] = useState([]);
@@ -16,11 +19,17 @@ const Adverts = ({ navigation }) => {
     currentPage: 1,
     isDatesFit: false,
     costFrom: 1,
-    costTo: 100000
+    costTo: 10000,
+    advertsStatus: 'search'
   })
 
   const [fetchAdverts, loader, error] = useFetching(async function () {
-    const response = await AdvertService.getAllAdverts(queryParams);
+    let response = []
+    if (isUserAdverts) {
+      response = await UserDataService.getUserAdverts(queryParams)
+    } else {
+      response = await AdvertService.getAllAdverts(queryParams);
+    }
     setAdverts(response.data);
   });
 
@@ -50,14 +59,15 @@ const Adverts = ({ navigation }) => {
       {adverts.length > 0
         ? (
           <View>
-            <Filters></Filters>
+            <Filters isUserAdverts={isUserAdverts} queryParams={queryParams} setQueryParams={setQueryParams}></Filters>
             <FlatList
               horizontal={false}
               numColumns={numColumns}
               data={adverts}
               keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (
-                <AdvertItem item={item} navigation={navigation} update={update} setUpdate={setUpdate}></AdvertItem>
+              renderItem={({ item }) => (isUserAdverts
+                ? <UserAdvertItem item={item} navigation={navigation} update={update} setUpdate={setUpdate} />
+                : <AdvertItem item={item} navigation={navigation} update={update} setUpdate={setUpdate} />
               )}
             />
           </View>

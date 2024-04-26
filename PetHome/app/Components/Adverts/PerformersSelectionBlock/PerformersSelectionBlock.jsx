@@ -8,13 +8,13 @@ import Loader from '../../Loader/Loader'
 import RequestItem from '../../Requests/RequestItem/RequestItem'
 import ProfileItem from '../../Profile/ProfileItem'
 import AdvertService from '../../../HTTP/API/AdvertService'
-import RequestService from '../../../HTTP/API/RequestService'
 
 export default function PerformersSelectionBlock({ advertId, navigation, update, setUpdate }) {
 
     const [advert, setAdvert] = useState()
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [needUpdate, setNeedUpdate] = useState(false)
+
     const [fetchAdvert, loading, error] = useFetching(async () => {
         const userResponse = await UserDataService.getUserCertainAdvert(advertId)
         setAdvert(userResponse)
@@ -43,6 +43,7 @@ export default function PerformersSelectionBlock({ advertId, navigation, update,
         try {
             await markFinished()
             setNeedUpdate(!needUpdate)
+            setUpdate(!update)
         } catch (e) {
             setIsModalVisible(true)
             setNeedUpdate(!needUpdate)
@@ -96,11 +97,11 @@ export default function PerformersSelectionBlock({ advertId, navigation, update,
         }
     }
 
-    if (loading) return <Loader />
+    if (loading || loading2 || loading3) return <Loader />
 
     return (
         <View style={PerformersSelectionBlockStyles.container}>
-            <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<Text>{error}</Text>}></MyModal>
+            <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<Text>{error}{error2}{error3}</Text>}></MyModal>
             <Text style={PerformersSelectionBlockStyles.title}>Це ваше оголошення</Text>
             {renderSwitch(advert?.status)}
         </View>

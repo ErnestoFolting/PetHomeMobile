@@ -9,6 +9,18 @@ export default class UserDataService {
         const response = await $api.get('/api/userdata/myprofile')
         return response.data
     }
+    static async getUserAdverts(queryParams) {
+        const response = await $api.get('/api/userdata/myadverts', {
+            params: {
+                PageNumber: queryParams?.currentPage,
+                PageSize: queryParams?.advertsLimit,
+                advertsStatus: queryParams?.advertsStatus,
+                priceFrom: queryParams?.costFrom,
+                priceTo: queryParams?.costTo
+            }
+        })
+        return response
+    }
     static async getUserCertainAdvert(id) {
         const response = await $api.get('/api/userdata/myadverts/' + id)
         return response.data

@@ -8,9 +8,11 @@ const AdvertItemStyles = StyleSheet.create({
         borderTopLeftRadius: 5,
         borderTopRightRadius: 5,
     },
-    container: {
+    margin: {
         marginHorizontal: 5,
         marginVertical: 5,
+    },
+    container: {
         width: 190,
         height: 'auto',
         minHeight: 210,

@@ -10,6 +10,7 @@ import UserAdvertItem from "../../Components/Adverts/UserAdvertItem/UserAdvertIt
 import UserDataService from "../../HTTP/API/UserDataService";
 import { observer } from "mobx-react-lite";
 import useStore from "../../Hooks/useAuth";
+import AdvertsStyles from "./AdvertsStyles";
 
 const Adverts = ({ navigation, route }) => {
   const store = useStore()
@@ -56,12 +57,15 @@ const Adverts = ({ navigation, route }) => {
   const modal = isModalVisible && <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<Text>{error}</Text>}></MyModal>
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View >
+      <View style={AdvertsStyles.filtersContainer}>
+        <Filters isUserAdverts={isUserAdverts} queryParams={queryParams} setQueryParams={setQueryParams}></Filters>
+
+      </View>
       {modal}
       {adverts.length > 0
         ? (
           <View>
-            <Filters isUserAdverts={isUserAdverts} queryParams={queryParams} setQueryParams={setQueryParams}></Filters>
             <FlatList
               horizontal={false}
               numColumns={numColumns}

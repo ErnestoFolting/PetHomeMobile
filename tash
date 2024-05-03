@@ -1,0 +1,98 @@
+[33m9301963[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{0}: discard: [5309c59692ec2ecae9bdebf84962ef46126cb3c3]
+[33m9301963[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{1}: commit: Change adverts list update approach, fix routing to my/./user
+[33mc7e0033[m HEAD@{2}: commit: Add user adverts details
+[33m89f596c[m HEAD@{3}: undo: commit: Add user adverts details
+[33mc7e0033[m HEAD@{4}: undo: commit: Change adverts list update approach, fix routing to my/./user
+[33m9301963[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{5}: undo: discard: [5309c59692ec2ecae9bdebf84962ef46126cb3c3]
+[33m9301963[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{6}: discard: [5309c59692ec2ecae9bdebf84962ef46126cb3c3]
+[33m9301963[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{7}: commit: Change adverts list update approach, fix routing to my/./user
+[33mc7e0033[m HEAD@{8}: commit: Add user adverts details
+[33m89f596c[m HEAD@{9}: undo: commit: Add user adverts details
+[33mc7e0033[m HEAD@{10}: undo: commit: Change adverts list update approach, fix routing to my/./user
+[33m9301963[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{11}: commit: Change adverts list update approach, fix routing to my/./user
+[33mc7e0033[m HEAD@{12}: commit: Add user adverts details
+[33m89f596c[m HEAD@{13}: commit: Fix delete advert after finish redirection and adverts update
+[33m43e5291[m HEAD@{14}: commit: Change My routing
+[33m1b255d5[m HEAD@{15}: checkout: moving from 1b255d5748d5736b8c99d13100b6767511ab1a11 to master
+[33m1b255d5[m HEAD@{16}: commit: Add performer selection block
+[33m916ff5d[m HEAD@{17}: undo: commit: Add performer selection block
+[33m1b255d5[m HEAD@{18}: undo: checkout: moving from 1b255d5748d5736b8c99d13100b6767511ab1a11 to master
+[33m1b255d5[m HEAD@{19}: undo: commit: Change My routing
+[33m43e5291[m HEAD@{20}: undo: commit: Fix delete advert after finish redirection and adverts update
+[33m89f596c[m HEAD@{21}: undo: commit: Add user adverts details
+[33mc7e0033[m HEAD@{22}: undo: commit: Change adverts list update approach, fix routing to my/./user
+[33m9301963[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{23}: commit: Change adverts list update approach, fix routing to my/./user
+[33mc7e0033[m HEAD@{24}: commit: Add user adverts details
+[33m89f596c[m HEAD@{25}: commit: Fix delete advert after finish redirection and adverts update
+[33m43e5291[m HEAD@{26}: commit: Change My routing
+[33m1b255d5[m HEAD@{27}: checkout: moving from 1b255d5748d5736b8c99d13100b6767511ab1a11 to master
+[33m1b255d5[m HEAD@{28}: commit: Add performer selection block
+[33m916ff5d[m HEAD@{29}: undo: commit: Add performer selection block
+[33m1b255d5[m HEAD@{30}: undo: checkout: moving from 1b255d5748d5736b8c99d13100b6767511ab1a11 to master
+[33m1b255d5[m HEAD@{31}: undo: commit: Change My routing
+[33m43e5291[m HEAD@{32}: undo: commit: Fix delete advert after finish redirection and adverts update
+[33m89f596c[m HEAD@{33}: undo: commit: Add user adverts details
+[33mc7e0033[m HEAD@{34}: undo: commit: Change adverts list update approach, fix routing to my/./user
+[33m9301963[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{35}: undo: checkout: moving from master to c7e0033b73e3737d73c85031f9d912429fa88273
+[33mc7e0033[m HEAD@{36}: undo: checkout: moving from c7e0033b73e3737d73c85031f9d912429fa88273 to master
+[33m9301963[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{37}: checkout: moving from c7e0033b73e3737d73c85031f9d912429fa88273 to master
+[33mc7e0033[m HEAD@{38}: checkout: moving from master to c7e0033b73e3737d73c85031f9d912429fa88273
+[33m9301963[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{39}: commit: Change adverts list update approach, fix routing to my/./user
+[33mc7e0033[m HEAD@{40}: commit: Add user adverts details
+[33m89f596c[m HEAD@{41}: commit: Fix delete advert after finish redirection and adverts update
+[33m43e5291[m HEAD@{42}: commit: Change My routing
+[33m1b255d5[m HEAD@{43}: undo: commit: Change My routing
+[33m43e5291[m HEAD@{44}: undo: commit: Fix delete advert after finish redirection and adverts update
+[33m89f596c[m HEAD@{45}: undo: commit: Add user adverts details
+[33mc7e0033[m HEAD@{46}: undo: commit: Change adverts list update approach, fix routing to my/./user
+[33m9301963[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{47}: undo: checkout: moving from master to c7e0033b73e3737d73c85031f9d912429fa88273
+[33mc7e0033[m HEAD@{48}: undo: checkout: moving from c7e0033b73e3737d73c85031f9d912429fa88273 to master
+[33m9301963[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{49}: checkout: moving from c7e0033b73e3737d73c85031f9d912429fa88273 to master
+[33mc7e0033[m HEAD@{50}: undo: commit: Add filters
+[33m3dc410c[m HEAD@{51}: undo: checkout: moving from 3dc410c21b3a1599e2d4ab000376165d80c90076 to master
+[33m9301963[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{52}: checkout: moving from 3dc410c21b3a1599e2d4ab000376165d80c90076 to master
+[33m3dc410c[m HEAD@{53}: commit: Add filters
+[33mc7e0033[m HEAD@{54}: undo: commit: Add filters
+[33m2b8f762[m HEAD@{55}: commit: Add filters
+[33mc7e0033[m HEAD@{56}: checkout: moving from master to c7e0033b73e3737d73c85031f9d912429fa88273
+[33m9301963[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{57}: commit: Change adverts list update approach, fix routing to my/./user
+[33mc7e0033[m HEAD@{58}: commit: Add user adverts details
+[33m89f596c[m HEAD@{59}: commit: Fix delete advert after finish redirection and adverts update
+[33m43e5291[m HEAD@{60}: commit: Change My routing
+[33m1b255d5[m HEAD@{61}: checkout: moving from 1b255d5748d5736b8c99d13100b6767511ab1a11 to master
+[33m1b255d5[m HEAD@{62}: undo: checkout: moving from 1b255d5748d5736b8c99d13100b6767511ab1a11 to master
+[33m916ff5d[m HEAD@{63}: checkout: moving from 1b255d5748d5736b8c99d13100b6767511ab1a11 to master
+[33m1b255d5[m HEAD@{64}: undo: checkout: moving from 1b255d5748d5736b8c99d13100b6767511ab1a11 to master
+[33m916ff5d[m HEAD@{65}: checkout: moving from 1b255d5748d5736b8c99d13100b6767511ab1a11 to master
+[33m1b255d5[m HEAD@{66}: undo: checkout: moving from 1b255d5748d5736b8c99d13100b6767511ab1a11 to master
+[33m916ff5d[m HEAD@{67}: checkout: moving from 1b255d5748d5736b8c99d13100b6767511ab1a11 to master
+[33m1b255d5[m HEAD@{68}: undo: checkout: moving from 1b255d5748d5736b8c99d13100b6767511ab1a11 to master
+[33m916ff5d[m HEAD@{69}: checkout: moving from 1b255d5748d5736b8c99d13100b6767511ab1a11 to master
+[33m1b255d5[m HEAD@{70}: undo: checkout: moving from 1b255d5748d5736b8c99d13100b6767511ab1a11 to master
+[33m916ff5d[m HEAD@{71}: checkout: moving from 1b255d5748d5736b8c99d13100b6767511ab1a11 to master
+[33m1b255d5[m HEAD@{72}: undo: checkout: moving from 1b255d5748d5736b8c99d13100b6767511ab1a11 to master
+[33m916ff5d[m HEAD@{73}: checkout: moving from 1b255d5748d5736b8c99d13100b6767511ab1a11 to master
+[33m1b255d5[m HEAD@{74}: commit: Add performer selection block
+[33m916ff5d[m HEAD@{75}: checkout: moving from b33a9d6bf4b31ceb8b0001e662a637c64b7b4f03 to 916ff5dfd31e0574d821a2c6af5ef912c409343f
+[33mb33a9d6[m HEAD@{76}: checkout: moving from master to b33a9d6bf4b31ceb8b0001e662a637c64b7b4f03
+[33m916ff5d[m HEAD@{77}: commit: Add error modal output while request applying
+[33mb33a9d6[m HEAD@{78}: commit: Add AdvertItem, UserProfile, make calendar reusable
+[33m99ec2c6[m HEAD@{79}: commit: Add MyModal and validation messages
+[33mf9fe988[m HEAD@{80}: commit: Add profile redo data validation
+[33m7b1a543[m HEAD@{81}: checkout: moving from 5c34f43e25ac25f3ff9359547e37da73c9c8c89d to master
+[33m5c34f43[m HEAD@{82}: checkout: moving from master to 5c34f43e25ac25f3ff9359547e37da73c9c8c89d
+[33m7b1a543[m HEAD@{83}: commit: Add profile data redo
+[33m5c34f43[m HEAD@{84}: commit: Relocate the dates update logic to MyCalendar
+[33m3011454[m HEAD@{85}: commit: Add work with calendar in user profile
+[33ma7bb606[m HEAD@{86}: commit: Add Me page content
+[33m014ca56[m HEAD@{87}: commit: Add Registration image selection and checkAuth
+[33m815830c[m HEAD@{88}: commit: Add Registration form and translate
+[33m903656c[m HEAD@{89}: commit: Add Stack navigation to Registration
+[33me8f12d1[m HEAD@{90}: commit: Add KeyboardAvoidingView to Login form
+[33m58edd14[m HEAD@{91}: discard: [7a005c2e4ff0f10d96a19443294e9f277dca5be8]
+[33m58edd14[m HEAD@{92}: discard: [25a6e796d3131b444c2d8ed1dd37035ed03ca205]
+[33m58edd14[m HEAD@{93}: commit: Add login page
+[33mb8e6381[m HEAD@{94}: commit: Add AuthContext provider
+[33m8e3fff9[m HEAD@{95}: commit: Rename project
+[33m77b7b21[m HEAD@{96}: discard: [78f2968440e8cf2542b2b70b00d412a98a0fdaa1]
+[33m77b7b21[m HEAD@{97}: commit (initial): Initial commit

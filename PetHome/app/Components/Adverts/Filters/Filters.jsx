@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Switch } from 'react-native';
 import FiltersStyles from './FiltersStyles';
+import shallowEqual from '../../../Pages/Me/helper';
 
 export default function Filters({ isUserAdverts, queryParams, setQueryParams }) {
     const [isVisible, setIsVisible] = useState(false)
@@ -13,29 +14,36 @@ export default function Filters({ isUserAdverts, queryParams, setQueryParams }) 
 
     const handleApply = () => {
         if (queryParamsCopy?.advertsLimit.trim() === "" || isNaN(queryParamsCopy?.advertsLimit) || parseInt(queryParamsCopy?.advertsLimit) <= 0) {
-            alert("Please enter a valid Adverts Limit.");
+            alert("Оберіть коректну кількість оголошень на сторінку");
             return;
         }
         if (queryParamsCopy?.costFrom.trim() === "" || isNaN(queryParamsCopy?.costFrom) || parseInt(queryParamsCopy?.costFrom) <= 0) {
-            alert("Please enter a valid Cost From.");
+            alert("Введіть коректну мінімальну суму");
             return;
         }
         if (queryParamsCopy?.costTo.trim() === "" || isNaN(queryParamsCopy?.costTo) || parseInt(queryParamsCopy?.costTo) <= 0) {
-            alert("Please enter a valid Cost To.");
+            alert("Введіть коректну максимальну суму");
             return;
         }
 
-        if (parseInt(queryParamsCopy?.costTo) > 1000000) {
-            alert("Cost To cannot exceed 1000000.");
+        if (parseInt(queryParamsCopy?.costTo) > 100000) {
+            alert("Сума не може бути більше за 100000");
             return;
         }
 
         if (parseInt(queryParamsCopy?.costTo) < parseInt(queryParamsCopy?.costFrom)) {
-            alert("Cost To cannot be less than costFrom.");
+            alert("Максимальна сума не може бути меншою за мінімальну");
             return;
         }
+        const temp = { ...queryParams, ...queryParamsCopy }
+        if (!shallowEqual(queryParams, temp)) {
+            console.log(temp);
+            console.log(queryParams);
+            setQueryParams({ ...queryParams, ...queryParamsCopy });
+        } else {
+            setIsVisible(!isVisible)
+        }
 
-        setQueryParams({ ...queryParams, ...queryParamsCopy });
     }
 
     return (

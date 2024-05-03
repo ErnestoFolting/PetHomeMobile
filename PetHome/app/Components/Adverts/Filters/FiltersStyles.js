@@ -3,7 +3,7 @@ import Colors from '../../../Constants/Colors';
 
 const FiltersStyles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.light,
+        backgroundColor: Colors.greyLight,
         justifyContent: 'center',
         alignItems: 'center',
         borderBottomLeftRadius: 5,
@@ -18,6 +18,8 @@ const FiltersStyles = StyleSheet.create({
         elevation: 5
     },
     input: {
+        backgroundColor: Colors.white,
+        height: 30,
         borderBottomWidth: 1,
         borderColor: Colors.greyLight,
         borderRadius: 10,
@@ -26,7 +28,7 @@ const FiltersStyles = StyleSheet.create({
         minWidth: 70,
     },
     apply: {
-        backgroundColor: Colors.greyLight,
+        backgroundColor: Colors.white,
         alignItems: 'center',
         justifyContent: 'center',
         height: 40,
@@ -40,7 +42,6 @@ const FiltersStyles = StyleSheet.create({
         flexDirection: 'row',
     },
     showFiltersButton: {
-        backgroundColor: Colors.light,
         padding: 15,
         borderRadius: 5,
         width: '100%',

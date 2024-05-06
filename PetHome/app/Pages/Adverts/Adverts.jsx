@@ -18,7 +18,7 @@ const Adverts = ({ navigation, route }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [adverts, setAdverts] = useState([]);
   const [queryParams, setQueryParams] = useState({
-    advertsLimit: 10,
+    advertsLimit: 4,
     currentPage: 1,
     isDatesFit: false,
     costFrom: 1,
@@ -57,26 +57,26 @@ const Adverts = ({ navigation, route }) => {
   const modal = isModalVisible && <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<Text>{error}</Text>}></MyModal>
 
   return (
-    <View >
+
+    <View style={{ alignItems: 'center' }}>
       <View style={AdvertsStyles.filtersContainer}>
         <Filters isUserAdverts={isUserAdverts} queryParams={queryParams} setQueryParams={setQueryParams}></Filters>
-
       </View>
       {modal}
       {adverts.length > 0
         ? (
-          <View>
-            <FlatList
-              horizontal={false}
-              numColumns={numColumns}
-              data={adverts}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (isUserAdverts
-                ? <UserAdvertItem item={item} navigation={navigation} />
-                : <AdvertItem item={item} navigation={navigation} />
-              )}
-            />
-          </View>
+
+          <FlatList
+            style={{ marginBottom: 70 }}
+            horizontal={false}
+            numColumns={numColumns}
+            data={adverts}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (isUserAdverts
+              ? <UserAdvertItem item={item} navigation={navigation} />
+              : <AdvertItem item={item} navigation={navigation} />
+            )}
+          />
 
         )
         : (

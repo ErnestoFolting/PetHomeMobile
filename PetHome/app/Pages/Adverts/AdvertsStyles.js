@@ -3,7 +3,7 @@ import Colors from '../../Constants/Colors';
 
 const AdvertsStyles = StyleSheet.create({
     filtersContainer: {
-
+        width: '100%'
     }
 });
 

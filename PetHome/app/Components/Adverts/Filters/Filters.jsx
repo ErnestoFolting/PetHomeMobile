@@ -2,9 +2,17 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Switch } from 'react-native';
 import FiltersStyles from './FiltersStyles';
 import shallowEqual from '../../../Pages/Me/helper';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 export default function Filters({ isUserAdverts, queryParams, setQueryParams }) {
     const [isVisible, setIsVisible] = useState(false)
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(4);
+    const [items, setItems] = useState([
+        { label: 'По 4', value: 4 },
+        { label: 'По 8', value: 8 },
+        { label: 'По 12', value: 12 }
+    ]);
     const [queryParamsCopy, setQueryParamsCopy] = useState({
         advertsLimit: queryParams?.advertsLimit.toString(),
         costFrom: queryParams?.costFrom.toString(),
@@ -36,9 +44,8 @@ export default function Filters({ isUserAdverts, queryParams, setQueryParams }) 
             return;
         }
         const temp = { ...queryParams, ...queryParamsCopy }
+
         if (!shallowEqual(queryParams, temp)) {
-            console.log(temp);
-            console.log(queryParams);
             setQueryParams({ ...queryParams, ...queryParamsCopy });
         } else {
             setIsVisible(!isVisible)
@@ -50,14 +57,23 @@ export default function Filters({ isUserAdverts, queryParams, setQueryParams }) 
         <View style={[FiltersStyles.container, FiltersStyles.shadow]}>
             {isVisible ?
                 <View style={{ width: '100%', alignItems: 'center' }}>
-                    <View>
+                    <View style={{ zIndex: 5 }}>
                         <Text style={FiltersStyles?.label}>Оголошень на сторінку</Text>
-                        <TextInput
+                        <DropDownPicker
+                            open={open}
+                            value={parseInt(queryParamsCopy?.advertsLimit)}
+                            items={items}
+                            setOpen={setOpen}
+                            onSelectItem={(item) => setQueryParamsCopy({ ...queryParamsCopy, advertsLimit: String(item.value) })}
+                            setItems={setItems}
+                            containerStyle={{ width: '50%' }}
+                        />
+                        {/* <TextInput
                             style={FiltersStyles.input}
                             value={queryParamsCopy?.advertsLimit}
                             onChangeText={text => setQueryParamsCopy({ ...queryParamsCopy, advertsLimit: text })}
                             keyboardType="numeric"
-                        />
+                        /> */}
                     </View>
 
                     <View style={FiltersStyles.costSelectionContainer}>

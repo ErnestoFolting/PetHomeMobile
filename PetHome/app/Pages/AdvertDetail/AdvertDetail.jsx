@@ -34,7 +34,6 @@ const AdvertDetail = ({ route, navigation }) => {
             try {
                 await fetchAdvert()
             } catch (e) {
-                console.log('here');
                 store.setAdvertsNeedUpdate(!store.advertsNeedUpdate)
                 navigation.goBack()
             }

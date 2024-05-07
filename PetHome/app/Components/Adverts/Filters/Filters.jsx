@@ -7,7 +7,6 @@ import DropDownPicker from 'react-native-dropdown-picker';
 export default function Filters({ isUserAdverts, queryParams, setQueryParams }) {
     const [isVisible, setIsVisible] = useState(false)
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(4);
     const [items, setItems] = useState([
         { label: 'По 4', value: 4 },
         { label: 'По 8', value: 8 },
@@ -46,11 +45,11 @@ export default function Filters({ isUserAdverts, queryParams, setQueryParams }) 
         const temp = { ...queryParams, ...queryParamsCopy }
 
         if (!shallowEqual(queryParams, temp)) {
-            setQueryParams({ ...queryParams, ...queryParamsCopy });
+            setQueryParams({ ...queryParams, ...queryParamsCopy, currentPage: 1 });
+            console.log(queryParams);
         } else {
             setIsVisible(!isVisible)
         }
-
     }
 
     return (
@@ -64,16 +63,10 @@ export default function Filters({ isUserAdverts, queryParams, setQueryParams }) 
                             value={parseInt(queryParamsCopy?.advertsLimit)}
                             items={items}
                             setOpen={setOpen}
-                            onSelectItem={(item) => setQueryParamsCopy({ ...queryParamsCopy, advertsLimit: String(item.value) })}
+                            onSelectItem={(item) => setQueryParamsCopy({ ...queryParamsCopy, advertsLimit: String(item.value), currentPage: 1 })}
                             setItems={setItems}
                             containerStyle={{ width: '50%' }}
                         />
-                        {/* <TextInput
-                            style={FiltersStyles.input}
-                            value={queryParamsCopy?.advertsLimit}
-                            onChangeText={text => setQueryParamsCopy({ ...queryParamsCopy, advertsLimit: text })}
-                            keyboardType="numeric"
-                        /> */}
                     </View>
 
                     <View style={FiltersStyles.costSelectionContainer}>

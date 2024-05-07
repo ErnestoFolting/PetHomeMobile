@@ -11,10 +11,14 @@ import UserDataService from "../../HTTP/API/UserDataService";
 import { observer } from "mobx-react-lite";
 import useStore from "../../Hooks/useAuth";
 import AdvertsStyles from "./AdvertsStyles";
+import Pagination from "../../Components/Pagination/Pagination";
+import { usePagination } from "../../Hooks/usePagination";
 
 const Adverts = ({ navigation, route }) => {
   const store = useStore()
   const { isUserAdverts } = route.params
+  const [totalPages, setTotalPages] = useState(0);
+  const [pagesArray] = usePagination(totalPages);
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [adverts, setAdverts] = useState([]);
   const [queryParams, setQueryParams] = useState({
@@ -33,7 +37,10 @@ const Adverts = ({ navigation, route }) => {
     } else {
       response = await AdvertService.getAllAdverts(queryParams);
     }
+    const totalAdverts = response.headers['x-pagination-total-count']
+    setTotalPages(Math.ceil(totalAdverts / queryParams?.advertsLimit))
     setAdverts(response.data);
+    console.log('here', totalAdverts);
   });
 
   async function fetchData() {
@@ -65,18 +72,23 @@ const Adverts = ({ navigation, route }) => {
       {modal}
       {adverts.length > 0
         ? (
-
-          <FlatList
-            style={{ marginBottom: 70 }}
-            horizontal={false}
-            numColumns={numColumns}
-            data={adverts}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (isUserAdverts
-              ? <UserAdvertItem item={item} navigation={navigation} />
-              : <AdvertItem item={item} navigation={navigation} />
-            )}
-          />
+          <View>
+            <FlatList
+              horizontal={false}
+              numColumns={numColumns}
+              data={adverts}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (isUserAdverts
+                ? <UserAdvertItem item={item} navigation={navigation} />
+                : <AdvertItem item={item} navigation={navigation} />
+              )}
+            />
+            <Pagination
+              pagesArray={pagesArray}
+              params={queryParams}
+              setParams={setQueryParams}
+            />
+          </View>
 
         )
         : (

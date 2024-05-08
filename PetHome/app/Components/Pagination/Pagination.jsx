@@ -4,7 +4,6 @@ import PaginationStyles from './PaginationStyles'
 
 
 export default function Pagination({ pagesArray, params, setParams, ...props }) {
-    console.log(pagesArray);
     return (
         <View style={PaginationStyles.container}{...props}>
             {pagesArray?.map(pageNumber =>

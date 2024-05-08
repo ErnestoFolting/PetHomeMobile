@@ -10,13 +10,14 @@ const CreateAdvertStyles = StyleSheet.create({
         marginBottom: 20,
         width: '100%',
     },
-    imageInput: {
+    boxInput: {
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 5,
         padding: 10,
         alignItems: 'center',
         marginBottom: 10,
+        width: '100%'
     },
     imageInputLabel: {
         marginBottom: 5,
@@ -31,7 +32,7 @@ const CreateAdvertStyles = StyleSheet.create({
         color: 'gray',
     },
     button: {
-        backgroundColor: '#007bff',
+        backgroundColor: Colors.light,
         padding: 10,
         borderRadius: 5,
         alignItems: 'center',

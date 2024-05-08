@@ -30,3 +30,18 @@ export const getDatesBetween = (startDate, endDate) => {
     }
     return dates;
 }
+
+export const extractStartAndEndDates = (data) => {
+    let startDate, endDate;
+
+    for (let date in data) {
+        if (data[date].startingDay) {
+            startDate = date;
+        }
+        if (data[date].endingDay) {
+            endDate = date;
+        }
+    }
+
+    return { startDate, endDate };
+}

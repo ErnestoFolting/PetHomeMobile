@@ -40,7 +40,6 @@ const Adverts = ({ navigation, route }) => {
     const totalAdverts = response.headers['x-pagination-total-count']
     setTotalPages(Math.ceil(totalAdverts / queryParams?.advertsLimit))
     setAdverts(response.data);
-    console.log('here', totalAdverts);
   });
 
   async function fetchData() {

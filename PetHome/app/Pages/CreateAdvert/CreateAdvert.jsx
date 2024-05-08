@@ -2,19 +2,61 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import CreateAdvertStyles from './CreateAdvertStyles';
+import UkrCalendar from '../../Components/Calendar/UkrCalendar';
+import MyModal from '../../Components/MyModal/MyModal';
+import AdvertCreationCalendar from '../../Components/Calendar/AdvertCreationCalendar/AdvertCreationCalendar';
+import * as FileSystem from 'expo-file-system';
+import AdvertService from '../../HTTP/API/AdvertService';
+import useFetching from '../../Hooks/useFetching';
+import Loader from '../../Components/Loader/Loader';
 
-const CreateAdvert = () => {
+const CreateAdvert = ({ navigation }) => {
     const [advertData, setAdvertData] = useState({
-        name: '',
-        description: '',
-        cost: '',
+        name: 'Назва',
+        description: 'Опис оголошення',
+        cost: '250',
         startTime: '',
-        endTime: ''
+        endTime: '',
+        location: 'Fastiv',
+        locationLat: 50,
+        locationLng: 50,
     });
     const [imageUri, setImageUri] = useState('');
+    const [isModalVisible, setIsModalVisible] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
-    const handleSubmit = () => {
-        console.log(advertData);
+    const handleSubmit = async () => {
+        const formData = new FormData();
+
+        Object.keys(advertData).forEach(function (key, index) {
+            formData.append(key, Object.values(advertData)[index])
+        })
+
+        if (imageUri) {
+            const photoData = await FileSystem.readAsStringAsync(imageUri, {
+                encoding: FileSystem.EncodingType.Base64,
+            });
+
+            formData.append('petPhoto', {
+                uri: imageUri,
+                name: `photo_${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`,
+                type: `image/jpeg`,
+                data: photoData,
+            });
+        }
+
+
+        try {
+            setIsLoading(true)
+            await AdvertService.createAdvert(formData)
+            setAdvertData({ ...advertData, startTime: '', endTime: '' })
+            setImageUri('')
+            alert('Створено')
+        } catch (e) {
+            alert(JSON.stringify(e?.response?.data))
+            console.log(e?.response?.data)
+        }
+        setIsLoading(false)
     };
 
     const selectImage = async () => {
@@ -39,6 +81,21 @@ const CreateAdvert = () => {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             keyboardVerticalOffset={100}
         >
+            <MyModal
+                content={<View>
+                    <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 18, color: 'grey' }}>Оберіть дати</Text>
+                    <AdvertCreationCalendar
+                        setAdvertData={setAdvertData}
+                        advertData={advertData}
+                        setIsModalVisible={setIsModalVisible}
+                    />
+                </View>
+
+                }
+                isModalVisible={isModalVisible}
+                setIsModalVisible={setIsModalVisible}
+            />
+
             <ScrollView contentContainerStyle={{ paddingHorizontal: 20 }}>
                 <View style={CreateAdvertStyles.form}>
                     <TextInput
@@ -63,21 +120,21 @@ const CreateAdvert = () => {
                         keyboardType="numeric"
                     />
 
-                    <TextInput
-                        placeholder='Початок оголошення (YYYY-MM-DD HH:MM)*'
-                        value={advertData.startTime}
-                        onChangeText={text => setAdvertData({ ...advertData, startTime: text })}
-                        style={CreateAdvertStyles.input}
-                    />
+                    <TouchableOpacity style={CreateAdvertStyles.boxInput} onPress={() => setIsModalVisible(true)}>
+                        <View style={{ alignItems: 'center' }}>
+                            <Text>📅 Обрати дати</Text>
+                            {advertData?.startTime && <Text style={{ marginTop: 5 }}>{advertData?.startTime} до {advertData?.endTime}</Text>}
+                        </View>
+                    </TouchableOpacity>
 
-                    <TextInput
-                        placeholder='Кінець оголошення (YYYY-MM-DD HH:MM)*'
-                        value={advertData.endTime}
-                        onChangeText={text => setAdvertData({ ...advertData, endTime: text })}
-                        style={CreateAdvertStyles.input}
-                    />
+                    <TouchableOpacity style={CreateAdvertStyles.boxInput} onPress={() => console.log('location')}>
+                        <View style={{ alignItems: 'center' }}>
+                            <Text>📍 Моя локація</Text>
+                            {advertData?.location && <Text>{advertData.location}</Text>}
+                        </View>
+                    </TouchableOpacity>
 
-                    <TouchableOpacity onPress={selectImage} style={CreateAdvertStyles.imageInput}>
+                    <TouchableOpacity onPress={selectImage} style={CreateAdvertStyles.boxInput}>
                         <Text style={CreateAdvertStyles.imageInputLabel}>Зображення оголошення*</Text>
                         {imageUri ? (
                             <Image source={{ uri: imageUri }} style={CreateAdvertStyles.image} />
@@ -85,10 +142,9 @@ const CreateAdvert = () => {
                             <Text style={CreateAdvertStyles.imagePlaceholder}>Торкніться, щоб вибрати зображення</Text>
                         )}
                     </TouchableOpacity>
-
-                    <TouchableOpacity onPress={handleSubmit} style={CreateAdvertStyles.button}>
+                    {isLoading ? <Loader /> : <TouchableOpacity onPress={handleSubmit} style={CreateAdvertStyles.button}>
                         <Text style={CreateAdvertStyles.buttonText}>Створити оголошення</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity>}
                 </View>
 
             </ScrollView>

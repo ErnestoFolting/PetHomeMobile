@@ -1,4 +1,4 @@
-import { View, Button, TouchableOpacity, Text } from "react-native"
+import { TouchableOpacity } from "react-native"
 import React, { useEffect, useState } from "react"
 import useStore from "../Hooks/useAuth";
 import { FontAwesome5, Ionicons, AntDesign, Entypo, Feather } from "@expo/vector-icons";
@@ -16,6 +16,7 @@ import Loader from "./Loader/Loader";
 import AdvertDetail from "../Pages/AdvertDetail/AdvertDetail";
 import UserProfile from "../Pages/UserProfile/UserProfile";
 import CreateAdvert from "../Pages/CreateAdvert/CreateAdvert";
+import AdminPanel from "../Pages/Administrator/AdminPanel";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -71,46 +72,51 @@ export default observer(function Navigator() {
         );
     };
 
-    return (
-        store.isAuth ? (
-            <NavigationContainer theme={MyTheme} >
-                <Tab.Navigator>
-                    <Tab.Screen name="Оголошення" component={AdvertsStack}
-                        options={{
-                            tabBarIcon: () => <FontAwesome5 name="dog" color={Colors.main} size={24} />
-                        }}
-                    />
-                    <Tab.Screen name="Створити" component={CreateAdvert}
-                        options={{
-                            tabBarIcon: () => <Ionicons name="create-outline" size={24} color={Colors.main} />
-                        }} />
-                    <Tab.Screen name="Мої" component={My}
-                        options={{
-                            tabBarIcon: () => <AntDesign name="folder1" size={24} color={Colors.main} />
-                        }}
-                    />
-                    <Tab.Screen name="Я" component={Me}
-                        options={{
-                            tabBarIcon: () => <Ionicons name="person-outline" size={24} color={Colors.main} />,
-                            headerLeft: () => (
-                                <TouchableOpacity onPress={store.logout}>
-                                    <Ionicons name="exit-outline" size={24} color={Colors.main} style={{ marginLeft: 20 }} />
+    const authContent = store?.role?.includes("Administrator") ?
+        <AdminPanel theme={MyTheme} Tab={Tab} Stack={Stack} />
+        :
+        <NavigationContainer theme={MyTheme} >
+            <Tab.Navigator>
+                <Tab.Screen name="Оголошення" component={AdvertsStack}
+                    options={{
+                        tabBarIcon: () => <FontAwesome5 name="dog" color={Colors.main} size={24} />
+                    }}
+                />
+                <Tab.Screen name="Створити" component={CreateAdvert}
+                    options={{
+                        tabBarIcon: () => <Ionicons name="create-outline" size={24} color={Colors.main} />
+                    }} />
+                <Tab.Screen name="Мої" component={My}
+                    options={{
+                        tabBarIcon: () => <AntDesign name="folder1" size={24} color={Colors.main} />
+                    }}
+                />
+                <Tab.Screen name="Я" component={Me}
+                    options={{
+                        tabBarIcon: () => <Ionicons name="person-outline" size={24} color={Colors.main} />,
+                        headerLeft: () => (
+                            <TouchableOpacity onPress={store.logout}>
+                                <Ionicons name="exit-outline" size={24} color={Colors.main} style={{ marginLeft: 20 }} />
+                            </TouchableOpacity>
+                        ),
+                        headerRight: () => isEditing
+                            ? (
+                                <TouchableOpacity onPress={() => store.setIsEditing(!store.isEditing)}>
+                                    <Feather name="check" size={24} color={Colors.main} style={{ marginRight: 20 }} />
+                                </TouchableOpacity>
+                            )
+                            : (
+                                <TouchableOpacity onPress={() => store.setIsEditing(!store.isEditing)}>
+                                    <Entypo name="edit" size={20} color={Colors.main} style={{ marginRight: 20 }} />
                                 </TouchableOpacity>
                             ),
-                            headerRight: () => isEditing
-                                ? (
-                                    <TouchableOpacity onPress={() => store.setIsEditing(!store.isEditing)}>
-                                        <Feather name="check" size={24} color={Colors.main} style={{ marginRight: 20 }} />
-                                    </TouchableOpacity>
-                                )
-                                : (
-                                    <TouchableOpacity onPress={() => store.setIsEditing(!store.isEditing)}>
-                                        <Entypo name="edit" size={20} color={Colors.main} style={{ marginRight: 20 }} />
-                                    </TouchableOpacity>
-                                ),
-                        }} />
-                </Tab.Navigator>
-            </NavigationContainer>
+                    }} />
+            </Tab.Navigator>
+        </NavigationContainer>
+
+    return (
+        store.isAuth ? (
+            authContent
         ) : (
             <NavigationContainer>
                 <Stack.Navigator>

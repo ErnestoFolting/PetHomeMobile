@@ -5,6 +5,7 @@ export default class Store {
     isAuth = false;
     isLoading = true;
     userId = "";
+    role = "";
     isEditing = false;
     advertsNeedUpdate = false;
     constructor() {
@@ -15,6 +16,7 @@ export default class Store {
         this.checkAuth = this.checkAuth.bind(this)
         this.setIsEditing = this.setIsEditing.bind(this)
         this.setAdvertsNeedUpdate = this.setAdvertsNeedUpdate.bind(this)
+        this.setRole = this.setRole.bind(this)
     }
     setLoading(boolean) {
         this.isLoading = boolean;
@@ -28,6 +30,9 @@ export default class Store {
     setUserId(userId) {
         this.userId = userId
     }
+    setRole(role) {
+        this.role = role
+    }
     setAdvertsNeedUpdate(boolean) {
         this.advertsNeedUpdate = boolean;
     }
@@ -36,6 +41,7 @@ export default class Store {
             const response = await AuthService.login(creds)
             this.setAuth(true);
             this.setUserId(response?.data?.userId)
+            this.setRole(response?.data?.roles)
         } catch (e) {
             console.error(e?.message);
             throw e
@@ -63,6 +69,7 @@ export default class Store {
             const data = await AuthService.checkAuth()
             this.setAuth(true);
             this.setUserId(data?.userId)
+            this.setRole(data?.roles)
         } catch (e) {
             console.log(e)
         }

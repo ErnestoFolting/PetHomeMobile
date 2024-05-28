@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import CreateAdvertStyles from './CreateAdvertStyles';
-import UkrCalendar from '../../Components/Calendar/UkrCalendar';
 import MyModal from '../../Components/MyModal/MyModal';
 import AdvertCreationCalendar from '../../Components/Calendar/AdvertCreationCalendar/AdvertCreationCalendar';
 import * as FileSystem from 'expo-file-system';
 import AdvertService from '../../HTTP/API/AdvertService';
-import useFetching from '../../Hooks/useFetching';
 import Loader from '../../Components/Loader/Loader';
 
 const CreateAdvert = ({ navigation }) => {

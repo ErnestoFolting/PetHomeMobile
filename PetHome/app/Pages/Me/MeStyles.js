@@ -6,7 +6,7 @@ const MeStyles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         paddingHorizontal: 20,
-        paddingVertical: 30,
+        paddingTop: 10
     },
     header: {
         alignItems: 'center',

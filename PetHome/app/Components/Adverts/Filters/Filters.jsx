@@ -9,16 +9,26 @@ export default function Filters({ isUserAdverts, queryParams, setQueryParams }) 
     const store = useStore()
     const [isVisible, setIsVisible] = useState(false)
     const [open, setOpen] = useState(false);
+    const [openStatusPicker, setOpenStatusPicker] = useState(false);
+
     const [items, setItems] = useState([
         { label: 'По 4', value: 4 },
         { label: 'По 8', value: 8 },
         { label: 'По 12', value: 12 }
     ]);
+
+    const [statusItems, setStatusItems] = useState([
+        { label: 'Пошук', value: "search" },
+        { label: 'Виконуються', value: "process" },
+        { label: 'Завершені', value: "finished" }
+    ]);
+
     const [queryParamsCopy, setQueryParamsCopy] = useState({
         advertsLimit: queryParams?.advertsLimit.toString(),
         costFrom: queryParams?.costFrom.toString(),
         costTo: queryParams?.costTo.toString(),
-        isDatesFit: queryParams?.isDatesFit
+        isDatesFit: queryParams?.isDatesFit,
+        advertsStatus: queryParams?.advertsStatus,
     })
 
     const handleApply = () => {
@@ -48,7 +58,6 @@ export default function Filters({ isUserAdverts, queryParams, setQueryParams }) 
 
         if (!shallowEqual(queryParams, temp)) {
             setQueryParams({ ...queryParams, ...queryParamsCopy, currentPage: 1 });
-            console.log(queryParams);
         } else {
             setIsVisible(!isVisible)
         }
@@ -58,7 +67,7 @@ export default function Filters({ isUserAdverts, queryParams, setQueryParams }) 
         <View style={[FiltersStyles.container, FiltersStyles.shadow]}>
             {isVisible ?
                 <View style={{ width: '100%', alignItems: 'center' }}>
-                    <View style={{ zIndex: 5 }}>
+                    <View style={{ zIndex: 6 }}>
                         <Text style={FiltersStyles?.label}>Оголошень на сторінку</Text>
                         <DropDownPicker
                             open={open}
@@ -88,13 +97,25 @@ export default function Filters({ isUserAdverts, queryParams, setQueryParams }) 
                     </View>
                     }
                     {
-                        !isUserAdverts && !store?.role?.includes("Administrator") && <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        !isUserAdverts && !store?.role?.includes("Administrator") ? <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={FiltersStyles?.label}>У Ваші вільні дати</Text>
                             <Switch
                                 value={queryParamsCopy?.isDatesFit}
                                 onValueChange={(e) => setQueryParamsCopy({ ...queryParamsCopy, isDatesFit: e })}
                             />
-                        </View>
+                        </View> :
+                            <View style={{ zIndex: 5 }}>
+                                <Text style={FiltersStyles?.label}>Статус</Text>
+                                <DropDownPicker
+                                    open={openStatusPicker}
+                                    value={(queryParamsCopy?.advertsStatus)}
+                                    items={statusItems}
+                                    setOpen={setOpenStatusPicker}
+                                    onSelectItem={(item) => setQueryParamsCopy({ ...queryParamsCopy, advertsStatus: String(item.value), currentPage: 1 })}
+                                    setItems={setStatusItems}
+                                    containerStyle={{ width: '50%' }}
+                                />
+                            </View>
                     }
 
                     <TouchableOpacity style={FiltersStyles.apply} onPress={handleApply}>

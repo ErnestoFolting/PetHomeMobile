@@ -5,17 +5,20 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import AuthService from '../../HTTP/API/AuthService';
 import { useNavigation } from "@react-navigation/native";
+import * as Location from 'expo-location';
+import Loader from '../../Components/Loader/Loader';
+import PlacesAutocomplete from '../../Components/PlacesAutocomplete/PlacesAutocomplete';
 
 const Registration = () => {
     const navigation = useNavigation();
 
     const [registrationData, setRegistrationData] = useState({
-        surname: '',
-        name: '',
+        surname: 'test',
+        name: 'test',
         sex: 'male',
-        email: '',
-        phoneNumber: '',
-        username: '',
+        email: 'test@gmail.com',
+        phoneNumber: '+380678965067',
+        username: 'testUser',
         password: 'Password123!',
         confirmPassword: 'Password123!',
         location: 'Fastiv',
@@ -23,7 +26,9 @@ const Registration = () => {
         locationLng: '52,5'
     });
 
+    const [deniedAccess, setDeniedAccess] = useState(false)
     const [imageUri, SetImageUri] = useState('')
+    const [isLocationLoading, setIsLocationLoading] = useState(false)
 
     const handleSubmit = async () => {
 
@@ -32,17 +37,20 @@ const Registration = () => {
         Object.keys(registrationData).forEach(function (key, index) {
             formData.append(key, Object.values(registrationData)[index])
         })
+        if (imageUri !== '') {
+            const photoData = await FileSystem.readAsStringAsync(imageUri, {
+                encoding: FileSystem.EncodingType.Base64,
+            });
 
-        const photoData = await FileSystem.readAsStringAsync(imageUri, {
-            encoding: FileSystem.EncodingType.Base64,
-        });
-
-        formData.append('userPhoto', {
-            uri: imageUri,
-            name: `photo_${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`,
-            type: `image/jpeg`,
-            data: photoData,
-        });
+            formData.append('userPhoto', {
+                uri: imageUri,
+                name: `photo_${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`,
+                type: `image/jpeg`,
+                data: photoData,
+            });
+        } else {
+            Alert.alert('Оберіть фото');
+        }
 
         try {
             await AuthService.registration(formData)
@@ -50,11 +58,42 @@ const Registration = () => {
             console.log(e?.response?.data)
             throw e
         }
+
         navigation.navigate('Логін')
     };
 
-    const getUserLocation = () => {
-        console.log('get location');
+    const getUserLocation = async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+            console.log('Permission to access location was denied');
+            setDeniedAccess(true)
+            return;
+        }
+        try {
+            setIsLocationLoading(true)
+            // let locationResult = await Location.getCurrentPositionAsync({});
+            // let { latitude, longitude } = locationResult.coords;
+            let latitude = 50.0802105243495
+            let longitude = 29.925069074247297
+            const geocodeResponse = await Location.reverseGeocodeAsync({
+                latitude,
+                longitude,
+            });
+
+            if (geocodeResponse.length > 0) {
+                const { street, city, region } = geocodeResponse[0];
+                const location = ((street !== null ? `${street}, ` : ``) + (city !== null ? `${city}, ` : ``) + (region !== null ? `${region}` : ``))
+                setRegistrationData({ ...registrationData, location: location, locationLat: String(latitude)?.replace('.', ','), locationLng: String(longitude)?.replace('.', ',') })
+            }
+        } catch (e) {
+            Alert.alert(e);
+        } finally {
+            setIsLocationLoading(false)
+        }
+    }
+
+    const autoCompleteHandler = (data, details = null) => {
+        console.log('here');
     }
 
     const selectImage = async () => {
@@ -80,7 +119,7 @@ const Registration = () => {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             keyboardVerticalOffset={100}
         >
-            <ScrollView contentContainerStyle={{ paddingHorizontal: 20 }}>
+            <ScrollView contentContainerStyle={{ paddingHorizontal: 20 }} keyboardShouldPersistTaps={'handled'} >
                 <View style={RegistrationStyles.form}>
                     <TextInput
                         placeholder='Прізвище*'
@@ -151,10 +190,11 @@ const Registration = () => {
                         style={RegistrationStyles.input}
                         secureTextEntry
                     />
-
-                    <TouchableOpacity onPress={getUserLocation}>
+                    {registrationData?.location == "Fastiv" ? (isLocationLoading ? <Loader /> : <TouchableOpacity onPress={getUserLocation}>
                         <Text style={{ textAlign: 'center', marginVertical: 10 }}>Моя локація</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity>) : <Text>📍{registrationData?.location}</Text>}
+
+                    <PlacesAutocomplete autoCompleteHandler={autoCompleteHandler} />
 
                     <TouchableOpacity onPress={handleSubmit} style={RegistrationStyles.button}>
                         <Text style={RegistrationStyles.buttonText}>Зареєструватись</Text>

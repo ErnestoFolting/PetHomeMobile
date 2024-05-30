@@ -13,6 +13,7 @@ import shallowEqual from "./helper"
 import validateProfileRedo from "./ProfileRedoValidation"
 import { validateField } from "./ProfileRedoValidation"
 import MyModal from "../../Components/MyModal/MyModal"
+import MyButton from "../../Components/Common/MyButton"
 
 export default observer(function Me() {
     const store = useStore()
@@ -23,6 +24,7 @@ export default observer(function Me() {
     const [inputStyles, setStyles] = useState(store.isEditing ? MeStyles.valueRedo : MeStyles.value);
     const [validationErrors, setValidationErrors] = useState({});
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
 
     const [fetchUserData, loading, error] = useFetching(async () => {
         const userResponse = await UserDataService.getUserProfile()
@@ -43,6 +45,11 @@ export default observer(function Me() {
             console.log(e.response.data);
         }
     })
+
+    const [deleteProfile, loading3, error3] = useFetching(async () => {
+        await UserDataService.deleteUserProfile()
+    })
+
 
     useEffect(() => { //profile fetch
         async function fetchData() {
@@ -85,10 +92,23 @@ export default observer(function Me() {
         setIsModalVisible(true);
     }
 
-    if (loading || loading2) return <Loader />
+    const handleDelete = async () => {
+        try {
+            await deleteProfile()
+            store.setAuth(false)
+        } catch (e) {
+            console.log(e);
+            setIsErrorModalVisible(true)
+        }
+    }
+
+    if (loading || loading2 || loading3) return <Loader />
+
+    const errorModal = isErrorModalVisible && <MyModal isModalVisible={isErrorModalVisible} setIsModalVisible={setIsErrorModalVisible} content={<Text>{error}{error2}{error3}</Text>}></MyModal>
 
     return (
         <ScrollView style={MeStyles.container}>
+            {errorModal}
             <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={Object.entries(validationErrors).map(([field, errorMessage], index) => (
                 <Text key={index}>{errorMessage}</Text>
             ))}></MyModal>
@@ -137,9 +157,11 @@ export default observer(function Me() {
                         />
                     </View>
 
-                    <View style={MeStyles.infoRow}>
+                    <View style={[MeStyles.infoRow, { flexDirection: 'row', flexWrap: 'wrap' }]}>
                         <Text style={MeStyles.label}>📍</Text>
                         <TextInput
+                            multiline={true}
+                            numberOfLines={2}
                             style={inputStyles}
                             value={showData.location}
                             onChangeText={(text) => handleChange('location', text)}
@@ -167,6 +189,7 @@ export default observer(function Me() {
                 </View>
 
             </View>
+            <MyButton isRound onPress={handleDelete}>Видалити профіль</MyButton>
             <View style={MeStyles.calendarContainer}>
                 <View style={MeStyles.calendarText}><Text style={MeStyles.label}>Графік  зайнятості</Text></View>
                 <MyCalendar></MyCalendar>

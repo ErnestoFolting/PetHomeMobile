@@ -73,7 +73,7 @@ export default observer(function Navigator() {
     };
 
     const authContent = store?.role?.includes("Administrator") ?
-        <AdminPanel theme={MyTheme} Tab={Tab} Stack={Stack} />
+        <AdminPanel theme={MyTheme} Tab={Tab} Stack={Stack} advertsStack={AdvertsStack} />
         :
         <NavigationContainer theme={MyTheme} >
             <Tab.Navigator>

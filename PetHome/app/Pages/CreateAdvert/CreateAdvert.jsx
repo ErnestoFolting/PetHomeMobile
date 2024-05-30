@@ -7,8 +7,10 @@ import AdvertCreationCalendar from '../../Components/Calendar/AdvertCreationCale
 import * as FileSystem from 'expo-file-system';
 import AdvertService from '../../HTTP/API/AdvertService';
 import Loader from '../../Components/Loader/Loader';
+import useStore from '../../Hooks/useAuth';
 
 const CreateAdvert = ({ navigation }) => {
+    const store = useStore();
     const [advertData, setAdvertData] = useState({
         name: 'Назва',
         description: 'Опис оголошення',
@@ -49,6 +51,7 @@ const CreateAdvert = ({ navigation }) => {
             await AdvertService.createAdvert(formData)
             setAdvertData({ ...advertData, startTime: '', endTime: '' })
             setImageUri('')
+            store.setAdvertsNeedUpdate(!store.advertsNeedUpdate)
             alert('Створено')
         } catch (e) {
             alert(JSON.stringify(e?.response?.data))

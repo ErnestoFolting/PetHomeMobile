@@ -8,7 +8,7 @@ const FiltersStyles = StyleSheet.create({
         alignItems: 'center',
         borderBottomLeftRadius: 5,
         borderBottomRightRadius: 5,
-        marginBottom: 15,
+        marginBottom: 15
     },
     shadow: {
         shadowColor: '#000',

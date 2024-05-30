@@ -8,6 +8,7 @@ export default class Store {
     role = "";
     isEditing = false;
     advertsNeedUpdate = false;
+    usersNeedUpdate = false;
     constructor() {
         makeAutoObservable(this)
         this.login = this.login.bind(this)
@@ -16,6 +17,7 @@ export default class Store {
         this.checkAuth = this.checkAuth.bind(this)
         this.setIsEditing = this.setIsEditing.bind(this)
         this.setAdvertsNeedUpdate = this.setAdvertsNeedUpdate.bind(this)
+        this.setUsersNeedUpdate = this.setUsersNeedUpdate.bind(this)
         this.setRole = this.setRole.bind(this)
     }
     setLoading(boolean) {
@@ -35,6 +37,9 @@ export default class Store {
     }
     setAdvertsNeedUpdate(boolean) {
         this.advertsNeedUpdate = boolean;
+    }
+    setUsersNeedUpdate(boolean) {
+        this.usersNeedUpdate = boolean;
     }
     async login(creds) {
         try {

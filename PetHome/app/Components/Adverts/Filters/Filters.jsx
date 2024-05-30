@@ -3,8 +3,10 @@ import { View, Text, TouchableOpacity, TextInput, Switch } from 'react-native';
 import FiltersStyles from './FiltersStyles';
 import shallowEqual from '../../../Pages/Me/helper';
 import DropDownPicker from 'react-native-dropdown-picker';
+import useStore from '../../../Hooks/useAuth';
 
 export default function Filters({ isUserAdverts, queryParams, setQueryParams }) {
+    const store = useStore()
     const [isVisible, setIsVisible] = useState(false)
     const [open, setOpen] = useState(false);
     const [items, setItems] = useState([
@@ -68,8 +70,7 @@ export default function Filters({ isUserAdverts, queryParams, setQueryParams }) 
                             containerStyle={{ width: '50%' }}
                         />
                     </View>
-
-                    <View style={FiltersStyles.costSelectionContainer}>
+                    {!store?.role?.includes("Administrator") && <View style={FiltersStyles.costSelectionContainer}>
                         <Text style={FiltersStyles?.label}>Ціна від:</Text>
                         <TextInput
                             style={FiltersStyles.input}
@@ -85,9 +86,9 @@ export default function Filters({ isUserAdverts, queryParams, setQueryParams }) 
                             keyboardType="numeric"
                         />
                     </View>
-
+                    }
                     {
-                        !isUserAdverts && <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        !isUserAdverts && !store?.role?.includes("Administrator") && <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={FiltersStyles?.label}>У Ваші вільні дати</Text>
                             <Switch
                                 value={queryParamsCopy?.isDatesFit}
@@ -95,6 +96,7 @@ export default function Filters({ isUserAdverts, queryParams, setQueryParams }) 
                             />
                         </View>
                     }
+
                     <TouchableOpacity style={FiltersStyles.apply} onPress={handleApply}>
                         <Text>Застосувати</Text>
                     </TouchableOpacity>

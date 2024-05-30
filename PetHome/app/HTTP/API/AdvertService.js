@@ -14,6 +14,19 @@ export default class AdvertService {
     return response
   }
 
+  static async getAdvertsByAdmin(queryParams) {
+    const response = await $api.get("/api/adverts/byadmin", {
+      params: {
+        PageNumber: queryParams?.currentPage,
+        PageSize: queryParams?.advertsLimit,
+        isDatesFit: queryParams?.isDatesFit,
+        priceFrom: queryParams?.costFrom,
+        priceTo: queryParams?.costTo
+      }
+    })
+    return response
+  }
+
   static async getCertainAdvert(id) {
     const response = await $api.get('/api/adverts/' + id)
     return response.data

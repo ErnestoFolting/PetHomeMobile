@@ -19,13 +19,18 @@ export default class AdminService {
     return response.data
   }
 
+  static async addAdmin(registerData) {
+    const response = await $api.post('/api/users/adminAdd/', registerData)
+    return response.data
+  }
+
   static async deleteUser(id) {
     const response = await $api.delete('/api/users/' + id)
     return response.data
   }
 
   static async deleteAdvert(id) {
-    const response = await $api.delete('/api/adverts/' + id)
+    const response = await $api.delete('/api/adverts/adminDelete/' + id)
     return response.data
   }
 }

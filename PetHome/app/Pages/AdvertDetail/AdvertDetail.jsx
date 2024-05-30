@@ -14,6 +14,8 @@ import useStore from '../../Hooks/useAuth';
 import ProfileItem from '../../Components/Profile/ProfileItem';
 import PerformersSelectionBlock from '../../Components/Adverts/PerformersSelectionBlock/PerformersSelectionBlock';
 import { observer } from "mobx-react-lite";
+import MyButton from '../../Components/Common/MyButton';
+import AdminService from '../../HTTP/API/AdminService';
 
 const AdvertDetail = ({ route, navigation }) => {
     const store = useStore()
@@ -23,11 +25,36 @@ const AdvertDetail = ({ route, navigation }) => {
     const [advertRequestErrors, setAdvertRequestErrors] = useState([])
     const [dates, setDates] = useState({})
     const [isModalVisible, setIsModalVisible] = useState(false)
+    const [isAdvertDeleted, setIsAdvertDeleted] = useState(false)
 
     const [fetchAdvert, loading, error] = useFetching(async () => {
         const userResponse = await AdvertService.getCertainAdvert(adId)
         setAdvert(userResponse)
     })
+
+    const [deleteAdvertByAdmin, loading2, error2] = useFetching(async () => {
+        await AdminService.deleteAdvert(adId)
+    })
+
+    const [deleteAdvertByOwner, loading3, error3] = useFetching(async () => {
+        await AdvertService.deleteAdvert(adId)
+    })
+
+    const deleteHandler = async () => {
+        try {
+            if (store.userId !== advert?.ownerId) {
+                await deleteAdvertByAdmin()
+            } else {
+                await deleteAdvertByOwner()
+            }
+            store.setAdvertsNeedUpdate(!store.advertsNeedUpdate)
+            setIsAdvertDeleted(true)
+            navigation.goBack()
+        } catch (e) {
+            console.log(e);
+            setIsModalVisible(true)
+        }
+    }
 
     useEffect(() => {
         async function fetchData() {
@@ -52,12 +79,29 @@ const AdvertDetail = ({ route, navigation }) => {
         }
     }, [advert?.startTime])
 
-    if (loading) return <Loader />
+    if (loading || loading2 || loading3) return <Loader />
+
+    const requestBlock = <AdvertRequestBlock advertStatus={advert?.status} advertId={adId} setIsModalVisible={setIsModalVisible} setAdvertRequestErrors={setAdvertRequestErrors} />
+
+    const deleteButton = <MyButton style={{ width: '100%' }} onPress={deleteHandler}>Видалити оголошення</MyButton>
+
+    const controlBLock = () => {
+        if (store?.role?.includes("Administrator")) return deleteButton
+        if (store.userId == advert?.ownerId) {
+            if (advert?.status == "search") {
+                return deleteButton
+            } else {
+                return
+            }
+        } else {
+            return requestBlock
+        }
+    }
 
     return (
         <ScrollView contentContainerStyle={AdvertDetailStyles.container}>
 
-            <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<Text>{error}{advertRequestErrors}</Text>}></MyModal>
+            <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<Text>{error}{advertRequestErrors}{error2}{error3}</Text>}></MyModal>
             {photoLoading && <Loader />}
             <Image
                 source={{ uri: API_URL + advert?.photoFilePath }}
@@ -80,11 +124,9 @@ const AdvertDetail = ({ route, navigation }) => {
                 </View>
 
             </View>
-
-            {store.userId !== advert?.ownerId && <AdvertRequestBlock advertStatus={advert?.status} advertId={adId} setIsModalVisible={setIsModalVisible} setAdvertRequestErrors={setAdvertRequestErrors} />}
-
+            {controlBLock()}
             {store.userId == advert?.ownerId ?
-                <PerformersSelectionBlock navigation={navigation} advertId={adId} />
+                (!isAdvertDeleted && <PerformersSelectionBlock navigation={navigation} advertId={adId} />)
                 :
                 <ProfileItem navigation={navigation} title="Власник" profileData={advert?.owner} id={advert?.owner?.id} isBig />
             }

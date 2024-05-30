@@ -34,6 +34,8 @@ const Adverts = ({ navigation, route }) => {
     let response = []
     if (isUserAdverts) {
       response = await UserDataService.getUserAdverts(queryParams)
+    } else if (store?.role?.includes("Administrator")) {
+      response = await AdvertService.getAdvertsByAdmin(queryParams)
     } else {
       response = await AdvertService.getAllAdverts(queryParams);
     }
@@ -52,7 +54,11 @@ const Adverts = ({ navigation, route }) => {
 
   useEffect(() => {
     fetchData();
-  }, [queryParams, store.advertsNeedUpdate]);
+  }, [queryParams]);
+
+  useEffect(() => {
+    setQueryParams({ ...queryParams, currentPage: 1 });
+  }, [store.advertsNeedUpdate]);
 
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = 190;
@@ -87,6 +93,7 @@ const Adverts = ({ navigation, route }) => {
               params={queryParams}
               setParams={setQueryParams}
             />
+
           </View>
 
         )

@@ -27,7 +27,6 @@ export default function AdvertItem({ item, navigation, disableShadow, isMy }) {
                     <Text>📍{item.location}</Text>
                     <Text style={{ fontWeight: 'bold', color: Colors.green }}>{item.cost}₴</Text>
                 </View>
-
             </View>
         </TouchableOpacity>
     )

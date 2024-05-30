@@ -7,15 +7,25 @@ import UserProfileStyles from './UserProfileStyles'
 import API_URL from '../../Constants/uri'
 import UkrCalendar from '../../Components/Calendar/UkrCalendar'
 import Colors from '../../Constants/Colors'
+import useStore from '../../Hooks/useAuth'
+import MyButton from '../../Components/Common/MyButton'
+import AdminService from '../../HTTP/API/AdminService'
+import MyModal from '../../Components/MyModal/MyModal'
 
-export default function UserProfile({ route }) {
+export default function UserProfile({ route, navigation }) {
     const { userID } = route.params
+    const store = useStore()
+
     const [profile, setProfile] = useState({})
     const [dates, setDates] = useState({})
+    const [isModalVisible, setIsModalVisible] = useState(false)
 
     const [fetchProfileData, loading, error] = useFetching(async () => {
         const response = await UserService.getCertainUser(userID)
         setProfile(response)
+    })
+    const [deleteAdvert, loading2, error2] = useFetching(async () => {
+        await AdminService.deleteUser(userID)
     })
 
     useEffect(() => {
@@ -25,6 +35,19 @@ export default function UserProfile({ route }) {
         }
         fetch()
     }, [userID])
+
+    const deleteHandler = async () => {
+        try {
+            await deleteAdvert()
+            console.log('bool ' + store.usersNeedUpdate);
+            store.setUsersNeedUpdate(!store.usersNeedUpdate)
+            store.setAdvertsNeedUpdate(!store.advertsNeedUpdate)
+            navigation.popToTop()
+        } catch (e) {
+            console.log(e);
+            setIsModalVisible(true)
+        }
+    }
 
     useEffect(() => {
         if (profile?.timeExceptions) {
@@ -37,10 +60,12 @@ export default function UserProfile({ route }) {
 
     }, [profile?.timeExceptions])
 
-    if (loading) return <Loader />
+    if (loading || loading2) return <Loader />
 
     return (
         <ScrollView style={UserProfileStyles.container}>
+            <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<Text>{error}{error2}</Text>}></MyModal>
+
             <View style={UserProfileStyles.header}>
 
                 <Image source={{
@@ -86,6 +111,7 @@ export default function UserProfile({ route }) {
                 <Text style={UserProfileStyles.calendarTitle}>Графік завантаженості</Text>
                 <UkrCalendar markedDates={dates} />
             </View>
+            {store?.role?.includes("Administrator") && <MyButton isRound onPress={deleteHandler}>Видалити профіль</MyButton>}
         </ScrollView>
     )
 }

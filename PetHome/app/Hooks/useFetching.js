@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 
 const useFetching = (callback) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,6 +16,7 @@ const useFetching = (callback) => {
       } else {
         setError(errData);
       }
+      if (axios.isAxiosError(e) && errData == '') setError("Axios Error")
       throw e;
     } finally {
       setIsLoading(false);

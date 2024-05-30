@@ -10,7 +10,7 @@ import ProfileItem from '../../Profile/ProfileItem'
 import AdvertService from '../../../HTTP/API/AdvertService'
 import useStore from '../../../Hooks/useAuth'
 
-export default function PerformersSelectionBlock({ advertId, navigation }) {
+export default function PerformersSelectionBlock({ advertId, navigation, isAdvertDeleted }) {
     const store = useStore()
 
     const [advert, setAdvert] = useState()

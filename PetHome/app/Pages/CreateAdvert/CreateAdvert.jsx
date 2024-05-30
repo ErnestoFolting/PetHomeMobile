@@ -8,8 +8,9 @@ import * as FileSystem from 'expo-file-system';
 import AdvertService from '../../HTTP/API/AdvertService';
 import Loader from '../../Components/Loader/Loader';
 import useStore from '../../Hooks/useAuth';
+import LocationBlock from '../../Components/Location/LocationBlock/LocationBlock';
 
-const CreateAdvert = ({ navigation }) => {
+const CreateAdvert = () => {
     const store = useStore();
     const [advertData, setAdvertData] = useState({
         name: 'Назва',
@@ -44,7 +45,6 @@ const CreateAdvert = ({ navigation }) => {
                 data: photoData,
             });
         }
-
 
         try {
             setIsLoading(true)
@@ -97,7 +97,7 @@ const CreateAdvert = ({ navigation }) => {
                 setIsModalVisible={setIsModalVisible}
             />
 
-            <ScrollView contentContainerStyle={{ paddingHorizontal: 20 }}>
+            <ScrollView contentContainerStyle={{ paddingHorizontal: 20 }} keyboardShouldPersistTaps={'handled'}>
                 <View style={CreateAdvertStyles.form}>
                     <TextInput
                         placeholder='Назва оголошення*'
@@ -128,12 +128,6 @@ const CreateAdvert = ({ navigation }) => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={CreateAdvertStyles.boxInput} onPress={() => console.log('location')}>
-                        <View style={{ alignItems: 'center' }}>
-                            <Text>📍 Моя локація</Text>
-                            {advertData?.location && <Text>{advertData.location}</Text>}
-                        </View>
-                    </TouchableOpacity>
 
                     <TouchableOpacity onPress={selectImage} style={CreateAdvertStyles.boxInput}>
                         <Text style={CreateAdvertStyles.imageInputLabel}>Зображення оголошення*</Text>
@@ -143,9 +137,13 @@ const CreateAdvert = ({ navigation }) => {
                             <Text style={CreateAdvertStyles.imagePlaceholder}>Торкніться, щоб вибрати зображення</Text>
                         )}
                     </TouchableOpacity>
+
+                    <LocationBlock data={advertData} setData={setAdvertData} />
+
                     {isLoading ? <Loader /> : <TouchableOpacity onPress={handleSubmit} style={CreateAdvertStyles.button}>
                         <Text style={CreateAdvertStyles.buttonText}>Створити оголошення</Text>
                     </TouchableOpacity>}
+
                 </View>
 
             </ScrollView>

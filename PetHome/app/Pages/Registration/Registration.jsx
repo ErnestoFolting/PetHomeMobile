@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Alert, Image } from 'react-native';
 import { RegistrationStyles } from './RegistrationStyles';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import AuthService from '../../HTTP/API/AuthService';
 import { useNavigation } from "@react-navigation/native";
-import * as Location from 'expo-location';
-import Loader from '../../Components/Loader/Loader';
-import PlacesAutocomplete from '../../Components/PlacesAutocomplete/PlacesAutocomplete';
+import LocationBlock from '../../Components/Location/LocationBlock/LocationBlock';
 
 const Registration = () => {
     const navigation = useNavigation();
@@ -26,9 +24,7 @@ const Registration = () => {
         locationLng: '52,5'
     });
 
-    const [deniedAccess, setDeniedAccess] = useState(false)
     const [imageUri, SetImageUri] = useState('')
-    const [isLocationLoading, setIsLocationLoading] = useState(false)
 
     const handleSubmit = async () => {
 
@@ -62,40 +58,6 @@ const Registration = () => {
         navigation.navigate('Логін')
     };
 
-    const getUserLocation = async () => {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-            console.log('Permission to access location was denied');
-            setDeniedAccess(true)
-            return;
-        }
-        try {
-            setIsLocationLoading(true)
-            // let locationResult = await Location.getCurrentPositionAsync({});
-            // let { latitude, longitude } = locationResult.coords;
-            let latitude = 50.0802105243495
-            let longitude = 29.925069074247297
-            const geocodeResponse = await Location.reverseGeocodeAsync({
-                latitude,
-                longitude,
-            });
-
-            if (geocodeResponse.length > 0) {
-                const { street, city, region } = geocodeResponse[0];
-                const location = ((street !== null ? `${street}, ` : ``) + (city !== null ? `${city}, ` : ``) + (region !== null ? `${region}` : ``))
-                setRegistrationData({ ...registrationData, location: location, locationLat: String(latitude)?.replace('.', ','), locationLng: String(longitude)?.replace('.', ',') })
-            }
-        } catch (e) {
-            Alert.alert(e);
-        } finally {
-            setIsLocationLoading(false)
-        }
-    }
-
-    const autoCompleteHandler = (data, details = null) => {
-        console.log('here');
-    }
-
     const selectImage = async () => {
         let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -127,7 +89,6 @@ const Registration = () => {
                         onChangeText={text => setRegistrationData({ ...registrationData, surname: text })}
                         style={RegistrationStyles.input}
                     />
-
 
                     <TextInput
                         placeholder="Ім'я*"
@@ -190,11 +151,8 @@ const Registration = () => {
                         style={RegistrationStyles.input}
                         secureTextEntry
                     />
-                    {registrationData?.location == "Fastiv" ? (isLocationLoading ? <Loader /> : <TouchableOpacity onPress={getUserLocation}>
-                        <Text style={{ textAlign: 'center', marginVertical: 10 }}>Моя локація</Text>
-                    </TouchableOpacity>) : <Text>📍{registrationData?.location}</Text>}
 
-                    <PlacesAutocomplete autoCompleteHandler={autoCompleteHandler} />
+                    <LocationBlock data={registrationData} setData={setRegistrationData} />
 
                     <TouchableOpacity onPress={handleSubmit} style={RegistrationStyles.button}>
                         <Text style={RegistrationStyles.buttonText}>Зареєструватись</Text>

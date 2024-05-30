@@ -26,6 +26,7 @@ const AdvertDetail = ({ route, navigation }) => {
     const [dates, setDates] = useState({})
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [isAdvertDeleted, setIsAdvertDeleted] = useState(false)
+    const [isAdvertEditing, setIsAdvertEditiong] = useState(false)
 
     const [fetchAdvert, loading, error] = useFetching(async () => {
         const userResponse = await AdvertService.getCertainAdvert(adId)
@@ -79,17 +80,19 @@ const AdvertDetail = ({ route, navigation }) => {
         }
     }, [advert?.startTime])
 
-    if (loading || loading2 || loading3) return <Loader />
-
     const requestBlock = <AdvertRequestBlock advertStatus={advert?.status} advertId={adId} setIsModalVisible={setIsModalVisible} setAdvertRequestErrors={setAdvertRequestErrors} />
 
-    const deleteButton = <MyButton style={{ width: '100%' }} onPress={deleteHandler}>Видалити оголошення</MyButton>
+    const deleteButton = <MyButton style={{ flex: 1, width: '100%' }} onPress={deleteHandler}>Видалити </MyButton>
+
+    const deleteAndEditButtons = <View style={{ flexDirection: 'row' }}>
+        <MyButton style={{ flex: 1, backgroundColor: Colors.light }} onPress={() => setIsAdvertEditiong(true)}>Редагувати</MyButton>{deleteButton}
+    </View>
 
     const controlBLock = () => {
         if (store?.role?.includes("Administrator")) return deleteButton
         if (store.userId == advert?.ownerId) {
             if (advert?.status == "search") {
-                return deleteButton
+                return deleteAndEditButtons
             } else {
                 return
             }
@@ -98,10 +101,13 @@ const AdvertDetail = ({ route, navigation }) => {
         }
     }
 
+    if (loading || loading2 || loading3) return <Loader />
+
     return (
         <ScrollView contentContainerStyle={AdvertDetailStyles.container}>
 
             <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<Text>{error}{advertRequestErrors}{error2}{error3}</Text>}></MyModal>
+            <MyModal isModalVisible={isAdvertEditing} setIsModalVisible={setIsAdvertEditiong} content={<Text>editing</Text>}></MyModal>
             {photoLoading && <Loader />}
             <Image
                 source={{ uri: API_URL + advert?.photoFilePath }}
@@ -124,7 +130,9 @@ const AdvertDetail = ({ route, navigation }) => {
                 </View>
 
             </View>
+
             {controlBLock()}
+
             {store.userId == advert?.ownerId ?
                 (!isAdvertDeleted && <PerformersSelectionBlock navigation={navigation} advertId={adId} />)
                 :

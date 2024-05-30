@@ -9,7 +9,7 @@ const MyButtonStyles = StyleSheet.create({
         alignItems: 'center'
     },
     round: {
-        borderRadius: 10
+        borderRadius: 5
     }
 });
 

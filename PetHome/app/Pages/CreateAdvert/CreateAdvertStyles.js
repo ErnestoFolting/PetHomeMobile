@@ -36,6 +36,7 @@ const CreateAdvertStyles = StyleSheet.create({
         padding: 10,
         borderRadius: 5,
         alignItems: 'center',
+        marginTop: 15
     }, form: {
         marginTop: '10%',
         justifyContent: "center",

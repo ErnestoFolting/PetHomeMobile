@@ -15,11 +15,17 @@ namespace backendPetHome.API.Hubs
 
         public async Task ApplyRequest(RequestDTO requestDTO)
         {
-            //string? ownerId = requestDTO.advert.ownerId;
-            //if (ownerId != null)
-            //{
-            //    await Clients.User(ownerId).SendAsync("Apply", requestDTO);
-            //}
+            string? ownerId = requestDTO.advert.ownerId;
+            if (ownerId != null)
+            {
+                await Clients.User(ownerId).SendAsync("Apply", requestDTO);
+            }
+            //await Clients.User("37ae77ba-94a7-46db-a5e7-6be9d237c7fe").SendAsync("Send", requestDTO?.status);
+        }
+
+        public async Task Check(string checkString)
+        {
+            await Clients.User("37ae77ba-94a7-46db-a5e7-6be9d237c7fe").SendAsync("Send", checkString);
         }
 
         public async Task DeleteRequest(RequestDTO requestDTO)

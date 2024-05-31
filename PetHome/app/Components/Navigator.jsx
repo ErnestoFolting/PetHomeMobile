@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import useStore from "../Hooks/useAuth";
 import { FontAwesome5, Ionicons, AntDesign, Entypo, Feather } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme, createNavigationContainerRef } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { observer } from "mobx-react-lite"
 import My from "../Pages/My/My";
@@ -17,10 +17,11 @@ import AdvertDetail from "../Pages/AdvertDetail/AdvertDetail";
 import UserProfile from "../Pages/UserProfile/UserProfile";
 import CreateAdvert from "../Pages/CreateAdvert/CreateAdvert";
 import AdminPanel from "../Pages/Administrator/AdminPanel";
+import Toast from 'react-native-toast-message'
+import UserNotification from "./Notifications/UserNotification";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-
 
 const MyTheme = {
     ...DefaultTheme,
@@ -46,8 +47,37 @@ export default observer(function Navigator() {
         if (store) {
             setIsEditing(store.isEditing)
         }
-
     }, [store.isEditing]);
+
+    const toastConfig = {
+        notificationToast: ({ props, }) => (
+            < UserNotification {...props} />
+        )
+    };
+
+    useEffect(() => {
+        async function createHubConnection() {
+            await store.createHubConnection()
+        }
+        if (store.isAuth) {
+            createHubConnection()
+        }
+    }, [store.isAuth]);
+
+    useEffect(() => {
+        if (store?.myHubConnection) {
+            store?.myHubConnection?.on("Apply", (request) => {
+                Toast.show({
+                    type: 'notificationToast',
+                    props: {
+                        request: request,
+                        status: "apply",
+                        navigationRef: navigationRef
+                    }
+                });
+            })
+        }
+    }, [store?.myHubConnection]);
 
     if (store.isLoading) {
         return <Loader />
@@ -72,11 +102,15 @@ export default observer(function Navigator() {
         );
     };
 
+    const navigationRef = React.createRef();
+
     const authContent = store?.role?.includes("Administrator") ?
         <AdminPanel theme={MyTheme} Tab={Tab} Stack={Stack} advertsStack={AdvertsStack} />
         :
-        <NavigationContainer theme={MyTheme} >
-            <Tab.Navigator>
+        <NavigationContainer theme={MyTheme} ref={navigationRef}>
+            <Tab.Navigator screenOptions={{
+                lazy: false
+            }}>
                 <Tab.Screen name="Оголошення" component={AdvertsStack}
                     options={{
                         tabBarIcon: () => <FontAwesome5 name="dog" color={Colors.main} size={24} />
@@ -84,7 +118,8 @@ export default observer(function Navigator() {
                 />
                 <Tab.Screen name="Створити" component={CreateAdvert}
                     options={{
-                        tabBarIcon: () => <Ionicons name="create-outline" size={24} color={Colors.main} />
+                        tabBarIcon: () => <Ionicons name="create-outline" size={24} color={Colors.main} />,
+                        lazy: true
                     }} />
                 <Tab.Screen name="Мої" component={My}
                     options={{
@@ -112,6 +147,7 @@ export default observer(function Navigator() {
                             ),
                     }} />
             </Tab.Navigator>
+            <Toast config={toastConfig} autoHide={false} />
         </NavigationContainer>
 
     return (

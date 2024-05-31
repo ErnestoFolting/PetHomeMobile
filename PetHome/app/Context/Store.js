@@ -1,5 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import AuthService from "../HTTP/API/AuthService";
+import * as signalR from '@microsoft/signalr';
 
 export default class Store {
     isAuth = false;
@@ -9,6 +10,7 @@ export default class Store {
     isEditing = false;
     advertsNeedUpdate = false;
     usersNeedUpdate = false;
+    myHubConnection = null;
     constructor() {
         makeAutoObservable(this)
         this.login = this.login.bind(this)
@@ -19,6 +21,7 @@ export default class Store {
         this.setAdvertsNeedUpdate = this.setAdvertsNeedUpdate.bind(this)
         this.setUsersNeedUpdate = this.setUsersNeedUpdate.bind(this)
         this.setRole = this.setRole.bind(this)
+        this.createHubConnection = this.createHubConnection.bind(this)
     }
     setLoading(boolean) {
         this.isLoading = boolean;
@@ -40,6 +43,9 @@ export default class Store {
     }
     setUsersNeedUpdate(boolean) {
         this.usersNeedUpdate = boolean;
+    }
+    setMyHubConnection(hubConnection) {
+        this.myHubConnection = hubConnection
     }
     async login(creds) {
         try {
@@ -65,6 +71,8 @@ export default class Store {
             await AuthService.logout()
             this.setAuth(false);
             this.setUserId("")
+            this.myHubConnection.stop()
+            this.setMyHubConnection(null)
         } catch (e) {
             console.error(e)
         }
@@ -77,6 +85,22 @@ export default class Store {
             this.setRole(data?.roles)
         } catch (e) {
             console.log(e)
+        }
+    }
+    async createHubConnection() {
+        if (!this.myHubConnection) {
+            console.log(`${process.env.EXPO_PUBLIC_API_URL}/performerSelectionHub`);
+            const hubConnection = new signalR.HubConnectionBuilder()
+                .withUrl(`${process.env.EXPO_PUBLIC_API_URL}/performerSelectionHub`) // Replace with your ngrok URL and hub path
+                .withAutomaticReconnect()
+                .build();
+            try {
+                await hubConnection?.start()
+                console.log('HUB START')
+                this.setMyHubConnection(hubConnection)
+            } catch (e) {
+                console.log("errorHub", e)
+            }
         }
     }
 }

@@ -2,8 +2,9 @@ import { ScrollView } from 'react-native'
 import React from 'react'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { PlacesAutocompleteStyles } from './PlacesAutocompleteStyles';
+import { replaceSigns } from '../../../Helpers/StringsHelper';
 
-export default function PlacesAutocomplete({ formData, setFormData }) {
+export default function PlacesAutocomplete({ formData, setFormData, setIsLocationChanging }) {
 
     const autoCompleteHandler = (data, details = null) => {
         let latitude = details.geometry.location.lat
@@ -11,7 +12,11 @@ export default function PlacesAutocomplete({ formData, setFormData }) {
         let addressComponents = details.address_components;
         let city = '';
         let region = '';
+        let route = '';
         for (const element of addressComponents) {
+            if (element.types.includes('route')) {
+                route = element.long_name;
+            }
             if (element.types.includes('locality')) {
                 city = element.long_name;
             }
@@ -19,8 +24,10 @@ export default function PlacesAutocomplete({ formData, setFormData }) {
                 region = element.long_name;
             }
         }
-        let location = (`${city}, ${region}`);
-        setFormData({ ...formData, location: location, locationLat: String(latitude)?.replace('.', ','), locationLng: String(longitude)?.replace('.', ',') })
+        const location = ((route !== '' ? `${route}, ` : ``) + (city !== '' ? `${city}, ` : ``) + (region !== '' ? `${region}` : ``))
+
+        setFormData({ ...formData, location: location, locationLat: replaceSigns(latitude), locationLng: replaceSigns(longitude) })
+        setIsLocationChanging(false)
     }
 
     return (

@@ -5,10 +5,8 @@ import AdvertRequestBlockStyles from './AdvertRequestBlockStyles'
 import UserDataService from '../../../HTTP/API/UserDataService'
 import RequestService from '../../../HTTP/API/RequestService'
 import Loader from '../../Loader/Loader'
-import useStore from '../../../Hooks/useAuth'
 
 export default function AdvertRequestBlock({ advertStatus, setIsModalVisible, advertId, setAdvertRequestErrors }) {
-    const store = useStore();
 
     const [userRequests, setUserRequests] = useState([])
     const [checkIfRequestSent, loading, error] = useFetching(async () => {
@@ -61,8 +59,8 @@ export default function AdvertRequestBlock({ advertStatus, setIsModalVisible, ad
                 text = "Ви подали заявку, очікуйте"
                 break
             case 'confirmed':
-                if (advertStatus === 'finished') text = "Ви виконали це замовлення"
                 text = "Ви виконуєте це замовлення"
+                if (advertStatus == 'finished') text = "Ви виконали це замовлення"
                 break
             default: {
                 text = "Подати заявку"

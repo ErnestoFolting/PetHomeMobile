@@ -86,9 +86,10 @@ namespace backendPetHome.BLL.Services
 
         public async Task<int> updateUserAdvert(string userId, AdvertCreateRedoDTO data, int advertId, IFormFile? advertPhoto)
         {
-            Advert? advertInDb = await _unitOfWork.AdvertRepository.GetByIdSpecification(new AdvertByIdSpecification(advertId));
+            Advert? advertInDb = await _unitOfWork.AdvertRepository.GetByIdSpecification(new AdvertByIdIncludesRequestAndUserSpecification(advertId));
             if (advertInDb == null) throw new KeyNotFoundException("Advert does not exist.");
             if (advertInDb.ownerId != userId) throw new ArgumentException("It is not your advert.");
+            if (advertInDb.requests.Any(el => el.status != DAL.Enums.RequestStatusEnum.rejected)) throw new ArgumentException("There are requests on advert. Delete them before redo.");
 
             advertInDb = _mapper.Map(data, advertInDb);
             if (advertPhoto != null) {

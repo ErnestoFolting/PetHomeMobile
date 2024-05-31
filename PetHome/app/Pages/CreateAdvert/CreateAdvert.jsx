@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import CreateAdvertStyles from './CreateAdvertStyles';
-import MyModal from '../../Components/MyModal/MyModal';
-import AdvertCreationCalendar from '../../Components/Calendar/AdvertCreationCalendar/AdvertCreationCalendar';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import AdvertService from '../../HTTP/API/AdvertService';
-import Loader from '../../Components/Loader/Loader';
 import useStore from '../../Hooks/useAuth';
-import LocationBlock from '../../Components/Location/LocationBlock/LocationBlock';
+import CreateAdvertForm from '../../Components/Adverts/CreateAdvertForm/CreateAdvertForm';
 
 const CreateAdvert = () => {
     const store = useStore();
-    const [advertData, setAdvertData] = useState({
+
+    const mockData = {
         name: 'Назва',
         description: 'Опис оголошення',
         cost: '250',
@@ -21,9 +17,12 @@ const CreateAdvert = () => {
         location: 'Fastiv',
         locationLat: 50,
         locationLng: 50,
+    }
+    const [advertData, setAdvertData] = useState({
+        ...mockData
     });
+
     const [imageUri, setImageUri] = useState('');
-    const [isModalVisible, setIsModalVisible] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
 
     const handleSubmit = async () => {
@@ -49,7 +48,7 @@ const CreateAdvert = () => {
         try {
             setIsLoading(true)
             await AdvertService.createAdvert(formData)
-            setAdvertData({ ...advertData, startTime: '', endTime: '' })
+            setAdvertData({ ...mockData })
             setImageUri('')
             store.setAdvertsNeedUpdate(!store.advertsNeedUpdate)
             alert('Створено')
@@ -60,93 +59,13 @@ const CreateAdvert = () => {
         setIsLoading(false)
     };
 
-    const selectImage = async () => {
-        let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-        if (permissionResult.granted === false) {
-            Alert.alert('Permission to access camera roll is required!');
-            return;
-        }
-
-        let pickerResult = await ImagePicker.launchImageLibraryAsync();
-
-        if (!pickerResult.cancelled) {
-            const uri = pickerResult.assets[0].uri;
-            setImageUri(uri);
-        }
-    };
-
     return (
         <KeyboardAvoidingView
             style={{ flex: 1 }}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             keyboardVerticalOffset={100}
         >
-            <MyModal
-                content={<View>
-                    <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 18, color: 'grey' }}>Оберіть дати</Text>
-                    <AdvertCreationCalendar
-                        setAdvertData={setAdvertData}
-                        advertData={advertData}
-                        setIsModalVisible={setIsModalVisible}
-                    />
-                </View>
-
-                }
-                isModalVisible={isModalVisible}
-                setIsModalVisible={setIsModalVisible}
-            />
-
-            <ScrollView contentContainerStyle={{ paddingHorizontal: 20 }} keyboardShouldPersistTaps={'handled'}>
-                <View style={CreateAdvertStyles.form}>
-                    <TextInput
-                        placeholder='Назва оголошення*'
-                        value={advertData.name}
-                        onChangeText={text => setAdvertData({ ...advertData, name: text })}
-                        style={CreateAdvertStyles.input}
-                    />
-
-                    <TextInput
-                        placeholder='Опис оголошення'
-                        value={advertData.description}
-                        onChangeText={text => setAdvertData({ ...advertData, description: text })}
-                        style={CreateAdvertStyles.input}
-                    />
-
-                    <TextInput
-                        placeholder='Вартість*'
-                        value={advertData.cost}
-                        onChangeText={text => setAdvertData({ ...advertData, cost: text })}
-                        style={CreateAdvertStyles.input}
-                        keyboardType="numeric"
-                    />
-
-                    <TouchableOpacity style={CreateAdvertStyles.boxInput} onPress={() => setIsModalVisible(true)}>
-                        <View style={{ alignItems: 'center' }}>
-                            <Text>📅 Обрати дати</Text>
-                            {advertData?.startTime && <Text style={{ marginTop: 5 }}>{advertData?.startTime} до {advertData?.endTime}</Text>}
-                        </View>
-                    </TouchableOpacity>
-
-
-                    <TouchableOpacity onPress={selectImage} style={CreateAdvertStyles.boxInput}>
-                        <Text style={CreateAdvertStyles.imageInputLabel}>Зображення оголошення*</Text>
-                        {imageUri ? (
-                            <Image source={{ uri: imageUri }} style={CreateAdvertStyles.image} />
-                        ) : (
-                            <Text style={CreateAdvertStyles.imagePlaceholder}>Торкніться, щоб вибрати зображення</Text>
-                        )}
-                    </TouchableOpacity>
-
-                    <LocationBlock data={advertData} setData={setAdvertData} />
-
-                    {isLoading ? <Loader /> : <TouchableOpacity onPress={handleSubmit} style={CreateAdvertStyles.button}>
-                        <Text style={CreateAdvertStyles.buttonText}>Створити оголошення</Text>
-                    </TouchableOpacity>}
-
-                </View>
-
-            </ScrollView>
+            <CreateAdvertForm advertData={advertData} setAdvertData={setAdvertData} imageUri={imageUri} handleSubmit={handleSubmit} setImageUri={setImageUri} isLoading={isLoading} />
 
         </KeyboardAvoidingView>
     );

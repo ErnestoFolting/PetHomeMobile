@@ -4,8 +4,9 @@ import * as Location from 'expo-location';
 import Loader from '../../Loader/Loader';
 import PlacesAutocomplete from '../PlacesAutocomplete/PlacesAutocomplete';
 import MyButton from '../../Common/MyButton';
+import { replaceSigns } from '../../../Helpers/StringsHelper';
 
-export default function LocationBlock({ data, setData }) {
+export default function LocationBlock({ data, setData, inRedo, setIsLocationChanging }) {
 
     const [deniedAccess, setDeniedAccess] = useState(false)
     const [isLocationLoading, setIsLocationLoading] = useState(false)
@@ -39,12 +40,13 @@ export default function LocationBlock({ data, setData }) {
             if (geocodeResponse.length > 0) {
                 const { street, city, region } = geocodeResponse[0];
                 const location = ((street !== null ? `${street}, ` : ``) + (city !== null ? `${city}, ` : ``) + (region !== null ? `${region}` : ``))
-                setData({ ...data, location: location, locationLat: String(latitude)?.replace('.', ','), locationLng: String(longitude)?.replace('.', ',') })
+                setData({ ...data, location: location, locationLat: replaceSigns(latitude), locationLng: replaceSigns(longitude) })
             }
         } catch (e) {
             Alert.alert(e);
         } finally {
             setIsLocationLoading(false)
+            setIsLocationChanging(false)
         }
     }
 
@@ -52,9 +54,7 @@ export default function LocationBlock({ data, setData }) {
 
     return (
         deniedAccess
-            ? <PlacesAutocomplete formData={data} setFormData={setData} />
-            : data?.location == "Fastiv"
-                ? <MyButton isRound onPress={getUserLocation}>Моя локація</MyButton>
-                : <Text>📍{data?.location}</Text>
+            ? <PlacesAutocomplete formData={data} setFormData={setData} setIsLocationChanging={setIsLocationChanging} />
+            : <MyButton isRound onPress={getUserLocation}>Моя локація</MyButton>
     )
 }

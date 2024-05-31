@@ -56,6 +56,7 @@ const MeStyles = StyleSheet.create({
         justifyContent: 'center'
     },
     calendarContainer: {
+        marginBottom: 50
     },
     calendarText: {
         flex: 1,

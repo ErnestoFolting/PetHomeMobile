@@ -16,6 +16,11 @@ import PerformersSelectionBlock from '../../Components/Adverts/PerformersSelecti
 import { observer } from "mobx-react-lite";
 import MyButton from '../../Components/Common/MyButton';
 import AdminService from '../../HTTP/API/AdminService';
+import CreateAdvertForm from '../../Components/Adverts/CreateAdvertForm/CreateAdvertForm';
+import * as FileSystem from 'expo-file-system';
+import UserDataService from '../../HTTP/API/UserDataService';
+import { replaceSigns } from '../../Helpers/StringsHelper';
+import shallowEqual from '../Me/helper';
 
 const AdvertDetail = ({ route, navigation }) => {
     const store = useStore()
@@ -27,10 +32,14 @@ const AdvertDetail = ({ route, navigation }) => {
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [isAdvertDeleted, setIsAdvertDeleted] = useState(false)
     const [isAdvertEditing, setIsAdvertEditiong] = useState(false)
+    const [imageUri, setImageUri] = useState(''); //advert redo
+    const [isLoading, setIsLoading] = useState(false) //advert redo
+    const [advertCopy, setAdvertCopy] = useState({}) //advert redo
 
     const [fetchAdvert, loading, error] = useFetching(async () => {
         const userResponse = await AdvertService.getCertainAdvert(adId)
         setAdvert(userResponse)
+        setAdvertCopy(userResponse)
     })
 
     const [deleteAdvertByAdmin, loading2, error2] = useFetching(async () => {
@@ -57,17 +66,26 @@ const AdvertDetail = ({ route, navigation }) => {
         }
     }
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                await fetchAdvert()
-            } catch (e) {
-                store.setAdvertsNeedUpdate(!store.advertsNeedUpdate)
-                navigation.goBack()
-            }
+    async function fetchData() {
+        try {
+            await fetchAdvert()
+        } catch (e) {
+            store.setAdvertsNeedUpdate(!store.advertsNeedUpdate)
+            navigation.goBack()
         }
+    }
+
+    useEffect(() => {
         fetchData()
     }, [])
+
+    useEffect(() => {
+        if (!isAdvertEditing && !shallowEqual(advert, advertCopy) || imageUri !== '') {
+            fetchData()
+            setImageUri('')
+        }
+    }, [isAdvertEditing])
+
 
     useEffect(() => {
         if (advert?.startTime && advert?.endTime) {
@@ -91,29 +109,63 @@ const AdvertDetail = ({ route, navigation }) => {
     const controlBLock = () => {
         if (store?.role?.includes("Administrator")) return deleteButton
         if (store.userId == advert?.ownerId) {
-            if (advert?.status == "search") {
-                return deleteAndEditButtons
-            } else {
-                return
-            }
+            return deleteAndEditButtons
         } else {
             return requestBlock
         }
     }
 
+    const redoHandler = async () => {
+        if (shallowEqual(advert, advertCopy) && imageUri == '') return
+        const formData = new FormData();
+
+        Object.keys(advertCopy).forEach(function (key, index) {
+            if (key == "locationLat" || key == "locationLng") {
+                formData.append(key, replaceSigns(Object.values(advertCopy)[index]))
+            } else {
+                formData.append(key, Object.values(advertCopy)[index])
+            }
+
+        })
+
+        if (imageUri) {
+            const photoData = await FileSystem.readAsStringAsync(imageUri, {
+                encoding: FileSystem.EncodingType.Base64,
+            });
+
+            formData.append('advertPhoto', {
+                uri: imageUri,
+                name: `photo_${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`,
+                type: `image/jpeg`,
+                data: photoData,
+            });
+        }
+
+        try {
+            setIsLoading(true)
+            await UserDataService.redoUserAdvert(formData, adId)
+            store.setAdvertsNeedUpdate(!store.advertsNeedUpdate)
+            alert('Відредаговано')
+        } catch (e) {
+            alert(JSON.stringify(e?.response?.data))
+        }
+        setIsLoading(false)
+    }
+
     if (loading || loading2 || loading3) return <Loader />
 
     return (
-        <ScrollView contentContainerStyle={AdvertDetailStyles.container}>
+        <ScrollView contentContainerStyle={AdvertDetailStyles.container} keyboardShouldPersistTaps={'handled'}>
 
             <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<Text>{error}{advertRequestErrors}{error2}{error3}</Text>}></MyModal>
-            <MyModal isModalVisible={isAdvertEditing} setIsModalVisible={setIsAdvertEditiong} content={<Text>editing</Text>}></MyModal>
+            <MyModal isModalVisible={isAdvertEditing} setIsModalVisible={setIsAdvertEditiong} content={<CreateAdvertForm advertData={advertCopy} setAdvertData={setAdvertCopy} isModal handleSubmit={redoHandler} imageUri={imageUri} setImageUri={setImageUri} isLoading={isLoading} />}></MyModal>
             {photoLoading && <Loader />}
             <Image
                 source={{ uri: API_URL + advert?.photoFilePath }}
                 alt="Advertisement Image"
                 style={AdvertDetailStyles.image}
                 onLoadEnd={() => setPhotoLoading(false)} />
+
             <View style={AdvertDetailStyles.header}>
                 <Text style={AdvertDetailStyles.title}>{advert?.name}</Text>
                 <Text style={AdvertDetailStyles.cost}>Виплата: {advert?.cost}₴</Text>
@@ -130,7 +182,6 @@ const AdvertDetail = ({ route, navigation }) => {
                 </View>
 
             </View>
-
             {controlBLock()}
 
             {store.userId == advert?.ownerId ?

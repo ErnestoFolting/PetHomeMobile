@@ -61,7 +61,7 @@ const Adverts = ({ navigation, route }) => {
   }, [store.advertsNeedUpdate]);
 
   const screenWidth = Dimensions.get('window').width;
-  const itemWidth = 190;
+  const itemWidth = 150;
   const itemMargin = 5;
   const numColumns = Math.floor(screenWidth / (itemWidth + itemMargin * 2));
   if (loader) return <Loader />

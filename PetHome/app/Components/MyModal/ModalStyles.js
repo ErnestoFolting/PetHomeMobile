@@ -26,7 +26,8 @@ const ModalStyles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 5,
     }, content: {
-        marginBottom: 20
+        marginBottom: 20,
+        paddingBottom: 100
     }
 })
 

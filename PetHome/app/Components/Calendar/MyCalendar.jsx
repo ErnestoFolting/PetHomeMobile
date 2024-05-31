@@ -7,6 +7,7 @@ import useFetching from '../../Hooks/useFetching';
 import TimeExceptionService from '../../HTTP/API/TimeExceptionService';
 import Loader from '../Loader/Loader';
 import UkrCalendar from './UkrCalendar';
+import MyButton from '../Common/MyButton';
 
 export default function MyCalendar() {
 
@@ -104,10 +105,9 @@ export default function MyCalendar() {
                 onDayPress={(day) => selectHandler(day.dateString)}
             />
             {datesChanging
-                ? <View style={MyCalendarStyles.buttonSave}><Button title='Зберегти' color={Colors.white} onPress={saveHandler}></Button></View>
-                : <View style={MyCalendarStyles.buttons}><Button title='Змінити дати' color={Colors.white} onPress={changeHandler}></Button></View>
+                ? <MyButton style={{ backgroundColor: Colors.green }} onPress={saveHandler} isRound>Зберегти</MyButton>
+                : <MyButton style={{ backgroundColor: Colors.light }} onPress={changeHandler} isRound>Змінити</MyButton>
             }
         </View>
-
     )
 }

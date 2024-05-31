@@ -25,10 +25,10 @@ export default function PerformersSelectionBlock({ advertId, navigation, isAdver
         const userResponse = await AdvertService.markAsFinished(advertId)
         setAdvert(userResponse)
     })
-    const [deleteAdvert, loading3, error3] = useFetching(async () => {
-        const userResponse = await AdvertService.deleteAdvert(advertId)
-        setAdvert(userResponse)
-    })
+    // const [deleteAdvert, loading3, error3] = useFetching(async () => {
+    //     const userResponse = await AdvertService.deleteAdvert(advertId)
+    //     setAdvert(userResponse)
+    // })
 
     useEffect(() => {
         async function fetchData() {
@@ -51,16 +51,16 @@ export default function PerformersSelectionBlock({ advertId, navigation, isAdver
         }
     }
 
-    const deleteFinishedAdvert = async () => {
-        try {
-            await deleteAdvert()
-            navigation.goBack()
-            store.setAdvertsNeedUpdate(!store.advertsNeedUpdate)
-        } catch (e) {
-            console.log(e);
-            setIsModalVisible(true)
-        }
-    }
+    // const deleteFinishedAdvert = async () => {
+    //     try {
+    //         await deleteAdvert()
+    //         navigation.goBack()
+    //         store.setAdvertsNeedUpdate(!store.advertsNeedUpdate)
+    //     } catch (e) {
+    //         console.log(e);
+    //         setIsModalVisible(true)
+    //     }
+    // }
 
     const update = () => {
         setNeedUpdate(!needUpdate)
@@ -97,18 +97,18 @@ export default function PerformersSelectionBlock({ advertId, navigation, isAdver
             case 'finished':
                 return <View className='finishedStatus'>
                     <Text style={PerformersSelectionBlockStyles.text}>Виконання завершено.</Text>
-                    <TouchableOpacity onPress={deleteFinishedAdvert} style={PerformersSelectionBlockStyles.deleteButton}><Text style={{ color: 'white' }}>Видалити оголошення</Text></TouchableOpacity>
+                    {/* <TouchableOpacity onPress={deleteFinishedAdvert} style={PerformersSelectionBlockStyles.deleteButton}><Text style={{ color: 'white' }}>Видалити оголошення</Text></TouchableOpacity> */}
                 </View>
             default:
                 return <Text style={PerformersSelectionBlockStyles.text}>Видалено</Text>
         }
     }
 
-    if (loading || loading2 || loading3) return <Loader />
+    if (loading || loading2) return <Loader />
 
     return (
         <View style={PerformersSelectionBlockStyles.container}>
-            <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<Text>{error}{error2}{error3}</Text>}></MyModal>
+            <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<Text>{error}{error2}</Text>}></MyModal>
             <Text style={PerformersSelectionBlockStyles.title}>Це ваше оголошення</Text>
             {renderSwitch(advert?.status)}
         </View>

@@ -14,6 +14,7 @@ import validateProfileRedo from "./ProfileRedoValidation"
 import { validateField } from "./ProfileRedoValidation"
 import MyModal from "../../Components/MyModal/MyModal"
 import MyButton from "../../Components/Common/MyButton"
+import { replaceSigns } from "../../Helpers/StringsHelper"
 
 export default observer(function Me() {
     const store = useStore()
@@ -34,8 +35,8 @@ export default observer(function Me() {
     })
 
     const [updateUserData, loading2, error2] = useFetching(async () => {
-        editedProfile.locationLat = String(editedProfile?.locationLat)?.replace('.', ',')
-        editedProfile.locationLng = String(editedProfile?.locationLat)?.replace('.', ',')
+        editedProfile.locationLat = replaceSigns(editedProfile?.locationLat)
+        editedProfile.locationLng = replaceSigns(editedProfile?.locationLat)
         try {
             await UserDataService.redoUserProfile(editedProfile)
             setShowData(editedProfile)

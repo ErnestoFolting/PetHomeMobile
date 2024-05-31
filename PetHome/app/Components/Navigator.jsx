@@ -1,4 +1,4 @@
-import { TouchableOpacity } from "react-native"
+import { TouchableOpacity, Vibration } from "react-native"
 import React, { useEffect, useState } from "react"
 import useStore from "../Hooks/useAuth";
 import { FontAwesome5, Ionicons, AntDesign, Entypo, Feather } from "@expo/vector-icons";
@@ -19,6 +19,7 @@ import CreateAdvert from "../Pages/CreateAdvert/CreateAdvert";
 import AdminPanel from "../Pages/Administrator/AdminPanel";
 import Toast from 'react-native-toast-message'
 import UserNotification from "./Notifications/UserNotification";
+import AdvertNotification from "./Notifications/AdvertNotification/AdvertNotification";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -50,8 +51,11 @@ export default observer(function Navigator() {
     }, [store.isEditing]);
 
     const toastConfig = {
-        notificationToast: ({ props, }) => (
+        notificationUserToast: ({ props }) => (
             < UserNotification {...props} />
+        ),
+        notificationAdvertToast: ({ props }) => (
+            < AdvertNotification {...props} />
         )
     };
 
@@ -64,15 +68,63 @@ export default observer(function Navigator() {
         }
     }, [store.isAuth]);
 
+    const hideToast = () => Toast.hide()
+
     useEffect(() => {
         if (store?.myHubConnection) {
             store?.myHubConnection?.on("Apply", (request) => {
                 Toast.show({
-                    type: 'notificationToast',
+                    type: 'notificationUserToast',
                     props: {
                         request: request,
                         status: "apply",
-                        navigationRef: navigationRef
+                        navigationRef: navigationRef,
+                        hide: hideToast
+                    }
+                });
+            })
+            store?.myHubConnection?.on("Delete", (deletedRequest) => {
+                Toast.show({
+                    type: 'notificationUserToast',
+                    props: {
+                        request: deletedRequest,
+                        status: "delete",
+                        navigationRef: navigationRef,
+                        hide: hideToast
+                    }
+                });
+            })
+            store?.myHubConnection?.on("Send", (advert) => {
+                Toast.show({
+                    type: 'notificationAdvertToast',
+                    props: {
+                        advert: advert,
+                        status: "generated",
+                        navigationRef: navigationRef,
+                        hide: hideToast
+                    }
+                });
+            }
+            )
+            store?.myHubConnection?.on("Confirm", (confirmedRequest) => {
+                Toast.show({
+                    type: 'notificationAdvertToast',
+                    props: {
+                        advert: confirmedRequest?.advert,
+                        status: "confirm",
+                        navigationRef: navigationRef,
+                        hide: hideToast
+                    }
+                });
+            })
+            store?.myHubConnection?.on("Reject", (rejectedRequest) => {
+                Toast.show({
+                    type: 'notificationAdvertToast',
+                    props: {
+                        advert: rejectedRequest?.advert,
+                        status: "reject",
+                        navigationRef: navigationRef,
+                        hide: hideToast
                     }
                 });
             })
@@ -147,7 +199,7 @@ export default observer(function Navigator() {
                             ),
                     }} />
             </Tab.Navigator>
-            <Toast config={toastConfig} autoHide={false} />
+            <Toast config={toastConfig} autoHide={false} visibilityTime={3500} onShow={() => Vibration.vibrate(50)} topOffset={50} />
         </NavigationContainer>
 
     return (

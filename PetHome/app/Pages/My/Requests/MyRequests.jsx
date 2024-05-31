@@ -6,7 +6,6 @@ import UserDataService from '../../../HTTP/API/UserDataService';
 import MyModal from '../../../Components/MyModal/MyModal';
 import AdvertItem from '../../../Components/Adverts/AdvertItem/AdvertItem';
 import MyRequestBlock from '../../../Components/Requests/MyRequestBlock';
-import Loader from '../../../Components/Loader/Loader';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function MyRequests({ navigation }) {
@@ -43,7 +42,7 @@ export default function MyRequests({ navigation }) {
                 ? <Text style={{ alignSelf: 'center', marginTop: 20 }}>Поки немає заявок</Text>
                 : userRequests.map(el =>
                     <View key={el.id} style={MyRequestsStyles.element}>
-                        <AdvertItem item={el.advert} disableShadow={true} navigation={navigation} isMy />
+                        <AdvertItem item={el.advert} disableShadow={true} navigation={navigation} isMy fromRequests />
                         <MyRequestBlock status={el.status} advertStatus={el.advert.status} requestId={el.id} setNeedUpdate={setNeedUpdate} needUpdate={needUpdate}></MyRequestBlock>
                     </View>
                 )}

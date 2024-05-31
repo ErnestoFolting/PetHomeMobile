@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-const UserNotificationStyles = StyleSheet.create({
+const AdvertNotificationStyles = StyleSheet.create({
     notificationBlock: {
         backgroundColor: 'rgba(0, 0, 0, 0.85)',
         borderRadius: 20,
@@ -28,4 +28,4 @@ const UserNotificationStyles = StyleSheet.create({
     }
 });
 
-export default UserNotificationStyles;
+export default AdvertNotificationStyles;

@@ -40,10 +40,10 @@ const MyAdvertsStack = () => {
 const MyRequestsStack = () => {
     return (
         <Stack.Navigator>
-            <Stack.Screen name="Перелік моїх оголошень" component={MyRequests} options={{
+            <Stack.Screen name="Перелік моїх запитів" component={MyRequests} options={{
                 headerShown: false
             }} />
-            <Stack.Screen name="Деталі мого оголошення" component={AdvertDetail} options={{
+            <Stack.Screen name="Деталі мого запиту" component={AdvertDetail} options={{
                 headerShown: false
             }} />
             <Stack.Screen name="Профіль" component={UserProfile} options={{

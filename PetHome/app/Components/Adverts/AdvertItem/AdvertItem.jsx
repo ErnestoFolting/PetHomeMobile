@@ -4,11 +4,11 @@ import React from 'react'
 import AdvertItemStyles from './AdvertItemStyles'
 import Colors from '../../../Constants/Colors'
 
-export default function AdvertItem({ item, navigation, disableShadow, isMy }) {
+export default function AdvertItem({ item, navigation, disableShadow, isMy, fromRequests }) {
 
     const description = item.description.length > 50 ? item.description.slice(0, 50) + '...' : item.description.slice(0, 50)
     const location = item.location.length > 30 ? item.location.slice(0, 30) + '...' : item.location.slice(0, 30)
-    const path = isMy ? 'Деталі мого оголошення' : 'Деталі'
+    const path = isMy ? (fromRequests ? 'Деталі мого запиту' : 'Деталі мого оголошення') : 'Деталі'
 
     return (
         <TouchableOpacity onPress={() => navigation.navigate(path, { adId: item.id })}>

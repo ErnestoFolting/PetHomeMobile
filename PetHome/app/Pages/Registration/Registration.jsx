@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Alert, Image } from 'react-native';
 import { RegistrationStyles } from './RegistrationStyles';
 import * as ImagePicker from 'expo-image-picker';
@@ -6,6 +6,7 @@ import * as FileSystem from 'expo-file-system';
 import AuthService from '../../HTTP/API/AuthService';
 import { useNavigation } from "@react-navigation/native";
 import LocationBlock from '../../Components/Location/LocationBlock/LocationBlock';
+import Loader from '../../Components/Loader/Loader';
 
 const Registration = () => {
     const navigation = useNavigation();
@@ -25,9 +26,11 @@ const Registration = () => {
     });
 
     const [imageUri, SetImageUri] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
+    const [isLocationChanging, setIsLocationChanging] = useState(false)
 
     const handleSubmit = async () => {
-
+        setIsLoading(true)
         const formData = new FormData();
 
         Object.keys(registrationData).forEach(function (key, index) {
@@ -46,16 +49,19 @@ const Registration = () => {
             });
         } else {
             Alert.alert('Оберіть фото');
+            setIsLoading(false)
+            return
         }
 
         try {
             await AuthService.registration(formData)
+            navigation.navigate('Логін')
+
         } catch (e) {
             console.log(e?.response?.data)
-            throw e
+            Alert.alert(JSON.stringify(e?.response?.data))
         }
-
-        navigation.navigate('Логін')
+        setIsLoading(false)
     };
 
     const selectImage = async () => {
@@ -70,7 +76,6 @@ const Registration = () => {
 
         if (!pickerResult.cancelled) {
             const uri = pickerResult.assets[0].uri;
-            console.log(uri);
             SetImageUri(uri)
         }
     };
@@ -152,11 +157,16 @@ const Registration = () => {
                         secureTextEntry
                     />
 
-                    <LocationBlock data={registrationData} setData={setRegistrationData} />
+                    <LocationBlock data={registrationData} setData={setRegistrationData} setIsLocationChanging={setIsLocationChanging} />
 
-                    <TouchableOpacity onPress={handleSubmit} style={RegistrationStyles.button}>
-                        <Text style={RegistrationStyles.buttonText}>Зареєструватись</Text>
-                    </TouchableOpacity></View>
+                    {
+                        isLoading
+                            ? <Loader />
+                            : <TouchableOpacity onPress={handleSubmit} style={RegistrationStyles.button}>
+                                <Text style={RegistrationStyles.buttonText}>Зареєструватись</Text>
+                            </TouchableOpacity>
+                    }
+                </View>
 
             </ScrollView>
         </KeyboardAvoidingView>

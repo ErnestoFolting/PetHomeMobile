@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "PetHome",
-    "slug": "",
+    "slug": "PetHome",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,19 +18,26 @@
       "supportsTablet": true,
       "config": {
         "usesNonExemptEncryption": false
-      }
+      },
+      "bundleIdentifier": "com.danilsmy.PetHome"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.danilsmy.PetHome"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ba6c62ad-17cf-430d-9214-28732273f9e0"
+      }
+    }
   }
 }

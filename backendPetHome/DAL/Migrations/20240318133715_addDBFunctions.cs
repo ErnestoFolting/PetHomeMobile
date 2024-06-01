@@ -19,6 +19,9 @@ namespace backendPetHome.DAL.Migrations
                 if (parent == null)
                 {
                     Console.WriteLine("Solution file not found. Unable to determine solution root.");
+                    _projectDirectory = "/app";
+                    Console.WriteLine(_projectDirectory);
+
                     return;
                 }
                 _projectDirectory = parent.FullName;

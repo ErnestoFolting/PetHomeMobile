@@ -20,8 +20,8 @@ RUN dotnet publish "backendPetHome.API.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
-COPY ["DAL/Data/FunctionsUp/", "Data/FunctionsUp/"]
-COPY ["DAL/Data/FunctionsDown/", "Data/FunctionsDown/"]
+COPY ["DAL/Data/FunctionsUp/", "DAL/Data/FunctionsUp/"]
+COPY ["DAL/Data/FunctionsDown/", "DAL/Data/FunctionsDown/"]
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "backendPetHome.API.dll"]
 

@@ -1,4 +1,4 @@
-version: '3.4'
+version: "3.4"
 
 services:
   backendpethomeapi:
@@ -8,52 +8,27 @@ services:
       context: .
       dockerfile: backendPetHome/Dockerfile
     networks:
-    - back
+      - back
     ports:
-    - "8080:80"
+      - "8080:80"
     depends_on:
-    - petHomeDB
+      - petHomeDB
     environment:
-        ConnectionStrings__DefaultConnection: "server=petHomeDB;database=testdb;User=sa;password=Qwerty123!"
-        LANG: uk_UA.UTF-8  
-        LANGUAGE: uk_UA  
-        LC_ALL: uk_UA.UTF-8 
-        
+      ConnectionStrings__DefaultConnection: "server=petHomeDB;database=testdb;User=sa;password=Password123!"
+      LANG: uk_UA.UTF-8
+      LANGUAGE: uk_UA
+      LC_ALL: uk_UA.UTF-8
+
   petHomeDB:
     image: "mcr.microsoft.com/mssql/server:2022-latest"
     ports:
-    - "1433:1433"
+      - "1433:1433"
     networks:
-    - back
+      - back
     environment:
-        SA_PASSWORD: "Qwerty123!"
-        ACCEPT_EULA: "Y"
-
-  client:
-    image: client
-    build:
-        context: ../frontendPetHome/frontend-pet-home
-        dockerfile: Dockerfile
-    ports:
-        - "5001:3000"
-    networks:
-    - front
-    depends_on:
-    - petHomeDB
-    - backendpethomeapi
-  
-  proxy:
-    image: nginx
-    networks:
-    - back
-    - front
-    volumes: 
-     - ./nginx.conf:/etc/nginx/nginx.conf
-    ports:
-     - "80:80"
+      SA_PASSWORD: "Password123!"
+      ACCEPT_EULA: "Y"
 
 networks:
   back:
-    driver: bridge
-  front:
     driver: bridge

@@ -6,6 +6,7 @@ using backendPetHome.DAL.Entities;
 using backendPetHome.DAL.Interfaces;
 using backendPetHome.DAL.Specifications.UserSpecifications;
 using FluentAssertions;
+using Microsoft.AspNetCore.Identity;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -19,13 +20,19 @@ namespace backendPetHome.BLL.Tests.Tests
         private readonly UserService _sut;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock = new Mock<IUnitOfWork>();
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
 
         public UserServiceTests()
         {
             var myProfile = new UserProfile();
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
             _mapper =  new Mapper(configuration);
-            _sut = new UserService(_unitOfWorkMock.Object, _mapper);
+            var storeMock = new Mock<IUserStore<User>>();
+            var _userManager = new Mock<UserManager<User>>(
+                storeMock.Object,
+                null, null, null, null, null, null, null, null 
+            );
+            _sut = new UserService(_unitOfWorkMock.Object, _userManager.Object, _mapper);
         }
         [Fact]
         public async Task getCertainUser_UserExists_GetUser()

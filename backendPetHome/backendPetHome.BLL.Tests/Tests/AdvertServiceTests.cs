@@ -165,7 +165,7 @@ namespace backendPetHome.BLL.Tests.Tests
         {
             //arrange
             Advert advertToDelete = _advertToTest;
-            _unitOfWorkMock.Setup(x => x.AdvertRepository.GetByIdSpecification(It.IsAny<AdvertByIdSpecification>())).ReturnsAsync(advertToDelete);
+            _unitOfWorkMock.Setup(x => x.AdvertRepository.GetByIdSpecification(It.IsAny<AdvertByIdIncludesRequestAndUserSpecification>())).ReturnsAsync(advertToDelete);
             _unitOfWorkMock.Setup(x => x.AdvertRepository.Delete(advertToDelete));
             //act
             await _sut.deleteAdvert(advertToDelete.Id, advertToDelete.ownerId);
@@ -198,7 +198,7 @@ namespace backendPetHome.BLL.Tests.Tests
             Func<Task> act = () => _sut.deleteAdvert(advertToDelete.Id, "check");
 
             //assert
-            await act.Should().ThrowAsync<ArgumentException>();
+            await act.Should().ThrowAsync<KeyNotFoundException>();
 
         }
 
@@ -217,7 +217,8 @@ namespace backendPetHome.BLL.Tests.Tests
                 status = DAL.Enums.AdvertStatusEnum.search,
                 startTime = System.DateTime.Now,
                 endTime = System.DateTime.Now.AddDays(3),
-                ownerId = "6a00001b-0265-4a16-8cf2-d05b11b4f239"
+                ownerId = "6a00001b-0265-4a16-8cf2-d05b11b4f239",
+                requests =new List<Request>(),
             };
         }
     }

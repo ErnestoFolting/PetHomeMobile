@@ -47,7 +47,7 @@ namespace backendPetHome.BLL.Tests.Tests
             Advert advert = _advertToTest;
             Request request = _requestToTest;
             string applierId = "check";
-            _unitOfWorkMock.Setup(x => x.AdvertRepository.GetByIdSpecification(It.IsAny<AdvertByIdSpecification>())).ReturnsAsync(advert);
+            _unitOfWorkMock.Setup(x => x.AdvertRepository.GetByIdSpecification(It.IsAny<AdvertByIdIncludesRequestAndUserSpecification>())).ReturnsAsync(advert);
             _timeExceptionServiceMock.Setup(x => x.checkPerformerDates(applierId, advert.startTime, advert.endTime)).ReturnsAsync(true);
             _unitOfWorkMock.Setup(x => x.RequestRepository.Add(request));
             _unitOfWorkMock.Setup(x => x.RequestRepository.GetByIdSpecification(It.IsAny<RequestByIdWithAdvertAndUserSpecification>()))
@@ -66,7 +66,7 @@ namespace backendPetHome.BLL.Tests.Tests
             //arrange 
             Advert advert = _advertToTest;
             string applierId = "check";
-            _unitOfWorkMock.Setup(x => x.AdvertRepository.GetByIdSpecification(It.IsAny<AdvertByIdSpecification>())).ReturnsAsync(() => null);
+            _unitOfWorkMock.Setup(x => x.AdvertRepository.GetByIdSpecification(It.IsAny<AdvertByIdIncludesRequestAndUserSpecification>())).ReturnsAsync(() => null);
 
             //act
             Func<Task> act = () => _sut.addRequest(applierId,advert.Id,_requestToTest.status);
@@ -81,7 +81,7 @@ namespace backendPetHome.BLL.Tests.Tests
             Advert advert = _advertToTest;
             string applierId = "check";
             advert.ownerId = applierId;
-            _unitOfWorkMock.Setup(x => x.AdvertRepository.GetByIdSpecification(It.IsAny<AdvertByIdSpecification>())).ReturnsAsync(advert);
+            _unitOfWorkMock.Setup(x => x.AdvertRepository.GetByIdSpecification(It.IsAny<AdvertByIdIncludesRequestAndUserSpecification>())).ReturnsAsync(advert);
 
             //act
             Func<Task> act = () => _sut.addRequest(applierId, advert.Id, _requestToTest.status);
@@ -95,7 +95,7 @@ namespace backendPetHome.BLL.Tests.Tests
             //arrange 
             Advert advert = _advertToTest;
             string applierId = "check";
-            _unitOfWorkMock.Setup(x => x.AdvertRepository.GetByIdSpecification(It.IsAny<AdvertByIdSpecification>())).ReturnsAsync(advert);
+            _unitOfWorkMock.Setup(x => x.AdvertRepository.GetByIdSpecification(It.IsAny<AdvertByIdIncludesRequestAndUserSpecification>())).ReturnsAsync(advert);
             _timeExceptionServiceMock.Setup(x => x.checkPerformerDates(applierId, advert.startTime, advert.endTime)).ReturnsAsync(false);
 
             //act
@@ -119,7 +119,8 @@ namespace backendPetHome.BLL.Tests.Tests
                 status = DAL.Enums.AdvertStatusEnum.search,
                 startTime = System.DateTime.Now,
                 endTime = System.DateTime.Now.AddDays(3),
-                ownerId = "6a00001b-0265-4a16-8cf2-d05b11b4f239"
+                ownerId = "6a00001b-0265-4a16-8cf2-d05b11b4f239",
+                requests = new List<Request>()
             };
             _requestToTest = new Request()
             {

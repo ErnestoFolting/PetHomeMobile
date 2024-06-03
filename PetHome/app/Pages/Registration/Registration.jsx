@@ -8,6 +8,8 @@ import { useNavigation } from "@react-navigation/native";
 import LocationBlock from '../../Components/Location/LocationBlock/LocationBlock';
 import Loader from '../../Components/Loader/Loader';
 import ImageSelector from '../../Components/ImageSelector/ImageSelector';
+import registrationSchema from './RegistrationValidation';
+import * as Yup from 'yup';
 
 const Registration = () => {
     const navigation = useNavigation();
@@ -28,40 +30,55 @@ const Registration = () => {
 
     const [imageUri, SetImageUri] = useState('')
     const [isLoading, setIsLoading] = useState(false)
+    const [errors, setErrors] = useState({});
     const [isLocationChanging, setIsLocationChanging] = useState(false)
 
     const handleSubmit = async () => {
         setIsLoading(true)
-        const formData = new FormData();
-
-        Object.keys(registrationData).forEach(function (key, index) {
-            formData.append(key, Object.values(registrationData)[index])
-        })
-        if (imageUri !== '') {
-            const photoData = await FileSystem.readAsStringAsync(imageUri, {
-                encoding: FileSystem.EncodingType.Base64,
-            });
-
-            formData.append('userPhoto', {
-                uri: imageUri,
-                name: `photo_${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`,
-                type: `image/jpeg`,
-                data: photoData,
-            });
-        } else {
-            Alert.alert('Оберіть фото');
-            setIsLoading(false)
-            return
-        }
 
         try {
-            await AuthService.registration(formData)
-            navigation.navigate('Логін')
+            await registrationSchema.validate(registrationData, { abortEarly: false });
+            const formData = new FormData();
 
-        } catch (e) {
-            console.log(e?.response?.data)
-            Alert.alert(JSON.stringify(e?.response?.data))
+            Object.keys(registrationData).forEach(function (key, index) {
+                formData.append(key, Object.values(registrationData)[index])
+            })
+            if (imageUri !== '') {
+                const photoData = await FileSystem.readAsStringAsync(imageUri, {
+                    encoding: FileSystem.EncodingType.Base64,
+                });
+
+                formData.append('userPhoto', {
+                    uri: imageUri,
+                    name: `photo_${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`,
+                    type: `image/jpeg`,
+                    data: photoData,
+                });
+            } else {
+                Alert.alert('Оберіть фото');
+                setIsLoading(false)
+                return
+            }
+
+            try {
+                await AuthService.registration(formData)
+                navigation.navigate('Логін')
+
+            } catch (e) {
+                console.log(e?.response?.data)
+                Alert.alert(JSON.stringify(e?.response?.data))
+            }
+        } catch (err) {
+            if (err instanceof Yup.ValidationError) {
+                const newErrors = {};
+                err.inner.forEach((error) => {
+                    newErrors[error.path] = error.message;
+                });
+                console.log(newErrors);
+                setErrors(newErrors);
+            }
         }
+
         setIsLoading(false)
     };
 
@@ -77,14 +94,14 @@ const Registration = () => {
                         placeholder='Прізвище*'
                         value={registrationData.surname}
                         onChangeText={text => setRegistrationData({ ...registrationData, surname: text })}
-                        style={RegistrationStyles.input}
+                        style={[RegistrationStyles.input, errors.surname && RegistrationStyles.errorInput]}
                     />
 
                     <TextInput
                         placeholder="Ім'я*"
                         value={registrationData.name}
                         onChangeText={text => setRegistrationData({ ...registrationData, name: text })}
-                        style={RegistrationStyles.input}
+                        style={[RegistrationStyles.input, errors.name && RegistrationStyles.errorInput]}
                     />
 
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
@@ -102,28 +119,28 @@ const Registration = () => {
                         placeholder="Email*"
                         value={registrationData.email}
                         onChangeText={text => setRegistrationData({ ...registrationData, email: text })}
-                        style={RegistrationStyles.input}
+                        style={[RegistrationStyles.input, errors.email && RegistrationStyles.errorInput]}
                     />
 
                     <TextInput
                         placeholder="Номер телефону(+380)*"
                         value={registrationData.phoneNumber}
                         onChangeText={text => setRegistrationData({ ...registrationData, phoneNumber: text })}
-                        style={RegistrationStyles.input}
+                        style={[RegistrationStyles.input, errors.phoneNumber && RegistrationStyles.errorInput]}
                     />
 
                     <TextInput
                         placeholder="Логін*"
                         value={registrationData.username}
                         onChangeText={text => setRegistrationData({ ...registrationData, username: text })}
-                        style={RegistrationStyles.input}
+                        style={[RegistrationStyles.input, errors.username && RegistrationStyles.errorInput]}
                     />
 
                     <TextInput
                         placeholder="Пароль*"
                         value={registrationData.password}
                         onChangeText={text => setRegistrationData({ ...registrationData, password: text })}
-                        style={RegistrationStyles.input}
+                        style={[RegistrationStyles.input, errors.password && RegistrationStyles.errorInput]}
                         secureTextEntry
                     />
 
@@ -131,7 +148,7 @@ const Registration = () => {
                         placeholder="Підтвердження*"
                         value={registrationData.confirmPassword}
                         onChangeText={text => setRegistrationData({ ...registrationData, confirmPassword: text })}
-                        style={RegistrationStyles.input}
+                        style={[RegistrationStyles.input, errors.confirmPassword && RegistrationStyles.errorInput]}
                         secureTextEntry
                     />
 

@@ -9,6 +9,9 @@ export const RegistrationStyles = {
         marginBottom: 20,
         width: '100%',
     },
+    errorInput: {
+        borderColor: Colors.red
+    },
     button: {
         backgroundColor: Colors.light,
         padding: 10,

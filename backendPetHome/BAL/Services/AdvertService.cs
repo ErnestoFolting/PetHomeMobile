@@ -76,7 +76,7 @@ namespace backendPetHome.BLL.Services
             var advertInDb = await _unitOfWork.AdvertRepository.GetByIdSpecification(new AdvertByIdIncludesRequestAndUserSpecification(advertId));
             if (advertInDb == null) throw new KeyNotFoundException("Advert not found.");
             if (advertInDb.ownerId != userId) throw new ArgumentException("You do not have the access.");
-            if (advertInDb.requests.Any(el => el.status != RequestStatusEnum.rejected) && advertInDb.status != AdvertStatusEnum.finished) throw new ArgumentException("There are requests on advert. Delete them or finish advert before deleting.");
+            if (advertInDb.requests.Any(el => el.status != RequestStatusEnum.rejected && el.status !=RequestStatusEnum.generated) && advertInDb.status != AdvertStatusEnum.finished) throw new ArgumentException("There are requests on advert. Delete them or finish advert before deleting.");
 
             await _unitOfWork.AdvertRepository.Delete(advertInDb);
             await _unitOfWork.SaveChangesAsync();

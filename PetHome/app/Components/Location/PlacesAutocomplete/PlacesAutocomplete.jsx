@@ -4,7 +4,7 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { PlacesAutocompleteStyles } from './PlacesAutocompleteStyles';
 import { replaceSigns } from '../../../Helpers/StringsHelper';
 
-export default function PlacesAutocomplete({ formData, setFormData, setIsLocationChanging }) {
+export default function PlacesAutocomplete({ formData, setFormData, changeLocation, setIsLocationChanging }) {
 
     const autoCompleteHandler = (data, details = null) => {
         let latitude = details.geometry.location.lat
@@ -27,6 +27,8 @@ export default function PlacesAutocomplete({ formData, setFormData, setIsLocatio
         const location = ((route !== '' ? `${route}, ` : ``) + (city !== '' ? `${city}, ` : ``) + (region !== '' ? `${region}` : ``))
 
         setFormData({ ...formData, location: location, locationLat: replaceSigns(latitude), locationLng: replaceSigns(longitude) })
+        if (changeLocation) { changeLocation(location, replaceSigns(latitude), replaceSigns(longitude)) }
+
         setIsLocationChanging(false)
     }
 

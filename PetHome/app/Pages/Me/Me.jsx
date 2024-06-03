@@ -15,6 +15,7 @@ import { validateField } from "./ProfileRedoValidation"
 import MyModal from "../../Components/MyModal/MyModal"
 import MyButton from "../../Components/Common/MyButton"
 import { replaceSigns } from "../../Helpers/StringsHelper"
+import LocationBlock from "../../Components/Location/LocationBlock/LocationBlock"
 
 export default observer(function Me() {
     const store = useStore()
@@ -26,6 +27,7 @@ export default observer(function Me() {
     const [validationErrors, setValidationErrors] = useState({});
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+    const [isLocationChanging, setIsLocationChanging] = useState(false)
 
     const [fetchUserData, loading, error] = useFetching(async () => {
         const userResponse = await UserDataService.getUserProfile()
@@ -36,7 +38,7 @@ export default observer(function Me() {
 
     const [updateUserData, loading2, error2] = useFetching(async () => {
         editedProfile.locationLat = replaceSigns(editedProfile?.locationLat)
-        editedProfile.locationLng = replaceSigns(editedProfile?.locationLat)
+        editedProfile.locationLng = replaceSigns(editedProfile?.locationLng)
         try {
             await UserDataService.redoUserProfile(editedProfile)
             setShowData(editedProfile)
@@ -77,6 +79,7 @@ export default observer(function Me() {
                 }
             });
         }
+        setIsLocationChanging(false)
     }, [store.isEditing]);
 
     const handleChange = (field, value) => {
@@ -84,6 +87,11 @@ export default observer(function Me() {
         setShowData({ ...showData, [field]: value });
         setValidationErrors({ ...validationErrors, [field]: undefined });
     };
+
+    const changeLocation = (location, locationLat, locationLng) => {
+        setEditedProfile({ ...editedProfile, location: location, locationLat: locationLat, locationLng: locationLng });
+        setShowData({ ...showData, location: location, locationLat: locationLat, locationLng: locationLng });
+    }
 
     const handleBlur = (field, value) => {
         validateField(field, value, setValidationErrors, validationErrors);
@@ -108,7 +116,7 @@ export default observer(function Me() {
     const errorModal = isErrorModalVisible && <MyModal isModalVisible={isErrorModalVisible} setIsModalVisible={setIsErrorModalVisible} content={<Text>{error}{error2}{error3}</Text>}></MyModal>
 
     return (
-        <ScrollView style={MeStyles.container}>
+        <ScrollView style={MeStyles.container} keyboardShouldPersistTaps={'handled'}>
             {errorModal}
             <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={Object.entries(validationErrors).map(([field, errorMessage], index) => (
                 <Text key={index}>{errorMessage}</Text>
@@ -158,17 +166,15 @@ export default observer(function Me() {
                         />
                     </View>
 
-                    <View style={[MeStyles.infoRow, { flexDirection: 'row', flexWrap: 'wrap' }]}>
-                        <Text style={MeStyles.label}>📍</Text>
-                        <TextInput
-                            multiline={true}
-                            numberOfLines={2}
-                            style={inputStyles}
-                            value={showData.location}
-                            onChangeText={(text) => handleChange('location', text)}
-                            editable={store.isEditing}
-                        />
-                    </View>
+                    {!isLocationChanging && showData?.location !== "Fastiv"  //location is set
+                        ? <View>
+                            <Text style={{ marginBottom: 10 }}>📍{showData?.location}</Text>
+                            {store.isEditing && <MyButton onPress={() => setIsLocationChanging(true)} isRound>Змінити локацію</MyButton>}
+                        </View>
+
+                        : <LocationBlock data={editedProfile} setData={setEditedProfile} changeLocation={changeLocation} inRedo setIsLocationChanging={setIsLocationChanging} />
+                    }
+
                 </View>
 
                 <View style={MeStyles.rightSide}>

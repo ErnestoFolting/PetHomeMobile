@@ -18,6 +18,7 @@ export default function AdvertCreationCalendar({ setAdvertData, advertData, setI
         if (!datesState?.isStartDatePicked) {
             const markedDates = {}
             markedDates[day.dateString] = { startingDay: true, color: Colors.light, textColor: '#FFFFFF' };
+            console.log(markedDates);
             setDatesState({
                 markedDates: markedDates,
                 isStartDatePicked: true,
@@ -52,6 +53,15 @@ export default function AdvertCreationCalendar({ setAdvertData, advertData, setI
                 });
 
 
+            } else if (range == 0) {
+                markedDates[endDate] = { startingDay: true, endingDay: true, color: Colors.light, textColor: '#FFFFFF' };
+
+                setDatesState({
+                    markedDates: markedDates,
+                    isStartDatePicked: false,
+                    isEndDatePicked: true,
+                    startDate: ''
+                });
             } else {
                 alert('Select an upcomming date!');
             }

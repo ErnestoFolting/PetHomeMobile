@@ -3,5 +3,9 @@ export const replaceSigns = (coords) => {
 }
 
 export const dateWithoutTime = (dateWithTime) => {
-    return dateWithTime.split('T')[0];
+    if (dateWithTime) {
+        return dateWithTime.split('T')[0];
+    } else {
+        return 'Не обрано'
+    }
 }

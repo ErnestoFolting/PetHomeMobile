@@ -7,6 +7,7 @@ import AuthService from '../../HTTP/API/AuthService';
 import { useNavigation } from "@react-navigation/native";
 import LocationBlock from '../../Components/Location/LocationBlock/LocationBlock';
 import Loader from '../../Components/Loader/Loader';
+import ImageSelector from '../../Components/ImageSelector/ImageSelector';
 
 const Registration = () => {
     const navigation = useNavigation();
@@ -64,22 +65,6 @@ const Registration = () => {
         setIsLoading(false)
     };
 
-    const selectImage = async () => {
-        let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-        if (permissionResult.granted === false) {
-            Alert.alert('Permission to access camera roll is required!');
-            return;
-        }
-
-        let pickerResult = await ImagePicker.launchImageLibraryAsync();
-
-        if (!pickerResult.cancelled) {
-            const uri = pickerResult.assets[0].uri;
-            SetImageUri(uri)
-        }
-    };
-
     return (
         <KeyboardAvoidingView
             style={{ flex: 1 }}
@@ -111,14 +96,7 @@ const Registration = () => {
                         </TouchableOpacity>
                     </View>
 
-                    <TouchableOpacity onPress={selectImage} style={RegistrationStyles.imageInput}>
-                        <Text style={RegistrationStyles.imageInputLabel}>Ваше фото*</Text>
-                        {imageUri ? (
-                            <Image source={{ uri: imageUri }} style={{ width: 100, height: 100 }} />
-                        ) : (
-                            <Text style={{ color: 'gray' }}>Tap to select image</Text>
-                        )}
-                    </TouchableOpacity>
+                    <ImageSelector imageUri={imageUri} setImageUri={SetImageUri} />
 
                     <TextInput
                         placeholder="Email*"

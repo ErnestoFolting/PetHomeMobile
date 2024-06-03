@@ -19,18 +19,6 @@ const CreateAdvertFormStyles = StyleSheet.create({
         marginBottom: 10,
         width: '100%'
     },
-    imageInputLabel: {
-        marginBottom: 5,
-        color: '#000',
-    },
-    image: {
-        width: 100,
-        height: 100,
-        marginBottom: 5,
-    },
-    imagePlaceholder: {
-        color: 'gray',
-    },
     button: {
         backgroundColor: Colors.light,
         padding: 10,

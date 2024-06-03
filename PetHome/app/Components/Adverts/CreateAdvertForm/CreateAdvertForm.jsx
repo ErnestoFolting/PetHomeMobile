@@ -1,5 +1,5 @@
-import { View, Text, ScrollView, TextInput, TouchableOpacity, Image, Alert } from 'react-native'
-import * as ImagePicker from 'expo-image-picker';
+import { View, Text, ScrollView, TextInput, TouchableOpacity } from 'react-native'
+
 import React, { useState } from 'react'
 import MyModal from '../../MyModal/MyModal'
 import AdvertCreationCalendar from '../../Calendar/AdvertCreationCalendar/AdvertCreationCalendar'
@@ -9,27 +9,12 @@ import Loader from '../../Loader/Loader'
 import MyButton from '../../Common/MyButton'
 import Colors from '../../../Constants/Colors'
 import { dateWithoutTime } from '../../../Helpers/StringsHelper';
+import ImageSelector from '../../ImageSelector/ImageSelector'
 
 export default function CreateAdvertForm({ advertData, setAdvertData, imageUri, setImageUri, handleSubmit, isLoading, isModal }) {
 
     const [isCalendarModalVisible, setIsCalendarModalVisible] = useState(false)
     const [isLocationChanging, setIsLocationChanging] = useState(false)
-
-    const selectImage = async () => {
-        let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-        if (permissionResult.granted === false) {
-            Alert.alert('Permission to access camera roll is required!');
-            return;
-        }
-
-        let pickerResult = await ImagePicker.launchImageLibraryAsync();
-
-        if (!pickerResult.cancelled) {
-            const uri = pickerResult.assets[0].uri;
-            setImageUri(uri);
-        }
-    };
 
     return (
         <View style={[!isModal && { flex: 1 }]}>
@@ -78,15 +63,7 @@ export default function CreateAdvertForm({ advertData, setAdvertData, imageUri, 
                         </View>
                     </TouchableOpacity>
 
-
-                    <TouchableOpacity onPress={selectImage} style={CreateAdvertFormStyles.boxInput}>
-                        <Text style={CreateAdvertFormStyles.imageInputLabel}>Зображення оголошення*</Text>
-                        {imageUri ? (
-                            <Image source={{ uri: imageUri }} style={CreateAdvertFormStyles.image} />
-                        ) : (
-                            <Text style={CreateAdvertFormStyles.imagePlaceholder}>Торкніться, щоб вибрати зображення</Text>
-                        )}
-                    </TouchableOpacity>
+                    <ImageSelector imageUri={imageUri} setImageUri={setImageUri} />
 
                     {!isLocationChanging && advertData?.location !== "Fastiv"  //location is set
                         ? <View>

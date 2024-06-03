@@ -44,7 +44,6 @@ const validateImage = async (uri) => {
         console.log('Error getting image size', e);
     }
 
-    console.log("here");
     return errMsg;
 };
 

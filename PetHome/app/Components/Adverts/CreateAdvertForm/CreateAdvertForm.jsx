@@ -11,7 +11,7 @@ import Colors from '../../../Constants/Colors'
 import { dateWithoutTime } from '../../../Helpers/StringsHelper';
 import ImageSelector from '../../ImageSelector/ImageSelector'
 
-export default function CreateAdvertForm({ advertData, setAdvertData, imageUri, setImageUri, handleSubmit, isLoading, isModal }) {
+export default function CreateAdvertForm({ advertData, setAdvertData, imageUri, setImageUri, handleSubmit, isLoading, isModal, errors }) {
 
     const [isCalendarModalVisible, setIsCalendarModalVisible] = useState(false)
     const [isLocationChanging, setIsLocationChanging] = useState(false)
@@ -38,21 +38,22 @@ export default function CreateAdvertForm({ advertData, setAdvertData, imageUri, 
                         placeholder='Назва оголошення*'
                         value={advertData.name}
                         onChangeText={text => setAdvertData({ ...advertData, name: text })}
-                        style={CreateAdvertFormStyles.input}
+                        style={[CreateAdvertFormStyles.input, errors.name && CreateAdvertFormStyles.inputError]}
                     />
 
                     <TextInput
                         placeholder='Опис оголошення'
                         value={advertData.description}
                         onChangeText={text => setAdvertData({ ...advertData, description: text })}
-                        style={CreateAdvertFormStyles.input}
+                        style={[CreateAdvertFormStyles.input, errors.description && CreateAdvertFormStyles.inputError]}
+
                     />
 
                     <TextInput
                         placeholder='Вартість*'
                         value={String(advertData?.cost)}
                         onChangeText={text => setAdvertData({ ...advertData, cost: text })}
-                        style={CreateAdvertFormStyles.input}
+                        style={[CreateAdvertFormStyles.input, errors.cost && CreateAdvertFormStyles.inputError]}
                         keyboardType="numeric"
                     />
 
@@ -65,7 +66,7 @@ export default function CreateAdvertForm({ advertData, setAdvertData, imageUri, 
 
                     <ImageSelector imageUri={imageUri} setImageUri={setImageUri} />
 
-                    {!isLocationChanging && advertData?.location !== "Fastiv"  //location is set
+                    {!isLocationChanging && advertData?.location !== ""  //location is set
                         ? <View>
                             <Text style={{ marginBottom: 10 }}>📍{advertData?.location}</Text>
                             {isModal && <MyButton onPress={() => setIsLocationChanging(true)} isRound>Змінити локацію</MyButton>}

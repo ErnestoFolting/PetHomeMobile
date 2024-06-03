@@ -21,6 +21,8 @@ import * as FileSystem from 'expo-file-system';
 import UserDataService from '../../HTTP/API/UserDataService';
 import { replaceSigns } from '../../Helpers/StringsHelper';
 import shallowEqual from '../Me/helper';
+import createAdvertSchema from '../../Components/Adverts/CreateAdvertForm/CreateAdvertSchema';
+import * as Yup from "yup";
 
 const AdvertDetail = ({ route, navigation }) => {
     const store = useStore()
@@ -35,6 +37,7 @@ const AdvertDetail = ({ route, navigation }) => {
     const [imageUri, setImageUri] = useState(''); //advert redo
     const [isLoading, setIsLoading] = useState(false) //advert redo
     const [advertCopy, setAdvertCopy] = useState({}) //advert redo
+    const [errors, setErrors] = useState({}) //advert redo
 
     const [fetchAdvert, loading, error] = useFetching(async () => {
         const userResponse = await AdvertService.getCertainAdvert(adId)
@@ -116,39 +119,52 @@ const AdvertDetail = ({ route, navigation }) => {
     }
 
     const redoHandler = async () => {
+        setIsLoading(true)
+
         if (shallowEqual(advert, advertCopy) && imageUri == '') return
         const formData = new FormData();
 
-        Object.keys(advertCopy).forEach(function (key, index) {
-            if (key == "locationLat" || key == "locationLng") {
-                formData.append(key, replaceSigns(Object.values(advertCopy)[index]))
-            } else {
-                formData.append(key, Object.values(advertCopy)[index])
+        try {
+            await createAdvertSchema.validate(advertCopy, { abortEarly: false });
+            Object.keys(advertCopy).forEach(function (key, index) {
+                if (key == "locationLat" || key == "locationLng") {
+                    formData.append(key, replaceSigns(Object.values(advertCopy)[index]))
+                } else {
+                    formData.append(key, Object.values(advertCopy)[index])
+                }
+
+            })
+
+            if (imageUri) {
+                const photoData = await FileSystem.readAsStringAsync(imageUri, {
+                    encoding: FileSystem.EncodingType.Base64,
+                });
+                formData.append('advertPhoto', {
+                    uri: imageUri,
+                    name: `photo_${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`,
+                    type: `image/jpeg`,
+                    data: photoData,
+                });
             }
 
-        })
-
-        if (imageUri) {
-            const photoData = await FileSystem.readAsStringAsync(imageUri, {
-                encoding: FileSystem.EncodingType.Base64,
-            });
-
-            formData.append('advertPhoto', {
-                uri: imageUri,
-                name: `photo_${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`,
-                type: `image/jpeg`,
-                data: photoData,
-            });
-        }
-
-        try {
-            setIsLoading(true)
-            await UserDataService.redoUserAdvert(formData, adId)
-            store.setAdvertsNeedUpdate(!store.advertsNeedUpdate)
-            alert('Відредаговано')
+            try {
+                await UserDataService.redoUserAdvert(formData, adId)
+                store.setAdvertsNeedUpdate(!store.advertsNeedUpdate)
+                alert('Відредаговано')
+                setErrors({})
+            } catch (e) {
+                alert(JSON.stringify(e?.response?.data))
+            }
         } catch (e) {
-            alert(JSON.stringify(e?.response?.data))
+            if (e instanceof Yup.ValidationError) {
+                const newErrors = {};
+                e.inner.forEach((error) => {
+                    newErrors[error.path] = error.message;
+                });
+                setErrors(newErrors);
+            }
         }
+
         setIsLoading(false)
     }
 
@@ -158,7 +174,7 @@ const AdvertDetail = ({ route, navigation }) => {
         <ScrollView contentContainerStyle={AdvertDetailStyles.container} keyboardShouldPersistTaps={'handled'}>
 
             <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<Text>{error}{advertRequestErrors}{error2}{error3}</Text>}></MyModal>
-            <MyModal isModalVisible={isAdvertEditing} setIsModalVisible={setIsAdvertEditiong} content={<CreateAdvertForm advertData={advertCopy} setAdvertData={setAdvertCopy} isModal handleSubmit={redoHandler} imageUri={imageUri} setImageUri={setImageUri} isLoading={isLoading} />}></MyModal>
+            <MyModal isModalVisible={isAdvertEditing} setIsModalVisible={setIsAdvertEditiong} content={<CreateAdvertForm advertData={advertCopy} setAdvertData={setAdvertCopy} isModal handleSubmit={redoHandler} imageUri={imageUri} setImageUri={setImageUri} isLoading={isLoading} errors={errors} />}></MyModal>
             {photoLoading && <Loader />}
             <Image
                 source={{ uri: API_URL + advert?.photoFilePath }}

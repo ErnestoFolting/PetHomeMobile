@@ -39,7 +39,6 @@ export default function UserProfile({ route, navigation }) {
     const deleteHandler = async () => {
         try {
             await deleteAdvert()
-            console.log('bool ' + store.usersNeedUpdate);
             store.setUsersNeedUpdate(!store.usersNeedUpdate)
             store.setAdvertsNeedUpdate(!store.advertsNeedUpdate)
             navigation.popToTop()

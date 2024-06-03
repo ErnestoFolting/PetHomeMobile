@@ -74,7 +74,6 @@ const Registration = () => {
                 err.inner.forEach((error) => {
                     newErrors[error.path] = error.message;
                 });
-                console.log(newErrors);
                 setErrors(newErrors);
             }
         }

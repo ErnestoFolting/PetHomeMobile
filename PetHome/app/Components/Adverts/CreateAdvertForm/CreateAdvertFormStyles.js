@@ -10,6 +10,9 @@ const CreateAdvertFormStyles = StyleSheet.create({
         marginBottom: 20,
         width: '100%',
     },
+    inputError: {
+        borderColor: Colors.red
+    },
     boxInput: {
         borderWidth: 1,
         borderColor: '#ccc',

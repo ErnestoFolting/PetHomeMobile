@@ -36,10 +36,10 @@ export default function LocationBlock({ data, setData, inRedo, changeLocation, s
                 latitude,
                 longitude,
             });
-
             if (geocodeResponse.length > 0) {
                 const { street, city, region } = geocodeResponse[0];
                 const location = ((street !== null ? `${street}, ` : ``) + (city !== null ? `${city}, ` : ``) + (region !== null ? `${region}` : ``))
+                console.log(location);
                 setData({ ...data, location: location, locationLat: replaceSigns(latitude), locationLng: replaceSigns(longitude) })
                 if (changeLocation) { changeLocation(location, replaceSigns(latitude), replaceSigns(longitude)) }
             }

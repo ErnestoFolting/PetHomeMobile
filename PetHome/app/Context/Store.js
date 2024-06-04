@@ -71,7 +71,7 @@ export default class Store {
             await AuthService.logout()
             this.setAuth(false);
             this.setUserId("")
-            this.myHubConnection.stop()
+            this.myHubConnection?.stop()
             this.setMyHubConnection(null)
         } catch (e) {
             console.error(e)
@@ -89,14 +89,13 @@ export default class Store {
     }
     async createHubConnection() {
         if (!this.myHubConnection) {
-            console.log(`${process.env.EXPO_PUBLIC_API_URL}/performerSelectionHub`);
             const hubConnection = new signalR.HubConnectionBuilder()
                 .withUrl(`${process.env.EXPO_PUBLIC_API_URL}/performerSelectionHub`) // Replace with your ngrok URL and hub path
                 .withAutomaticReconnect()
                 .build();
             try {
                 await hubConnection?.start()
-                console.log('HUB START')
+                console.log('Connected to Hub')
                 this.setMyHubConnection(hubConnection)
             } catch (e) {
                 console.log("errorHub", e)

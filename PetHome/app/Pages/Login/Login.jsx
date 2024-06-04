@@ -11,7 +11,7 @@ import MyModal from "../../Components/MyModal/MyModal";
 const Login = () => {
     const store = useStore();
 
-    const [creds, setCreds] = useState({ username: "", password: "" });
+    const [creds, setCreds] = useState({ username: "1212312312", password: "1231231231" });
     const [login, loading, error] = useFetching(async () => {
         await store.login(creds)
     });
@@ -32,9 +32,18 @@ const Login = () => {
         try {
             await login()
         } catch (e) {
-            setIsModalVisible(true)
+            if (e.response && e.response.headers) {
+                const contentType = e.response.headers['content-type'];
+                console.log('Content-Type:', contentType);
+
+                if (contentType && contentType.includes('text/html')) {
+                    alert('Ngrok error')
+                } else {
+                    setIsModalVisible(true)
+                }
+            }
         }
-    };
+    }
 
     const modal = <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<View><Text>{error}</Text></View>} />
 

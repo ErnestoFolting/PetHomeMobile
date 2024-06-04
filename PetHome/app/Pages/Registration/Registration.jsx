@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Alert, Image } from 'react-native';
 import { RegistrationStyles } from './RegistrationStyles';
-import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import AuthService from '../../HTTP/API/AuthService';
 import { useNavigation } from "@react-navigation/native";
@@ -23,7 +22,7 @@ const Registration = () => {
         username: 'testUser',
         password: 'Password123!',
         confirmPassword: 'Password123!',
-        location: 'Fastiv',
+        location: '',
         locationLat: '50,5',
         locationLng: '52,5'
     });
@@ -151,7 +150,13 @@ const Registration = () => {
                         secureTextEntry
                     />
 
-                    <LocationBlock data={registrationData} setData={setRegistrationData} setIsLocationChanging={setIsLocationChanging} />
+                    {!isLocationChanging && registrationData?.location !== ""
+                        ? <View>
+                            <Text style={{ marginBottom: 10 }}>📍{registrationData?.location}</Text>
+                        </View>
+                        : <LocationBlock data={registrationData} setData={setRegistrationData} setIsLocationChanging={setIsLocationChanging} />
+                    }
+                    {errors?.location && <Text style={{ color: 'red' }}>{errors.location}</Text>}
 
                     {
                         isLoading

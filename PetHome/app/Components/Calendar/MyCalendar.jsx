@@ -1,4 +1,4 @@
-import { View, Button } from 'react-native'
+import { View, Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import MyCalendarStyles from './MyCalendarStyles';
 import Colors from '../../Constants/Colors';
@@ -8,6 +8,9 @@ import TimeExceptionService from '../../HTTP/API/TimeExceptionService';
 import Loader from '../Loader/Loader';
 import UkrCalendar from './UkrCalendar';
 import MyButton from '../Common/MyButton';
+import { useFocusEffect } from '@react-navigation/native';
+import MyModal from '../MyModal/MyModal';
+
 
 export default function MyCalendar() {
 
@@ -33,6 +36,8 @@ export default function MyCalendar() {
         setTimeExceptions(response)
     })
 
+    const [isModalVisible, setIsModalVisible] = useState(false)
+
     useEffect(() => {
         async function fetchData() {
             try {
@@ -48,16 +53,22 @@ export default function MyCalendar() {
     }, [datesToUpdate])
 
     useEffect(() => {
-
-        async function fetch() {
-            try {
-                await fetchDates()
-            } catch (e) {
-                console.log(e);
-            }
-        }
         fetch()
     }, [])
+
+    useFocusEffect(
+        React.useCallback(() => {
+            fetch();
+        }, [])
+    );
+
+    async function fetch() {
+        try {
+            await fetchDates()
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     const selectHandler = (date) => {
         if (datesChanging) {
@@ -99,6 +110,14 @@ export default function MyCalendar() {
     if (loading || loading2) return <Loader />
     return (
         <View>
+            <MyModal
+                content={<View>
+                    <Text>{error}{error2}</Text>
+                </View>
+                }
+                isModalVisible={isModalVisible}
+                setIsModalVisible={setIsModalVisible}
+            />
             <UkrCalendar
                 markedDates={dates}
                 style={MyCalendarStyles.calendar}

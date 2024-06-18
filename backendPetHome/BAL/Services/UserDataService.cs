@@ -63,8 +63,9 @@ namespace backendPetHome.BLL.Services
 
         public async Task<int> deleteUserProfile(string userId)
         {
-            var userInDb = await _unitOfWork.UserRepository.GetByIdSpecification(new UserByIdSpecification(userId));
+            var userInDb = await _unitOfWork.UserRepository.GetByIdSpecification(new UserByIdWithPerformAtAdvertsSpecification(userId));
             if(userInDb == null) throw new KeyNotFoundException("User does not exist.");
+            if (userInDb.performAtAdverts.Count != 0) throw new ArgumentException("Finish adverts performing before profile deleting.");
 
             await _unitOfWork.UserRepository.Delete(userInDb);
             return await _unitOfWork.SaveChangesAsync();

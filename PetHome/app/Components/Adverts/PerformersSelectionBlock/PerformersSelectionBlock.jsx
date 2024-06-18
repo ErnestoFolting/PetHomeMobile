@@ -19,6 +19,7 @@ export default function PerformersSelectionBlock({ advertId, navigation, isAdver
 
     const [fetchAdvert, loading, error] = useFetching(async () => {
         const userResponse = await UserDataService.getUserCertainAdvert(advertId)
+        console.log(userResponse);
         setAdvert(userResponse)
     })
     const [markFinished, loading2, error2] = useFetching(async () => {

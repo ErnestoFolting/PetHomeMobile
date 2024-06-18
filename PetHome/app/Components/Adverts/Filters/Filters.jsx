@@ -97,26 +97,31 @@ export default function Filters({ isUserAdverts, queryParams, setQueryParams }) 
                     </View>
                     }
                     {
-                        !isUserAdverts && !store?.role?.includes("Administrator") ? <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        !isUserAdverts && !store?.role?.includes("Administrator") &&
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={FiltersStyles?.label}>У Ваші вільні дати</Text>
                             <Switch
                                 value={queryParamsCopy?.isDatesFit}
                                 onValueChange={(e) => setQueryParamsCopy({ ...queryParamsCopy, isDatesFit: e })}
                             />
-                        </View> :
-                            <View style={{ zIndex: 5 }}>
-                                <Text style={FiltersStyles?.label}>Статус</Text>
-                                <DropDownPicker
-                                    open={openStatusPicker}
-                                    value={(queryParamsCopy?.advertsStatus)}
-                                    items={statusItems}
-                                    setOpen={setOpenStatusPicker}
-                                    onSelectItem={(item) => setQueryParamsCopy({ ...queryParamsCopy, advertsStatus: String(item.value), currentPage: 1 })}
-                                    setItems={setStatusItems}
-                                    containerStyle={{ width: '50%' }}
-                                />
-                            </View>
+                        </View>
                     }
+                    {isUserAdverts && <View style={{ zIndex: 5 }}>
+                        <Text style={FiltersStyles?.label}>Статус</Text>
+                        <DropDownPicker
+                            open={openStatusPicker}
+                            value={(queryParamsCopy?.advertsStatus)}
+                            items={statusItems}
+                            setOpen={setOpenStatusPicker}
+                            onSelectItem={(item) => setQueryParamsCopy({ ...queryParamsCopy, advertsStatus: String(item.value), currentPage: 1 })}
+                            setItems={setStatusItems}
+                            containerStyle={{ width: '50%' }}
+                        />
+                    </View>
+                    }
+
+                    {store?.role?.includes("Administrator") && <Text style={{ marginTop: 10 }}>Показано всі оголошення</Text>}
+
 
                     <TouchableOpacity style={FiltersStyles.apply} onPress={handleApply}>
                         <Text>Застосувати</Text>

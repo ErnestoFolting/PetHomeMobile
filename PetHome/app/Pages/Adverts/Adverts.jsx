@@ -53,6 +53,7 @@ const Adverts = ({ navigation, route }) => {
   }
 
   useEffect(() => {
+    console.log(queryParams);
     fetchData();
   }, [queryParams]);
 
@@ -67,6 +68,7 @@ const Adverts = ({ navigation, route }) => {
   if (loader) return <Loader />
 
   const modal = isModalVisible && <MyModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} content={<Text>{error}</Text>}></MyModal>
+
 
   return (
 

@@ -23,7 +23,6 @@ const FiltersStyles = StyleSheet.create({
         borderBottomWidth: 1,
         borderColor: Colors.greyLight,
         borderRadius: 10,
-        marginBottom: 20,
         textAlign: 'center',
         minWidth: 70,
     },

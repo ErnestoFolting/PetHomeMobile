@@ -21,7 +21,7 @@ export default class AdvertService {
         PageSize: queryParams?.advertsLimit,
         isDatesFit: queryParams?.isDatesFit,
         priceFrom: queryParams?.costFrom,
-        priceTo: queryParams?.costTo
+        priceTo: queryParams?.costTo,
       }
     })
     return response

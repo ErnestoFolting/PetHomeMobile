@@ -29,7 +29,8 @@ export default function AdvertRequestBlock({ advertStatus, setIsModalVisible, ad
     }, [loading2])
 
     useEffect(() => {
-        if (error || error2) {
+        if (error || error2 && (!loading && !loading)) {
+            console.log('error')
             error2 && setAdvertRequestErrors(error2);
             error && setAdvertRequestErrors(error);
             setIsModalVisible(true)
@@ -68,6 +69,7 @@ export default function AdvertRequestBlock({ advertStatus, setIsModalVisible, ad
         }
         return (<View style={[AdvertRequestBlockStyles.container, text == "Подати заявку" && AdvertRequestBlockStyles.shadow]}>
             <TouchableOpacity style={AdvertRequestBlockStyles.applyButton} onPress={applyRequestHandler} disabled={text !== "Подати заявку"}><Text style={{ color: 'white' }}>{text}</Text></TouchableOpacity>
+            <Text>{error2}</Text>
         </View>)
 
     }

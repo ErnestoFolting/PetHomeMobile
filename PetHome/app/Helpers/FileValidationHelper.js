@@ -35,7 +35,7 @@ const validateImage = async (uri) => {
 
         const aspectRatio = width / height;
 
-        console.log(aspectRatio);
+        console.log('aspectRatio ', aspectRatio);
 
         if (aspectRatio < minAspectRatio || aspectRatio > maxAspectRatio) {
             errMsg = "Invalid aspect ratio";

@@ -15,7 +15,10 @@ namespace backendPetHome.DAL.Repositories
         }
         public async Task Delete(User useToDelete)
         {
+            var userRequests = _context.Set<Request>().Where(r => r.userId == useToDelete.Id).ToList();
+            _context.Set<Request>().RemoveRange(userRequests);
             _context.Set<User>().Remove(useToDelete);
+            await _context.SaveChangesAsync();
         }
         public Task<User?> GetByIdSpecification(Specification<User> spec)
         {

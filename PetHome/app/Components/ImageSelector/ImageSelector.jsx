@@ -34,7 +34,7 @@ export default function ImageSelector({ imageUri, setImageUri }) {
     };
     return (
         <TouchableOpacity onPress={selectImage} style={ImageSelectorStyles.boxInput}>
-            <Text style={ImageSelectorStyles.imageInputLabel}>Зображення оголошення*</Text>
+            <Text style={ImageSelectorStyles.imageInputLabel}>Зображення *</Text>
             {imageUri ? (
                 <Image source={{ uri: imageUri }} style={ImageSelectorStyles.image} />
             ) : (

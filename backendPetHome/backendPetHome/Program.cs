@@ -37,7 +37,10 @@ builder.Services.AddCors(options =>
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(options =>
+{
+    options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+});
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IAdvertService,AdvertService>();
 builder.Services.AddScoped<AuthService>();

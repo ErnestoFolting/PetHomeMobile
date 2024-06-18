@@ -44,7 +44,7 @@ namespace backendPetHome.DAL.Data
                 .HasOne(r => r.user)
                 .WithMany(u => u.requests)
                 .HasForeignKey(r => r.userId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.ClientSetNull);
             builder
                 .Entity<Request>()
                 .HasOne(r => r.advert)

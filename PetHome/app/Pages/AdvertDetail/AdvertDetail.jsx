@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Children } from 'react'
 import useFetching from '../../Hooks/useFetching';
 import AdvertService from '../../HTTP/API/AdvertService';
 import Loader from '../../Components/Loader/Loader';
@@ -119,9 +119,10 @@ const AdvertDetail = ({ route, navigation }) => {
     }
 
     const redoHandler = async () => {
-        setIsLoading(true)
 
         if (shallowEqual(advert, advertCopy) && imageUri == '') return
+        setIsLoading(true)
+
         const formData = new FormData();
 
         try {

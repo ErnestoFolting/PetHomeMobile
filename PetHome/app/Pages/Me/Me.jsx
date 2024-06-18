@@ -165,7 +165,6 @@ export default observer(function Me() {
                             editable={store.isEditing}
                         />
                     </View>
-
                     {!isLocationChanging && showData?.location !== "Fastiv"  //location is set
                         ? <View>
                             <Text style={{ marginBottom: 10 }}>📍{showData?.location}</Text>

@@ -18,7 +18,6 @@ export default function AdvertCreationCalendar({ setAdvertData, advertData, setI
         if (!datesState?.isStartDatePicked) {
             const markedDates = {}
             markedDates[day.dateString] = { startingDay: true, color: Colors.light, textColor: '#FFFFFF' };
-            console.log(markedDates);
             setDatesState({
                 markedDates: markedDates,
                 isStartDatePicked: true,

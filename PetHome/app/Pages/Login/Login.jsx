@@ -11,7 +11,7 @@ import MyModal from "../../Components/MyModal/MyModal";
 const Login = () => {
     const store = useStore();
 
-    const [creds, setCreds] = useState({ username: "1212312312", password: "1231231231" });
+    const [creds, setCreds] = useState({ username: "", password: "" });
     const [login, loading, error] = useFetching(async () => {
         await store.login(creds)
     });

@@ -12,10 +12,8 @@ export default function AdvertRequestBlock({ advertStatus, setIsModalVisible, ad
     const [checkIfRequestSent, loading, error] = useFetching(async () => {
         setUserRequests(await UserDataService.getUserRequests())
     });
-    const [applyRequest, loading2, error2] = useFetching(async () => {
-        await RequestService.sendRequest(advertId)
-    })
-
+    const [errorApply, setErrorApply] = useState("")
+    const [loadingApply, setLoadingApply] = useState(false)
     useEffect(() => {
         async function fetchData() {
             try {
@@ -26,26 +24,34 @@ export default function AdvertRequestBlock({ advertStatus, setIsModalVisible, ad
             }
         }
         fetchData()
-    }, [loading2])
+    }, [loadingApply])
 
     useEffect(() => {
-        if (error || error2 && (!loading && !loading)) {
-            console.log('error')
-            error2 && setAdvertRequestErrors(error2);
-            error && setAdvertRequestErrors(error);
+        if (error && !loading) {
+            setAdvertRequestErrors(error);
             setIsModalVisible(true)
         }
-    }, [loading2, loading])
+    }, [loading])
 
     const thisAdvertRequestStatus = userRequests?.find(el => el?.advertId === advertId)?.status;
 
     const applyRequestHandler = async () => {
+        setLoadingApply(true)
         try {
-            await applyRequest()
-        } catch (e) { console.log(e); }
+            setIsModalVisible(false)
+            await RequestService.sendRequest(advertId)
+            setAdvertRequestErrors("")
+            setErrorApply(null)
+        } catch (e) {
+            console.log(e?.response?.data);
+            setIsModalVisible(true)
+            setErrorApply(e?.response?.data)
+            setAdvertRequestErrors(e?.response?.data)
+        }
+        setLoadingApply(false)
     }
 
-    if (loading || loading2) return <Loader />
+    if (loading || loadingApply) return <Loader />
 
     function renderSwitch(status) {
         let text = ""
@@ -69,7 +75,6 @@ export default function AdvertRequestBlock({ advertStatus, setIsModalVisible, ad
         }
         return (<View style={[AdvertRequestBlockStyles.container, text == "Подати заявку" && AdvertRequestBlockStyles.shadow]}>
             <TouchableOpacity style={AdvertRequestBlockStyles.applyButton} onPress={applyRequestHandler} disabled={text !== "Подати заявку"}><Text style={{ color: 'white' }}>{text}</Text></TouchableOpacity>
-            <Text>{error2}</Text>
         </View>)
 
     }

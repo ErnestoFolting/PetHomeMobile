@@ -24,7 +24,7 @@ namespace backendPetHome.BLL.Services
             if (advertInDb.requests.Any(request => request.userId == userId)) throw new ArgumentException("You can not send request multiple times");
             if (!await _timeExceptionService
                 .checkPerformerDates(userId, advertInDb.startTime, advertInDb.endTime))
-                throw new ArgumentException("You can not perform at that dates. Remove the time exceptions and try again.");
+                throw new ArgumentException("Ви не можете виконувати оголошення в зазначені дати. Видаліть зайняті дати та спробуйте ще раз.");
 
             Request newRequest = new();
             newRequest.userId = userId;
